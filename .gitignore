@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# raw media originals, synced in locally, never committed
+/assets-src/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
