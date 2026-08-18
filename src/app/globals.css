@@ -59,3 +59,17 @@ body {
     animation-duration: 1ms !important;
   }
 }
+
+/* Whatever scroll-triggered state an element was in when the print dialog
+   opened (mid fade, off-screen translate) is not what should end up on paper.
+   Force everything to its resting state for print, the résumé specifically
+   gets opened this way. */
+@media print {
+  * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}

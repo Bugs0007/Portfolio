@@ -4,7 +4,7 @@
 export const person = {
   name: "Bhagath Samalla",
   tagline:
-    "I write backend systems for a living, and disappear into the Himalayas when I can get away with it.",
+    "Sketchbook regular, mediocre guitarist, and a firm believer that there are infinite chances as long as you're still trying.",
   summary:
     "Software developer focused on backend engineering, cloud-native deployment, and applied AI systems: LangGraph reasoning pipelines and production Django/AWS platforms with real users.",
   location: "Hyderabad, India",
@@ -113,13 +113,9 @@ export const projects: Project[] = [
     href: "https://caseintel.in",
     linkLabel: "live at caseintel.in",
     summary:
-      "Multi-tenant Django/DRF platform live in production for real advocates: row-level data isolation, its own domain, deployed on AWS (EC2, RDS/pgvector, Nginx/gunicorn) with CI/CD.",
+      "Runs the daily practice for a working law office, multi-tenant and live in production.",
     decision:
-      "Case discovery runs against India's eCourts government portal, which isn't built to be automated: session/token handling, rotating anti-scraping headers, and CAPTCHA solving feed an async, resumable pipeline that reliably pulls 100,000+ real case records per run. On top of that sits a 3-node LangGraph pipeline (HyDE query expansion, hybrid pgvector/tsvector retrieval with reciprocal rank fusion, cross-encoder reranking) for source-referenced document Q&A, with a cost-gated routing step that skips LLM calls on routine documents.",
-    highlights: [
-      "Postgres-native async job pipeline (no external broker) for long-running, CAPTCHA-gated operations, with incremental persistence and automatic retry of failed segments.",
-      "Invoicing subsystem: PDF generation, race-safe per-user invoice numbering under concurrent load, transactional email delivery.",
-    ],
+      "Underneath: eCourts automated end to end (sessions, CAPTCHA, anti-scraping headers) feeding a 3-node LangGraph pipeline for source-referenced document search.",
     stack: ["Django", "DRF", "LangGraph", "pgvector", "PostgreSQL", "AWS EC2", "RDS", "Nginx", "gunicorn", "CI/CD"],
   },
   {
@@ -148,6 +144,60 @@ export const projects: Project[] = [
     decision:
       "Groq writes the script, edge-tts voices it, ComfyUI drives Ken Burns motion over still frames, then it's a straight shot through the YouTube Data API to publish.",
     stack: ["Groq", "edge-tts", "ComfyUI", "YouTube Data API v3"],
+  },
+];
+
+export type ShowcasePanel = {
+  number: string;
+  label: string;
+  headline: string;
+  rows: { primary: string; secondary: string; status: string }[];
+  stat: { label: string; value: string };
+};
+
+// Real copy and data straight off caseintel.in's own public marketing page,
+// which already builds these as plain HTML panels rather than screenshots.
+// Rebuilt here in the site's own tokens instead of an embedded screenshot.
+export const caseIntelShowcase: ShowcasePanel[] = [
+  {
+    number: "01",
+    label: "Find",
+    headline: "Search the state, not one court at a time.",
+    rows: [
+      { primary: "WP/14882/2025", secondary: "High Court, Telangana", status: "match" },
+      { primary: "CC/331/2024", secondary: "Hyderabad, CMM Court", status: "match" },
+    ],
+    stat: { label: "Districts scanned", value: "33 / 33" },
+  },
+  {
+    number: "02",
+    label: "Appear",
+    headline: "Tomorrow's board, the evening before.",
+    rows: [
+      { primary: "WP/14882/2025", secondary: "Court No. 4, Division Bench", status: "item 27" },
+      { primary: "CRP/887/2025", secondary: "Court No. 12, Single Judge", status: "item 6" },
+    ],
+    stat: { label: "List types read", value: "8 / 8" },
+  },
+  {
+    number: "03",
+    label: "Record",
+    headline: "The order lands on the hearing that produced it.",
+    rows: [
+      { primary: "order_3_2025-09-14.pdf", secondary: "WP/14882/2025, 2 pages", status: "attached" },
+      { primary: "order_5_2025-11-21.pdf", secondary: "CRP/887/2025, 4 pages", status: "attached" },
+    ],
+    stat: { label: "Next hearing", value: "08 Jan 2027" },
+  },
+  {
+    number: "04",
+    label: "Bill",
+    headline: "Every appearance ends as a number you can send.",
+    rows: [
+      { primary: "CI/2026/0114", secondary: "21 Nov 2025", status: "paid" },
+      { primary: "CI/2026/0098", secondary: "14 Aug 2025", status: "invoiced" },
+    ],
+    stat: { label: "Fees", value: "up to date" },
   },
 ];
 
@@ -182,7 +232,6 @@ export type Journey = {
   title: string;
   region: string;
   when: string;
-  blurb: string;
   media: JourneyMedia[];
 };
 
@@ -197,8 +246,6 @@ export const journeys: Journey[] = [
     title: "Zanskar",
     region: "Lahaul and Ladakh",
     when: "May to June 2026",
-    blurb:
-      "Up through Lahaul and over the passes into Zanskar. The clearest sky I have ever slept under, a stray dog who adopted us for an afternoon, and somebody's kid handed to me for a photo I am still not sure I earned.",
     media: [
       {
         kind: "image",
@@ -276,8 +323,6 @@ export const journeys: Journey[] = [
     title: "Manali in the snow",
     region: "Himachal Pradesh",
     when: "January 2026",
-    blurb:
-      "Back in Himachal in winter. Nine of us on one snowbank, then running off a hillside at Solang with a parachute and no regrets.",
     media: [
       {
         kind: "image",
@@ -303,8 +348,6 @@ export const journeys: Journey[] = [
     title: "Coimbatore",
     region: "Tamil Nadu",
     when: "2025",
-    blurb:
-      "Grasslands that look nothing like the rest of Tamil Nadu, and a sunset with the people who talked me into the trek.",
     media: [
       {
         kind: "image",
@@ -323,6 +366,23 @@ export const journeys: Journey[] = [
         alt: "Bhagath and friends watching the sunset from a grassy hillside near Coimbatore.",
         caption: "Coimbatore",
       },
+      {
+        kind: "image",
+        src: "/media/travel/coimbatore-sunset-silhouette.jpg",
+        width: 1350,
+        height: 2400,
+        alt: "Bhagath silhouetted against the setting sun over the sea, checking his camera.",
+        caption: "Coimbatore, sunset",
+      },
+      {
+        kind: "video",
+        src: "/media/travel/coimbatore-sunset-group.mp4",
+        poster: "/media/travel/coimbatore-sunset-group.jpg",
+        width: 1600,
+        height: 900,
+        alt: "Bhagath and friends sitting in a row watching the sun set over the sea near Coimbatore.",
+        caption: "Coimbatore, sunset",
+      },
     ],
   },
   {
@@ -330,8 +390,6 @@ export const journeys: Journey[] = [
     title: "Uttarakhand",
     region: "Kedarnath, Badrinath, Mana",
     when: "May 2024",
-    blurb:
-      "Rode a horse most of the way up to Kedarnath and ached for a week. The mountain behind the temple made the whole trip look small.",
     media: [
       {
         kind: "image",
@@ -393,6 +451,15 @@ export const art = {
   ],
 };
 
+export type RidingMedia = {
+  kind: "image" | "video";
+  src: string;
+  poster?: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
 export const riding = {
   bike: null as string | null, // NEEDS: make/model. A few bikes show up in photos, unconfirmed which is his
   namedRides: [
@@ -401,45 +468,51 @@ export const riding = {
       note: "Windmills and backroads out past Vikarabad, ridden with friends.",
     },
   ],
-  video: {
-    poster: "/media/riding/visor-poster.jpg",
-    loop: "/media/riding/visor-loop.mp4",
-    width: 1920,
-    height: 1080,
-    alt: "POV shot of a motorcycle visor closing while riding.",
+  hero: {
+    src: "/media/riding/three-bikes-windmill.jpg",
+    width: 2400,
+    height: 1800,
+    alt: "Three motorcycles parked in a field with wind turbines behind them, Parigi.",
   },
   photos: [
     {
+      kind: "image",
       src: "/media/riding/yellow-grass-bike.jpg",
       width: 2400,
       height: 1350,
       alt: "Bhagath riding a motorcycle across a dry grass field with wind turbines in the distance, Parigi.",
     },
     {
-      src: "/media/riding/three-bikes-windmill.jpg",
-      width: 2400,
-      height: 1800,
-      alt: "Three motorcycles parked in a field with wind turbines behind them, Parigi.",
-    },
-    {
+      kind: "image",
       src: "/media/riding/three-bikes-parigi.jpg",
       width: 2400,
       height: 1109,
       alt: "A rider approaching three parked motorcycles at dusk, wind turbines on the horizon, Parigi.",
     },
     {
+      kind: "image",
       src: "/media/riding/helmet-night.jpg",
       width: 2400,
       height: 1109,
       alt: "Bhagath wearing a Batman-branded helmet on a motorcycle at night.",
     },
     {
+      kind: "image",
       src: "/media/riding/parigi-sunrise.jpg",
       width: 2400,
       height: 1800,
       alt: "Sunrise over open fields near Parigi.",
     },
-  ],
+    {
+      kind: "video",
+      src: "/media/riding/visor-loop.mp4",
+      poster: "/media/riding/visor-poster.jpg",
+      width: 1920,
+      height: 1080,
+      alt: "POV shot of a motorcycle visor closing while riding.",
+    },
+  ] satisfies RidingMedia[],
 };
 
-export const watching: { title: string; note: string }[] = []; // NEEDS: favorites list
+// Watching (anime/film favorites) has grown enough fields (YouTube config,
+// captions) to outgrow this file: see src/content/watching.ts.

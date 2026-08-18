@@ -1,4 +1,5 @@
 import { education, experience, projects } from "@/content/site";
+import { CaseIntelShowcase } from "./CaseIntelShowcase";
 import { Reveal } from "./Reveal";
 
 const college = education[0];
@@ -115,20 +116,31 @@ export function Work() {
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist/85">
                     {project.summary}
                   </p>
-                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist/60">
-                    {project.decision}
-                  </p>
-                  {project.highlights && (
-                    <ul className="mt-2 max-w-2xl list-disc space-y-1.5 pl-4 marker:text-stone/50">
-                      {project.highlights.map((h) => (
-                        <li
-                          key={h}
-                          className="text-sm leading-relaxed text-mist/60"
-                        >
-                          {h}
-                        </li>
-                      ))}
-                    </ul>
+                  {project.name === "CaseIntel" ? (
+                    <>
+                      <CaseIntelShowcase />
+                      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-mist/60">
+                        {project.decision}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist/60">
+                        {project.decision}
+                      </p>
+                      {project.highlights && (
+                        <ul className="mt-2 max-w-2xl list-disc space-y-1.5 pl-4 marker:text-stone/50">
+                          {project.highlights.map((h) => (
+                            <li
+                              key={h}
+                              className="text-sm leading-relaxed text-mist/60"
+                            >
+                              {h}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </>
                   )}
                   <StackTags items={project.stack} />
                 </div>

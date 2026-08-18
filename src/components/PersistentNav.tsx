@@ -37,12 +37,6 @@ export function PersistentNav() {
         >
           LinkedIn
         </a>
-        <span aria-hidden className="text-stone">
-          ·
-        </span>
-        <a href={`mailto:${person.email}`} className={linkClass}>
-          Email
-        </a>
       </div>
     </nav>
   );

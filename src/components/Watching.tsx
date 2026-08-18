@@ -1,7 +1,7 @@
-import { watching } from "@/content/site";
+import { watchingEntries } from "@/content/watching";
 import { Reveal } from "./Reveal";
+import { WatchingCard } from "./WatchingCard";
 
-// A real empty state, not stubbed with placeholder titles.
 export function Watching() {
   return (
     <section
@@ -9,28 +9,19 @@ export function Watching() {
       aria-label="Watching"
       className="relative bg-ink px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
     >
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
           <h2 className="font-display text-4xl font-medium text-mist sm:text-5xl">
             Watching
           </h2>
-          {watching.length > 0 ? (
-            <div className="mt-10 flex gap-6 overflow-x-auto pb-4">
-              {watching.map((item) => (
-                <div
-                  key={item.title}
-                  className="min-w-[160px] font-mono text-xs text-mist/80"
-                >
-                  {item.title}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="mt-4 max-w-lg text-sm leading-relaxed text-mist/70 sm:text-base">
-              Favorites list coming soon.
-            </p>
-          )}
         </Reveal>
+        <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+          {watchingEntries.map((entry, i) => (
+            <Reveal key={entry.slug} delay={i * 0.05}>
+              <WatchingCard entry={entry} />
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

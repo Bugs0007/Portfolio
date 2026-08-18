@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { riding } from "@/content/site";
-import { VideoClip } from "./VideoClip";
+import { MediaFrame } from "./TravelMap";
 import { Reveal } from "./Reveal";
 
 export function Riding() {
@@ -9,12 +9,13 @@ export function Riding() {
   return (
     <section id="riding" aria-label="Riding" className="relative bg-ink">
       <div className="relative flex min-h-[75vh] w-full items-end overflow-hidden">
-        <VideoClip
-          poster={riding.video.poster}
-          src={riding.video.loop}
-          width={riding.video.width}
-          height={riding.video.height}
-          alt={riding.video.alt}
+        <Image
+          src={riding.hero.src}
+          alt={riding.hero.alt}
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover object-bottom"
         />
         <div
           aria-hidden
@@ -41,26 +42,25 @@ export function Riding() {
         </div>
       </div>
 
+      {/* Uniform ratio on every cell regardless of span, and the spans add up
+          to exactly the column count (2+1+1+1+1=6) so nothing wraps onto an
+          empty row by itself. Both were bugs in the previous version. */}
       <div className="px-6 py-16 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5 sm:gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-6 sm:gap-4">
           {riding.photos.map((photo, i) => (
             <Reveal
               key={photo.src}
               delay={i * 0.05}
               className={i === 0 ? "col-span-2" : undefined}
             >
-              <div
-                className="relative overflow-hidden bg-ink-soft"
-                style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(min-width: 640px) 20vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
+              <figure className="relative aspect-[3/2] overflow-hidden bg-ink-soft">
+                <MediaFrame media={photo} />
+                <figcaption className="absolute bottom-0 left-0 flex items-baseline gap-2 p-3 font-mono text-[10px] uppercase tracking-wider text-mist/70">
+                  <span className="text-ember/80">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </figcaption>
+              </figure>
             </Reveal>
           ))}
         </div>

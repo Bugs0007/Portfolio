@@ -15,15 +15,18 @@ export function VideoClip({
   alt,
   width,
   height,
+  fit = "contain",
 }: {
   poster: string;
   src: string;
   alt: string;
   width: number;
   height: number;
+  fit?: "contain" | "cover";
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduceMotion = usePrefersReducedMotion();
+  const fitClass = fit === "cover" ? "object-cover" : "object-contain";
 
   useEffect(() => {
     if (reduceMotion) return;
@@ -50,7 +53,7 @@ export function VideoClip({
         alt={alt}
         fill
         sizes="100vw"
-        className="object-contain"
+        className={fitClass}
       />
     );
   }
@@ -66,7 +69,7 @@ export function VideoClip({
       width={width}
       height={height}
       aria-label={alt}
-      className="absolute inset-0 h-full w-full object-contain"
+      className={`absolute inset-0 h-full w-full ${fitClass}`}
     >
       <source src={src} type="video/mp4" />
     </video>
