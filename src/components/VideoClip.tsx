@@ -2,16 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { useReducedMotion } from "motion/react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
-// Poster first, always. Video is swapped in only once this element is in
-// view, and only if the visitor hasn't asked for reduced motion. Never more
-// than one video decoding at a time on this page. Used by Music, Riding and
-// Travel, nothing about it is section-specific.
-//
-// useReducedMotion is null until measured on the client, and that null is
-// treated the same as "reduce": the poster renders on the server and for
-// anyone who asked for less motion, and only a confirmed false swaps in video.
+// Poster first, always: the video element carries a poster attribute and only
+// preloads metadata, so nothing waits on video bytes to paint. Playback is
+// driven by IntersectionObserver, so never more than one video decodes at a
+// time. Under reduced motion the poster image is all that ever renders. Used
+// by Music, Riding and Travel, nothing about it is section-specific.
 export function VideoClip({
   poster,
   src,
@@ -26,10 +23,10 @@ export function VideoClip({
   height: number;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (reduceMotion !== false) return;
+    if (reduceMotion) return;
     const video = videoRef.current;
     if (!video) return;
     const observer = new IntersectionObserver(
@@ -46,7 +43,7 @@ export function VideoClip({
     return () => observer.disconnect();
   }, [reduceMotion]);
 
-  if (reduceMotion !== false) {
+  if (reduceMotion) {
     return (
       <Image
         src={poster}

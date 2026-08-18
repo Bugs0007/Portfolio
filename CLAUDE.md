@@ -70,16 +70,47 @@ Resolved this round: `person.linkedin`, `person.instagram`, `person.email` are r
   BRIEF.md Section 4) is Phase 2 work and does not exist yet.
 - Art and Riding both have real photos now (3 paintings, 5 bike/ride photos + a video
   clip). Nothing in `public/media` is stock or AI-generated.
+- Coordinates shown on the site come from real GPS EXIF and are only rendered where the
+  original file actually carried it (5 of the travel photos). Everywhere else the
+  coordinate is simply absent rather than filled in with a place-level lookup, so a
+  number on screen always means a real one read off the photo.
 
 ## Travel section
 
-The signature moment (BRIEF.md Section 7). Scroll pins the section for `trips.length *
-70vh`; each trip's photo flies in from an assigned direction (alternating left/right/top/
-bottom) and flies out the opposite side when the next trip becomes active, in
-`TravelMap.tsx`. Two earlier versions of this (a dot-scatter "constellation" and an
-orthographic rotating globe) were tried and dropped, first for being too abstract, then
-for looking bad outright. `useReducedMotion` swaps the whole thing for `StaticTravelList`,
-a plain stacked list, no flying, no pinning.
+The signature moment (BRIEF.md Section 7), in `TravelMap.tsx`.
+
+Content is grouped into **journeys**, not individual stops: one entry per actual trip,
+each holding all its photos and videos. Grouping is backed by EXIF capture dates read
+with `exifr`, which confirmed the Zanskar run (Sethan, Jispa, Gonbo Rangjon, Pensi La,
+the three Zanskar frames, Zangla Palace) really is one trip, 31 May to 7 June, and that
+the Manali snow photos are a separate January one.
+
+Each journey's media are laid out end to end in a ribbon and flowed across the viewport
+as a group. Every item rides a sine curve as it crosses (`y`, `rotate` and `scale` all
+derive from its current on-screen x), so the set moves like a current rather than cards
+being dealt. Scroll length per journey scales with its media count so each photo gets
+about the same screen time.
+
+Videos in Travel play inline through the shared `VideoClip`, same as Music and Riding.
+They are never flattened to stills; the `.jpg` next to each `.mp4` is only the poster
+frame.
+
+Three earlier versions were tried and dropped: a dot-scatter "constellation" and an
+orthographic rotating globe (both too abstract, the globe looked bad outright), then a
+one-photo-at-a-time card flight (split up photos that belong to the same trip).
+
+`StaticJourneys` is the reduced-motion version *and* the server-rendered one, so all 16
+photos are in the HTML for no-JS and for crawlers; the flowing version takes over after
+mount.
+
+## Reduced motion
+
+Use `usePrefersReducedMotion` from `src/hooks/`, never Motion's `useReducedMotion`, for
+anything that picks a render branch. Motion's hook reads `matchMedia` synchronously
+during render, so it returns `null` on the server and the real value during hydration,
+and any component branching on it renders two different trees and throws a hydration
+mismatch. The local hook uses `useSyncExternalStore` with an explicit server snapshot,
+which is the supported way to do this.
 
 ## Running it
 

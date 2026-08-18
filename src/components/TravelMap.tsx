@@ -8,10 +8,10 @@ import {
   useScroll,
   useTransform,
   useMotionValueEvent,
-  useReducedMotion,
   type MotionValue,
 } from "motion/react";
 import { journeys, type Journey, type JourneyMedia } from "@/content/site";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { VideoClip } from "./VideoClip";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -47,13 +47,13 @@ function useIsMounted() {
 }
 
 export function TravelMap() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
   const mounted = useIsMounted();
 
   // Server render and the first client render both produce the static list, so
   // hydration matches exactly and the photos are in the HTML either way. The
   // flowing version takes over once mounted, and never for reduced motion.
-  if (reduceMotion !== false || !mounted) {
+  if (reduceMotion || !mounted) {
     return <StaticJourneys />;
   }
 
