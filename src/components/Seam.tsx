@@ -1,14 +1,15 @@
 "use client";
 
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 // The deliberate gear-change: color bleeds from ink (work) toward jacket and
 // moss (the personal half) as this section crosses the viewport. Section 2
 // of the brief calls for this to be a moment, not just another boundary.
 export function Seam() {
   const ref = useRef<HTMLElement>(null);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],

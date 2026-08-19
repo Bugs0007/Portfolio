@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Bundled skill reference assets, not site source.
+    ".agents/**",
+    // Gitignored scratch scripts from audit/verification passes.
+    ".audit-tmp/**",
   ]),
 ]);
 

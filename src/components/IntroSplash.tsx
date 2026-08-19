@@ -14,7 +14,14 @@ const GREETINGS = [
   { text: "నమస్తే", fontFamily: "var(--font-tiro-telugu)" },
 ] as const;
 
-const WORD_MS = 750;
+// Kept short on purpose: this splash sits at z-[100] over the whole viewport,
+// so every millisecond here is a millisecond the real LCP text underneath
+// can't count as painted. Measured with Lighthouse (both simulated and real
+// throttling): at the old 750ms/word timing, "Render Delay" was ~100% of a
+// 3.5-5.4s LCP with zero network/load delay, i.e. this splash alone was
+// blowing the brief's 2.5s LCP budget. This timing keeps the three-greeting
+// beat recognizable while getting out of the way fast.
+const WORD_MS = 450;
 
 // Plays once on every load, Apple-style: one greeting at a time, then out.
 // Skipped entirely under reduced motion rather than shown as a static
@@ -43,7 +50,7 @@ export function IntroSplash() {
         <motion.div
           aria-hidden
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: EASE }}
+          transition={{ duration: 0.4, ease: EASE }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
         >
           <AnimatePresence mode="wait">
@@ -52,7 +59,7 @@ export function IntroSplash() {
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.35, ease: EASE }}
+              transition={{ duration: 0.28, ease: EASE }}
               style={{ fontFamily: GREETINGS[index].fontFamily }}
               className="font-display text-5xl font-medium text-mist sm:text-6xl"
             >

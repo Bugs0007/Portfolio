@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion, type Transition } from "motion/react";
+import { motion, type Transition } from "motion/react";
 import type { ReactNode } from "react";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const EASE_SITE: Transition["ease"] = [0.16, 1, 0.3, 1];
 
@@ -18,7 +19,7 @@ export function Reveal({
   className?: string;
   y?: number;
 }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
 
   return (
     <motion.div

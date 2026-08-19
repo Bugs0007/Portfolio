@@ -55,11 +55,6 @@ export function Riding() {
             >
               <figure className="relative aspect-[3/2] overflow-hidden bg-ink-soft">
                 <MediaFrame media={photo} />
-                <figcaption className="absolute bottom-0 left-0 flex items-baseline gap-2 p-3 font-mono text-[10px] uppercase tracking-wider text-mist/70">
-                  <span className="text-ember/80">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </figcaption>
               </figure>
             </Reveal>
           ))}

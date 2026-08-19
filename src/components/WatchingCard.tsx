@@ -27,7 +27,13 @@ function MuteIcon({ muted }: { muted: boolean }) {
   );
 }
 
-export function WatchingCard({ entry }: { entry: WatchingEntry }) {
+export function WatchingCard({
+  entry,
+  hasPoster,
+}: {
+  entry: WatchingEntry;
+  hasPoster: boolean;
+}) {
   const reduceMotion = usePrefersReducedMotion();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,7 +56,6 @@ export function WatchingCard({ entry }: { entry: WatchingEntry }) {
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [failed, setFailed] = useState(!entry.youtubeId);
-  const [posterFailed, setPosterFailed] = useState(false);
 
   const clearLoop = () => {
     if (loopRef.current) {
@@ -209,17 +214,23 @@ export function WatchingCard({ entry }: { entry: WatchingEntry }) {
           />
         )}
 
-        {!posterFailed && (
-          <Image
-            src={`/media/watching/${entry.slug}.jpg`}
-            alt={`${entry.title} poster`}
-            fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="z-10 object-cover transition-opacity duration-500"
-            style={{ opacity: playing ? 0 : 1 }}
-            onError={() => setPosterFailed(true)}
-          />
-        )}
+        {/* A permanent cover, independent of whether a poster exists:
+            pausing must always reveal a clean panel, not a frozen video
+            frame, even for entries with no poster art yet. */}
+        <div
+          className="absolute inset-0 z-10 bg-ink-soft transition-opacity duration-500"
+          style={{ opacity: playing ? 0 : 1 }}
+        >
+          {hasPoster && (
+            <Image
+              src={`/media/watching/${entry.slug}.jpg`}
+              alt={`${entry.title} poster`}
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              className="object-cover"
+            />
+          )}
+        </div>
 
         {entry.caption && (
           <motion.p

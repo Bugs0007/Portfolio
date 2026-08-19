@@ -106,8 +106,11 @@ function ChapterHeader({
   scrollYProgress: MotionValue<number>;
   introFraction: number;
 }) {
-  const revealOpacity = useTransform(scrollYProgress, [0, introFraction * 0.4], [0, 1]);
-  const revealY = useTransform(scrollYProgress, [0, introFraction * 0.4], [40, 0]);
+  // Kept short deliberately: this window is exactly what's on screen right as
+  // the previous chapter's last photo has already faded off, so the longer
+  // this ramp, the longer the screen sits empty between chapters.
+  const revealOpacity = useTransform(scrollYProgress, [0, introFraction * 0.18], [0, 1]);
+  const revealY = useTransform(scrollYProgress, [0, introFraction * 0.18], [40, 0]);
   const dividerScale = useTransform(scrollYProgress, [0, introFraction], [0.94, 1.04]);
   const holdOutOpacity = useTransform(
     scrollYProgress,
@@ -198,7 +201,14 @@ function Reel({
   }
   const ribbonWidth = acc;
 
-  const x = useTransform(progress, [0, 1], [vw, -ribbonWidth]);
+  // Stops short of -ribbonWidth on purpose: the sticky pin releases with
+  // exactly one viewport-height of scroll still left in the container (that's
+  // inherent to how a sticky child inside a tall container unpins), and if
+  // the last photo has already faded to nothing by then, that whole trailing
+  // screen is dead air. Landing the ribbon here instead means the last photo
+  // is still on screen at release and rides away with the natural unpin
+  // scroll, rather than the chapter ending on a blank hold.
+  const x = useTransform(progress, [0, 1], [vw, -ribbonWidth + vw * 0.6]);
 
   return (
     <motion.div className="absolute inset-y-0 left-0" style={{ x, width: ribbonWidth }}>

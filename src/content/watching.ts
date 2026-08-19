@@ -21,8 +21,8 @@ export const watchingEntries: WatchingEntry[] = [
     slug: "one-piece",
     title: "One Piece",
     category: "anime",
-    youtubeId: "jNQXAC9IVRw", // TEMP smoke-test ID, reverted before handoff
-    startSeconds: 5,
+    youtubeId: "",
+    startSeconds: 0,
     caption: "“As long as I'm alive, there are infinite chances.” — Luffy",
   },
   { slug: "haikyuu", title: "Haikyuu!!", category: "anime", youtubeId: "", startSeconds: 0 },

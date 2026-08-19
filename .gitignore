@@ -27,6 +27,9 @@
 # raw media originals, synced in locally, never committed
 /assets-src/
 
+# scratch output from Playwright/Lighthouse audit runs, never committed
+/.audit-tmp/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
