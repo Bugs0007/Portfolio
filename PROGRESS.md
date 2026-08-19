@@ -9,10 +9,13 @@ one), one console-error-on-every-load bug (Watching posters requested before the
 exist), a real ~1-1.5 viewport-height dead-scroll gap at every Travel chapter boundary
 (diagnosed with a temporary debug readout, not guessed), and a real LCP violation
 against the brief's own 2.5s budget (the intro splash blocking first paint for ~2.85s).
-Also: recompressed six oversized photos, cleaned up default Next.js boilerplate
-(favicon/OG image/404), and removed one decorative element that matched the brief's
-own banned-pattern list. Lint and build are clean; the full Playwright audit shows
-zero console errors across all four breakpoints (was 40). See `AUDIT.md` for the
+Also: recompressed six oversized photos and all six site videos (~1.43MB combined
+video savings, CRF 24, no visible quality loss), cleaned up default Next.js
+boilerplate (favicon/OG image/404), removed one decorative element that matched the
+brief's own banned-pattern list, and gave Watching's ten poster-less tiles a real
+empty state (their own title, quiet, inside the tile) instead of a blank rectangle.
+Lint and build are clean; the final Playwright audit shows zero console errors
+across all four breakpoints (was 40 before the Watching fix). See `AUDIT.md` for the
 full ranked list and Lighthouse numbers, `DECISIONS.md` for judgment calls made
 without being able to ask first.
 
