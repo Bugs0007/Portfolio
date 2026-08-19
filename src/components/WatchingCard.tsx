@@ -221,7 +221,7 @@ export function WatchingCard({
           className="absolute inset-0 z-10 bg-ink-soft transition-opacity duration-500"
           style={{ opacity: playing ? 0 : 1 }}
         >
-          {hasPoster && (
+          {hasPoster ? (
             <Image
               src={`/media/watching/${entry.slug}.jpg`}
               alt={`${entry.title} poster`}
@@ -229,6 +229,13 @@ export function WatchingCard({
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover"
             />
+          ) : (
+            // No poster yet: the title itself fills the tile rather than
+            // leaving it blank, real content standing in for a real image
+            // instead of a placeholder graphic.
+            <p className="absolute inset-x-4 bottom-4 font-display text-2xl leading-tight text-stone/70">
+              {entry.title}
+            </p>
           )}
         </div>
 

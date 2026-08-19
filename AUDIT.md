@@ -121,6 +121,17 @@ first paint." Cut `WORD_MS` 750→450 and tightened the exit transitions
   a bug, current asset availability per `CLAUDE.md` is the likely constraint; not
   changed.
 
+## P2 (continued)
+
+- **Watching's 10 poster-less tiles read as broken/empty rather than deliberate**,
+  ten identical dark rectangles in a row. Improved by rendering the entry's real
+  title inside the tile itself (quiet, `text-stone/70`, no new data invented) rather
+  than leaving it blank; disappears automatically the moment a real poster exists.
+  Worth flagging: one entry's title is literally "Your Name" (the anime film,
+  correctly listed in the run brief), which reads exactly like unfilled placeholder
+  copy at a glance until the "ANIME" category label underneath disambiguates it.
+  Real, correct data, coincidental resemblance to a template string, not changed.
+
 ## What's solid
 
 Hero, Work, Music, Art, Riding, and the résumé page all read clean at a skim, hold up
