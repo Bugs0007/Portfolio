@@ -87,6 +87,14 @@ first paint." Cut `WORD_MS` 750→450 and tightened the exit transitions
   `scripts/process-media.mjs` pipeline (AVIF/WebP/LQIP) that `CLAUDE.md` already flags
   as deliberate Phase 2 work, not attempted here, this recompression pass closes most
   of the gap in the meantime.
+- **All six site videos were carrying more bitrate than they needed** (2.5-3.6 Mbps
+  H.264 at 1080-1920px wide, high for muted background loops): `intro.mp4`,
+  `music/loop.mp4`, `riding/visor-loop.mp4`, `travel/zangla-palace.mp4`,
+  `travel/coimbatore-sunset.mp4`, `travel/coimbatore-sunset-group.mp4`. Re-encoded
+  in place with ffmpeg (`libx264`, CRF 24, preset slow, `+faststart`, same
+  resolution/codec/path), saved ~1.43MB combined (roughly 20-29% per file). Spot-
+  checked the Hero video after the pass, no visible quality loss at this CRF for
+  background/loop footage. None carried an audio track to begin with.
 - **No `metadataBase`** in `layout.tsx`, so Next falls back to `localhost` for
   OG/Twitter image URL resolution (a build warning, not an error). Needs a real domain,
   which `BRIEF.md` Section 11 already lists as an open question. Revisit once decided.
