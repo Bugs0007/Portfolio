@@ -3,6 +3,23 @@
 One line each, most recent first. Reversible by design, if any of these should
 have gone the other way, say so and they get flipped.
 
+## After Bhagath returned (third round: Travel redesign)
+
+- **Asked a clarifying question before rebuilding Travel**, rather than guess at
+  what "reimagine, needs to look good" meant for the site's most complex
+  section. Answer: the flying/tilting motion itself was the problem, keep the
+  pinned-chapter scroll structure. Removed the sine-wave y-bob, per-item
+  rotation, and the four entrance variants; kept everything else (pin
+  mechanics, title beat, ribbon x-positioning, the chapter-boundary fix from
+  earlier) untouched. A narrower, more targeted change than "reimagine" might
+  suggest, but it's what the actual answer pointed at.
+- **No per-item vertical stagger or rotation added back in**, even a small
+  fixed (non-animated) one for visual variety. Went with the calmest version
+  first, level and on-axis, since the direct complaint was specifically about
+  motion reading as chaotic; a flourish neither asked for nor verified against
+  felt like the wrong thing to introduce in the same pass that removed the
+  ones that didn't land.
+
 ## After Bhagath returned (second round: Hero/Music video, Favorites posters)
 
 - **Used YouTube's own thumbnail images as Favorites posters**

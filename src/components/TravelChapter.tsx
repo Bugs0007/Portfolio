@@ -8,12 +8,9 @@ import { MediaFrame } from "./TravelMap";
 
 // The pinned-chapter treatment: each journey gets its own pin, opening with an
 // oversized title beat, then converting further scroll into a horizontal,
-// scroll-scrubbed rail through that trip's media. Unlike the sine-curve
-// ribbon, nothing here plays on a timer, every motion value is a direct read
-// of scroll position, reversible in both directions.
-
-const ENTRANCE_VARIANTS = ["rise", "slide-cross", "settle-rotate", "drift-deep"] as const;
-type EntranceVariant = (typeof ENTRANCE_VARIANTS)[number];
+// scroll-scrubbed rail through that trip's media. Nothing here plays on a
+// timer, every motion value is a direct read of scroll position, reversible
+// in both directions.
 
 export function TravelChapter({
   journey,
@@ -221,8 +218,6 @@ function Reel({
           width={widths[i]}
           height={height}
           vw={vw}
-          vh={vh}
-          variant={ENTRANCE_VARIANTS[i % ENTRANCE_VARIANTS.length]}
         />
       ))}
     </motion.div>
@@ -236,8 +231,6 @@ function ReelItem({
   width,
   height,
   vw,
-  vh,
-  variant,
 }: {
   media: JourneyMedia;
   ribbonX: MotionValue<number>;
@@ -245,42 +238,18 @@ function ReelItem({
   width: number;
   height: number;
   vw: number;
-  vh: number;
-  variant: EntranceVariant;
 }) {
   // Where this item's centre currently sits on screen, in px from the left
   // edge. Every motion below reads only from this one value, so each item
-  // stays a pure function of scroll regardless of which entrance it plays.
+  // stays a pure function of scroll position.
   const centre = useTransform(ribbonX, (v) => v + left + width / 2);
-  const wave = (c: number) => (c / vw) * Math.PI * 1.35;
 
-  // Items travel right-to-left, so "just entered" is c/vw near 1 and "settled"
-  // is near/after centre. This reads that crossing as 0 (just entered) to 1
-  // (settled by centre), rather than measuring from the left edge.
-  const settleFrom = (c: number, threshold: number) =>
-    Math.min(Math.max((1 - c / vw) / threshold, 0), 1);
-
-  const y = useTransform(centre, (c) => {
-    const base = Math.sin(wave(c)) * vh * (variant === "drift-deep" ? 0.05 : 0.08);
-    if (variant !== "slide-cross") return base;
-    return base + (1 - settleFrom(c, 0.5)) * 64;
-  });
-
-  const rotate = useTransform(centre, (c) => {
-    if (variant !== "settle-rotate") return Math.cos(wave(c)) * 4.5;
-    return 16 * (1 - settleFrom(c, 0.45));
-  });
-
-  const extraX = useTransform(centre, (c) => {
-    if (variant !== "drift-deep") return 0;
-    return (0.5 - c / vw) * 90;
-  });
-
-  const scale = useTransform(centre, (c) => {
-    const t = Math.min(Math.max(c / vw, 0), 1);
-    const [from, mid, to] = variant === "settle-rotate" ? [0.88, 1, 0.88] : [0.92, 1, 0.92];
-    return t <= 0.5 ? from + (mid - from) * (t / 0.5) : mid + (to - mid) * ((t - 0.5) / 0.5);
-  });
+  // The one depth cue: photos grow slightly as they approach centre-screen
+  // and recede slightly as they head for the edges, level and on-axis the
+  // whole way across, no rotation and no vertical bob. Calmer on purpose,
+  // an earlier version of this reel wobbled and tilted every item on a sine
+  // curve, which read as chaotic rather than considered.
+  const scale = useTransform(centre, [0, vw * 0.5, vw], [0.92, 1, 0.92]);
 
   const opacity = useTransform(
     centre,
@@ -302,9 +271,6 @@ function ReelItem({
         width,
         height,
         marginTop: -height / 2,
-        x: extraX,
-        y,
-        rotate,
         scale,
         opacity,
       }}

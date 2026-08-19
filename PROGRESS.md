@@ -104,6 +104,23 @@ tiles a real poster in their resting state instead of a blank/text-only tile.
   the crop to `object-top` afterward since a few thumbnails carry a text banner
   along the bottom edge that a centered 2:3 crop was cutting through awkwardly.
 
+## Third follow-up, same session: Travel section redesign
+
+Asked to reimagine Travel: the concept felt wrong (specifically the flying,
+tilting, bobbing motion), but the pinned-chapter-per-journey scroll structure
+should stay ("same bones, heavily refined"). Asked a clarifying question first
+rather than guess at a full rebuild of the site's most complex section.
+
+Rewrote `TravelChapter.tsx`'s `Reel`/`ReelItem`: removed the four entrance
+variants, the sine-wave vertical bob, the per-item rotation, and the
+"drift-deep" horizontal offset entirely. Photos now travel level, on-axis, with
+a single depth cue (scale 0.92 -> 1 -> 0.92 as each one approaches and leaves
+centre-screen) and the existing opacity fade at the rail's edges. Left the
+pinned-chapter mechanics, the oversized title beat, `StaticJourneys`, and the
+ribbon's own x-positioning (including the chapter-boundary fix from earlier
+this session) completely alone, verified the boundary transition still lands
+cleanly with the new per-item motion.
+
 ---
 
 Chronological, most recent at the bottom of each session's block. Full context and
