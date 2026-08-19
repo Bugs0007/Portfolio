@@ -514,5 +514,5 @@ export const riding = {
   ] satisfies RidingMedia[],
 };
 
-// Watching (anime/film favorites) has grown enough fields (YouTube config,
-// captions) to outgrow this file: see src/content/watching.ts.
+// My Favorites (anime/movie/show list) has grown enough fields (YouTube
+// config, captions) to outgrow this file: see src/content/watching.ts.

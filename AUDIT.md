@@ -8,7 +8,29 @@ screenshots at 1920x1080 / 1440x900 / 834x1112 / 390x844, a 400px scroll sequenc
 desktop and mobile with reversal, console/network capture, and `prefers-reduced-motion`
 toggled.
 
-## P0 (fixed this session)
+## P0, found after Bhagath returned and asked to fix video playback
+
+- **The YouTube player crashed on every real video, `Uncaught NotFoundError: Failed
+  to execute 'removeChild' on 'Node'`.** Pre-existing, latent bug: `WatchingCard.tsx`
+  handed `new YT.Player(...)` a DOM node that was also this component's own React-
+  rendered `<div ref={mountRef}>`. The IFrame API replaces whatever element it's
+  given with an `<iframe>`, so the moment React later needed to reconcile that node
+  (a re-render, Fast Refresh, unmount), it tried to remove a node the API had already
+  swapped out from under it. This never fired during the unattended pass because
+  every `youtubeId` was still `""` (`ensurePlayer` bails out before ever calling
+  `new YT.Player`), so it was invisible until real IDs existed. Fixed by giving
+  `YT.Player` a plain DOM node created imperatively inside the wrapper, entirely
+  outside React's tree, so React only ever owns the wrapper and never the node the
+  API mutates. Verified with a stress test (hover 5 cards, scroll away and back,
+  re-hover): zero crashes, real playback confirmed via screenshot (One Piece's Luffy
+  scene, Your Name's GKIDS-branded trailer, both mid-frame).
+- **All 10 Watching entries had no real `youtubeId`**, left blank during the
+  unattended pass specifically to avoid guessing (see `DECISIONS.md`). Once asked
+  directly to fix playback, sourced and individually verified real trailer IDs (see
+  `DECISIONS.md` for the one bad pick caught and swapped, Attack on Titan resolved to
+  a mockbuster studio's channel on the first pass).
+
+## P0 (fixed during the unattended pass)
 
 - **`Reveal.tsx` and `Seam.tsx` used Motion's own `useReducedMotion()` to pick a render
   branch.** `CLAUDE.md` already documents exactly why this is wrong (returns `null` on
@@ -75,6 +97,18 @@ painted, directly conflicting with the brief's "LCP under 2.5s... must not block
 first paint." Cut `WORD_MS` 750→450 and tightened the exit transitions
 (0.6s→0.4s container, 0.35s→0.28s per word), preserving the three-greeting beat
 (Hello / नमस्ते / నమస్తే) but getting it out of the way roughly 40% faster.
+
+**Console note:** with real videos wired in, the console is no longer literally
+silent, live YouTube embeds emit `postMessage` origin-mismatch warnings, an
+"Unrecognized feature: web-share" warning, and occasionally "player is not attached
+to the DOM" during rapid hover testing, and once, on the tablet pass, a
+`compute-pressure` permissions-policy error (YouTube's player probing for a browser
+API this page doesn't grant it, not something this codebase requests or can grant
+through an iframe it doesn't control the allow-list of). All of this is the IFrame
+Player API's own internal behavior, present on essentially any site that embeds
+YouTube. Re-ran the full audit after wiring in real IDs specifically to confirm
+none of it is the `removeChild` crash returning: it isn't, that error is gone from
+every breakpoint.
 
 ## P1
 

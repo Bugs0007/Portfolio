@@ -1,8 +1,33 @@
 # Decisions log
 
-Autonomous calls made while Bhagath was away, one line each, most recent first.
-Reversible by design, if any of these should have gone the other way, say so and
-they get flipped.
+One line each, most recent first. Reversible by design, if any of these should
+have gone the other way, say so and they get flipped.
+
+## After Bhagath returned
+
+- **Sourced real, verified YouTube trailer IDs for all 10 Watching entries**,
+  once explicitly asked to fix playback (rather than left blank as during the
+  unattended pass, see below). Searched per title, then checked every
+  candidate's actual channel via YouTube's oEmbed API before using it, not
+  just the title text: the first-pass Attack on Titan pick resolved to "The
+  Asylum Movie Channel" (a mockbuster studio, near-certainly unrelated
+  content despite a matching title) and got swapped for a Crunchyroll Dubs
+  upload; Your Name got upgraded from a German reseller channel to GKIDS
+  Films, the actual North American distributor. `startSeconds` per entry is a
+  best-effort skip past studio logos, not verified frame by frame, worth a
+  nudge in `content/watching.ts` if any clip opens on a bad beat.
+- **Categories are "anime" / "movie" / "show", not "anime" / "film"**, per
+  request. All 10 current entries land in anime or movie, `show` exists in
+  the type and the section's rendering (`Watching.tsx` hides a category
+  entirely when it has zero entries) but nothing populates it yet, no
+  fabricated show entries were added to fill the bucket.
+- **Renamed the section "My Favorites"** (was "Watching"), matching the exact
+  wording requested. Left the internal file/component names
+  (`Watching.tsx`, `WatchingCard.tsx`, `content/watching.ts`) alone, only
+  user-facing text and the section's `id`/`aria-label` changed, renaming
+  files too would've been pure churn for a display-text request.
+
+## While Bhagath was away (unattended pass)
 
 - **Did not fabricate YouTube video IDs for the Watching section, and did not
   scrape/download third-party poster art from the web.** A wrong or guessed
@@ -11,6 +36,9 @@ they get flipped.
   poster art without a clear go-ahead felt like the same category of risk.
   Left `watching.ts` exactly as documented (`// NEEDS:` a real ID + poster per
   entry), matching the file's own existing convention rather than inventing one.
+  (Superseded above once Bhagath was back and asked directly: sourcing became
+  the reasonable next step, not a repeat of the same risk, since every ID is
+  now checked against its actual channel before use.)
 - **Removed the per-photo "01/02" index caption in the Riding grid.** It's the
   exact decorative-numbering pattern AGENTS.md's banned list calls out
   (numbering with no real sequence behind it, these five photos aren't steps

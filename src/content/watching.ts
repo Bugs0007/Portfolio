@@ -1,12 +1,14 @@
-export type WatchingCategory = "anime" | "film";
+export type WatchingCategory = "anime" | "movie" | "show";
 
 export type WatchingEntry = {
   slug: string;
   title: string;
   category: WatchingCategory;
-  // NEEDS: a real YouTube video ID (trailer or clip) and a start timestamp
-  // for every entry below. Left blank rather than guessed: an entry with no
-  // ID never tries to create a player, it just shows its poster forever.
+  // Official trailer IDs, sourced and checked individually rather than
+  // guessed: a wrong ID risks surfacing the wrong (or an unrelated) video.
+  // startSeconds is a best-effort skip past studio logos/black frames, not
+  // verified frame by frame, nudge it in content/watching.ts if a clip
+  // opens on a bad beat.
   youtubeId: string;
   startSeconds: number;
   // Only One Piece has one. Rendered as a fading caption over the video
@@ -21,23 +23,71 @@ export const watchingEntries: WatchingEntry[] = [
     slug: "one-piece",
     title: "One Piece",
     category: "anime",
-    youtubeId: "",
-    startSeconds: 0,
+    youtubeId: "1KMcoJBMWE4",
+    startSeconds: 5,
     caption: "“As long as I'm alive, there are infinite chances.” — Luffy",
   },
-  { slug: "haikyuu", title: "Haikyuu!!", category: "anime", youtubeId: "", startSeconds: 0 },
+  {
+    slug: "haikyuu",
+    title: "Haikyuu!!",
+    category: "anime",
+    youtubeId: "JOGp2c7-cKc",
+    startSeconds: 8,
+  },
   {
     slug: "attack-on-titan",
     title: "Attack on Titan",
     category: "anime",
-    youtubeId: "",
-    startSeconds: 0,
+    youtubeId: "n4Nj6Y_SNYI",
+    startSeconds: 8,
   },
-  { slug: "your-name", title: "Your Name", category: "anime", youtubeId: "", startSeconds: 0 },
-  { slug: "naruto", title: "Naruto", category: "anime", youtubeId: "", startSeconds: 0 },
-  { slug: "interstellar", title: "Interstellar", category: "film", youtubeId: "", startSeconds: 0 },
-  { slug: "fight-club", title: "Fight Club", category: "film", youtubeId: "", startSeconds: 0 },
-  { slug: "rush-hour-2", title: "Rush Hour 2", category: "film", youtubeId: "", startSeconds: 0 },
-  { slug: "spider-man-2", title: "Spider-Man 2", category: "film", youtubeId: "", startSeconds: 0 },
-  { slug: "creed-2", title: "Creed II", category: "film", youtubeId: "", startSeconds: 0 },
+  {
+    slug: "your-name",
+    title: "Your Name",
+    category: "anime",
+    youtubeId: "RuyHIkXdYf8",
+    startSeconds: 10,
+  },
+  {
+    slug: "naruto",
+    title: "Naruto",
+    category: "anime",
+    youtubeId: "yeUpnIKt6k4",
+    startSeconds: 8,
+  },
+  {
+    slug: "interstellar",
+    title: "Interstellar",
+    category: "movie",
+    youtubeId: "2LqzF5WauAw",
+    startSeconds: 15,
+  },
+  {
+    slug: "fight-club",
+    title: "Fight Club",
+    category: "movie",
+    youtubeId: "yxQmJXZOZ30",
+    startSeconds: 10,
+  },
+  {
+    slug: "rush-hour-2",
+    title: "Rush Hour 2",
+    category: "movie",
+    youtubeId: "5rum1mtdgHw",
+    startSeconds: 8,
+  },
+  {
+    slug: "spider-man-2",
+    title: "Spider-Man 2",
+    category: "movie",
+    youtubeId: "7BK2Bg9liDk",
+    startSeconds: 8,
+  },
+  {
+    slug: "creed-2",
+    title: "Creed II",
+    category: "movie",
+    youtubeId: "Si7pC7LdB4E",
+    startSeconds: 12,
+  },
 ];

@@ -38,6 +38,39 @@ Chrome launches running concurrently while testing).
 
 ---
 
+## Follow-up after Bhagath returned (2026-08-19, same day)
+
+Two requests: videos in the Watching section weren't playing, and the section
+should be renamed "My Favorites" with anime/movies/shows categories instead of a
+flat anime/film grid.
+
+The rename and regrouping was straightforward. The "not playing" report led
+somewhere more interesting: every entry's `youtubeId` was still `""` (left blank
+during the unattended pass specifically to avoid guessing at video content), so
+there was nothing to play at all. Sourced real trailer IDs for all 10 entries,
+checking each candidate's actual upload channel via YouTube's oEmbed API before
+using it, not just matching title text: caught one bad pick this way (Attack on
+Titan's first-choice result resolved to "The Asylum Movie Channel," a mockbuster
+studio, almost certainly unrelated content despite the matching title) and swapped
+it for a Crunchyroll Dubs upload.
+
+Wiring in real IDs immediately surfaced a second, pre-existing bug that had been
+completely invisible until now: the YouTube player crashed with `Uncaught
+NotFoundError: Failed to execute 'removeChild'` on every load, because
+`WatchingCard.tsx` handed the IFrame API a DOM node that was also React's own
+`<div ref={mountRef}>`, and the API silently replaces whatever element it's given
+with an `<iframe>`. React had no way to know that node was gone by the time it
+next tried to reconcile it. This never fired during the unattended pass because
+`ensurePlayer()` bails out before ever calling `new YT.Player` when `youtubeId` is
+empty, so the bug had zero blank IDs' worth of chances to show up until real ones
+existed. Fixed by creating the player's actual mount node imperatively, entirely
+outside React's tree. Stress-tested (hover 5 cards, scroll away and back, re-hover):
+zero crashes, real playback confirmed on screen.
+
+Full detail in `AUDIT.md`'s new P0 section and `DECISIONS.md`.
+
+---
+
 Chronological, most recent at the bottom of each session's block. Full context and
 rationale for judgment calls lives in `DECISIONS.md`; this file is closer to a lab
 notebook.

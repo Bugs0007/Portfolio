@@ -6,7 +6,13 @@ import { motion } from "motion/react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { loadYouTubeApi, type YTPlayer } from "@/lib/youtube";
 import { EASE } from "@/lib/motion";
-import type { WatchingEntry } from "@/content/watching";
+import type { WatchingCategory, WatchingEntry } from "@/content/watching";
+
+const CATEGORY_LABEL: Record<WatchingCategory, string> = {
+  anime: "Anime",
+  movie: "Movie",
+  show: "Show",
+};
 
 const LOOP_MS = 8000;
 // How far below/above the viewport a card can be before we spin up its
@@ -37,7 +43,14 @@ export function WatchingCard({
   const reduceMotion = usePrefersReducedMotion();
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const mountRef = useRef<HTMLDivElement>(null);
+  // React only ever owns this wrapper. The actual player target is a plain
+  // DOM node created imperatively inside it (see ensurePlayer): the YouTube
+  // IFrame API replaces whatever element it's given with an <iframe>, and if
+  // that element were the one in this component's own JSX, React would later
+  // try to reconcile a node the API already swapped out from under it,
+  // throwing "Failed to execute 'removeChild'" on the next re-render or
+  // unmount. Keeping the swap entirely outside React's tree avoids that.
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const loopRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wantsPlayRef = useRef(false);
@@ -87,13 +100,15 @@ export function WatchingCard({
 
   const ensurePlayer = () => {
     if (playerRef.current || creatingRef.current || failed || reduceMotion) return;
-    const mountEl = mountRef.current;
-    if (!mountEl) return;
+    const wrapperEl = wrapperRef.current;
+    if (!wrapperEl) return;
     creatingRef.current = true;
+    const mountEl = document.createElement("div");
+    wrapperEl.appendChild(mountEl);
     loadYouTubeApi()
       .then((YT) => {
-        if (playerRef.current || !mountRef.current) return;
-        playerRef.current = new YT.Player(mountRef.current, {
+        if (playerRef.current || !wrapperRef.current) return;
+        playerRef.current = new YT.Player(mountEl, {
           videoId: entry.youtubeId,
           playerVars: {
             autoplay: 0,
@@ -208,7 +223,7 @@ export function WatchingCard({
       >
         {!failed && (
           <div
-            ref={mountRef}
+            ref={wrapperRef}
             aria-hidden
             className="absolute inset-0 z-0 [&_iframe]:absolute [&_iframe]:inset-0 [&_iframe]:h-full [&_iframe]:w-full"
           />
@@ -264,7 +279,7 @@ export function WatchingCard({
 
       <p className="mt-3 font-display text-xl font-medium text-mist">{entry.title}</p>
       <p className="mt-1 font-mono text-xs uppercase tracking-wider text-stone">
-        {entry.category === "anime" ? "Anime" : "Film"}
+        {CATEGORY_LABEL[entry.category]}
       </p>
     </div>
   );

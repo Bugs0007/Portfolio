@@ -48,13 +48,21 @@ Unresolved facts are marked `// NEEDS: ...` inline, grep for `NEEDS` before trea
 anything as final. Current open items:
 - `riding.bike`, real make/model. Several bikes show up in photos, unconfirmed which is his.
 - `trips[].blurb`, still empty for Badrinath and Mana Village.
-- `watching`, titles are real (`src/content/watching.ts`) but every entry still needs
-  a real `youtubeId`/`startSeconds` and a `public/media/watching/<slug>.jpg` poster.
-  `WatchingCard` never requests a poster that doesn't exist (checked server-side in
-  `Watching.tsx` via `existsSync`, not client-side `onError`), so dropping a real
-  `<slug>.jpg` in place is the only step needed to light one up, no other code
-  changes. Same for a real `youtubeId`: leave it `""` and the card never tries to
-  create a player.
+- `watching` (rendered as "My Favorites", `src/components/Watching.tsx`), grouped
+  into anime/movie/show. All 10 current entries have real, individually-verified
+  trailer IDs; `show` has zero entries so far and its heading is simply skipped
+  (`Watching.tsx` hides any category with nothing in it). Still needs a real
+  `public/media/watching/<slug>.jpg` poster per entry. `WatchingCard` never requests
+  a poster that doesn't exist (checked server-side via `existsSync`, not client-side
+  `onError`), so dropping a real `<slug>.jpg` in place is the only step needed to
+  light one up, no other code changes.
+- `WatchingCard`'s YouTube player target is a plain DOM node created imperatively
+  inside a React-owned wrapper, never a node that's part of this component's own
+  JSX. The IFrame API replaces whatever element it's given with an `<iframe>`; if
+  that element were React-rendered, React would later try to reconcile a node the
+  API already swapped out from under it and throw `Failed to execute 'removeChild'`.
+  Don't hand `new YT.Player(...)` a ref'd JSX element directly, hand it a node you
+  created yourself.
 
 Resolved this round: `person.linkedin`, `person.instagram`, `person.email` are real.
 `riding.namedRides` has Parigi. Ooty and Haridwar are deliberately left out of `trips`
