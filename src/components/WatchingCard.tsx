@@ -242,7 +242,7 @@ export function WatchingCard({
               alt={`${entry.title} poster`}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover"
+              className="object-cover object-top"
             />
           ) : (
             // No poster yet: the title itself fills the tile rather than

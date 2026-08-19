@@ -30,6 +30,43 @@ toggled.
   `DECISIONS.md` for the one bad pick caught and swapped, Attack on Titan resolved to
   a mockbuster studio's channel on the first pass).
 
+## P1, found after Bhagath returned and asked for the Hero/Music/Favorites treatment
+
+- **`Hero.tsx` declared `width={1080} height={1920}` for a video whose real encoded
+  dimensions are `1080x608`.** Stale mismatch predating this session, fixed. On its
+  own this mainly affects CLS-prevention sizing before metadata loads, not the
+  final crop (that comes from the video's real intrinsic size once decoded), but
+  it's wrong either way and now matches the file.
+- **Hero read as over-zoomed, cropped tight enough that the recompression pass's
+  quality loss became visible.** Real math, not just a vibe: `object-cover`
+  scales a video to guarantee both dimensions are covered, and the larger required
+  scale wins. At `min-h-svh` (100vh) on a typical portrait phone (~390x844) against
+  a 1.78:1 source, that works out to roughly a 74% horizontal crop, a heavy zoom
+  that also makes any compression artifact far more visible than it'd be at full
+  frame. Cut the section to `min-h-[72vh]`; the same math at that height narrows
+  the crop to roughly 55%, and did the equivalent for Music (`min-h-[85vh]` to
+  `min-h-[62vh]`).
+- **Hero looped instead of landing on the peace sign.** Extracted frames at 0.5s
+  steps to find where the gesture actually sits in the 3.57s clip (roughly 1-2.5s;
+  the final, un-looped frame is him looking away, hand down) rather than assuming
+  it was at the end. Added a general `freezeAt` prop to `VideoClip.tsx`: plays
+  once, pins `currentTime` there via `timeupdate` instead of looping.
+- **Favorites tiles showed only a title on a blank panel when not hovering.**
+  Downloaded each entry's real YouTube thumbnail (`img.youtube.com/vi/<id>/
+  maxresdefault.jpg`) into `public/media/watching/<slug>.jpg`, the exact path the
+  existing `hasPoster()` check already looks for, so no other code needed to
+  change. Nudged the crop to `object-top` afterward, several of the source
+  thumbnails carry a text banner along the bottom edge that a centered 2:3 crop
+  was cutting through.
+- **Music has no audio track to unmute.** Checked before promising a working
+  toggle: pulled `public/media/music/loop.mp4` from this repo's very first commit
+  (before this session touched it at all) and confirmed via `ffprobe` it was
+  already video-only. Added a reusable `allowSound` toggle to `VideoClip.tsx`
+  (real mute/unmute button, only unmutes from the click itself so it respects
+  autoplay policy) for whenever a clip with real audio needs it, but did not wire
+  it into Music, a button that unmutes silence is worse than no button. Flagged
+  directly rather than left silently unfixed.
+
 ## P0 (fixed during the unattended pass)
 
 - **`Reveal.tsx` and `Seam.tsx` used Motion's own `useReducedMotion()` to pick a render

@@ -7,7 +7,7 @@ export function Music() {
     <section
       id="music"
       aria-label="Music"
-      className="relative flex min-h-[85vh] w-full items-end overflow-hidden bg-ink"
+      className="relative flex min-h-[62vh] w-full items-end overflow-hidden bg-ink"
     >
       <VideoClip
         poster={music.media.poster}

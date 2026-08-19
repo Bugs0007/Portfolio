@@ -69,6 +69,41 @@ zero crashes, real playback confirmed on screen.
 
 Full detail in `AUDIT.md`'s new P0 section and `DECISIONS.md`.
 
+## Second follow-up, same session: Hero/Music video treatment, Favorites posters
+
+Four more requests: Hero video looked over-zoomed/cropped and quality had visibly
+degraded; do the same height reduction on Music and add a sound option there;
+freeze the Hero video on the peace sign instead of looping; and give Favorites
+tiles a real poster in their resting state instead of a blank/text-only tile.
+
+- **Hero:** `Hero.tsx` had been declaring `width={1080} height={1920}` for a video
+  whose actual encoded dimensions are `1080x608`, a stale mismatch that predates
+  this session. Fixed the attributes and cut the section from `min-h-svh` (100vh)
+  to `min-h-[72vh]`: the video is a wide 1.78:1 clip, so a shorter, less-tall
+  container needs less `object-cover` crop to fill it, especially on portrait
+  mobile where the old 100vh box was forcing a ~74% horizontal crop.
+- **Freeze instead of loop:** extracted frames at 0.5s intervals to find where the
+  peace sign actually is (it's held clearly around 1-2.5s into the 3.57s clip, the
+  final frame is him looking away with his hand down, not the gesture at all), then
+  added a general `freezeAt` prop to `VideoClip.tsx`: plays once, pauses and pins
+  `currentTime` the moment it reaches that timestamp via `timeupdate`, rather than
+  looping or landing on whatever frame is last. Hero passes `freezeAt={2}`.
+- **Music:** reduced `min-h-[85vh]` to `min-h-[62vh]`. Also added an `allowSound`
+  toggle to `VideoClip.tsx` (mute icon, real button, unmute only ever happens from
+  the click itself so it respects autoplay policy) for reuse anywhere a clip has
+  real audio, then checked whether to turn it on for Music, and: `music/loop.mp4`
+  has no audio stream. Verified against the very first commit's original file, not
+  just the recompressed one, so this isn't something this session's video
+  recompression pass destroyed, it was silent from the start. Left the toggle off
+  for Music rather than ship a button that unmutes silence; flagged it to Bhagath
+  directly instead of guessing.
+- **Favorites posters:** downloaded each entry's actual YouTube thumbnail
+  (`img.youtube.com/vi/<id>/maxresdefault.jpg`, all 10 resolved at full 1280x720,
+  no fallback needed) into `public/media/watching/<slug>.jpg`, the exact path the
+  existing `hasPoster` check already looks for, so no other code changed. Nudged
+  the crop to `object-top` afterward since a few thumbnails carry a text banner
+  along the bottom edge that a centered 2:3 crop was cutting through awkwardly.
+
 ---
 
 Chronological, most recent at the bottom of each session's block. Full context and

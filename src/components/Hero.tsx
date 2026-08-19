@@ -7,15 +7,16 @@ export function Hero() {
   return (
     <section
       aria-label="Introduction"
-      className="relative flex min-h-svh w-full items-end overflow-hidden bg-ink"
+      className="relative flex min-h-[72vh] w-full items-end overflow-hidden bg-ink"
     >
       <VideoClip
         poster="/media/intro/intro-poster.jpg"
         src="/media/intro/intro.mp4"
         alt="Bhagath giving a peace sign to the camera, mountains and clouds behind him."
         width={1080}
-        height={1920}
+        height={608}
         fit="cover"
+        freezeAt={2}
       />
       {/* type sits on the image, not beside it: legibility gradient only, no card */}
       <div

@@ -3,7 +3,30 @@
 One line each, most recent first. Reversible by design, if any of these should
 have gone the other way, say so and they get flipped.
 
-## After Bhagath returned
+## After Bhagath returned (second round: Hero/Music video, Favorites posters)
+
+- **Used YouTube's own thumbnail images as Favorites posters**
+  (`img.youtube.com/vi/<id>/maxresdefault.jpg`), not downloaded/reused poster art
+  from elsewhere. These are the same real, official images YouTube itself serves
+  for exactly this purpose (video preview thumbnails) for videos already verified
+  and already embedded on the site, a different category from scraping unrelated
+  poster art, which is still not something I'd do without asking.
+- **Did not add a sound toggle to Music.** `loop.mp4` has no audio stream, checked
+  against the file from this repo's first commit, so this isn't something this
+  session's recompression broke. A working toggle needs a source file that
+  actually has audio; left the (now-reusable) toggle component built but unused
+  here rather than ship a button that does nothing, and said so directly instead
+  of quietly leaving it broken.
+- **Picked `freezeAt={2}` (seconds) for the Hero video** by extracting and looking
+  at frames every 0.5s rather than guessing: the peace sign is clearly held from
+  about 1s to 2.5s, and 2s landed on a sharp, well-composed frame within that
+  window, not a transitional/blurry one.
+- **`min-h-[72vh]` for Hero, `min-h-[62vh]` for Music**, picked by working out
+  the actual `object-cover` crop math at a few candidate heights against each
+  video's real aspect ratio rather than picking a number and eyeballing it (see
+  `AUDIT.md`).
+
+## After Bhagath returned (first round: Favorites rename, video playback)
 
 - **Sourced real, verified YouTube trailer IDs for all 10 Watching entries**,
   once explicitly asked to fix playback (rather than left blank as during the
