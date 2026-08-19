@@ -48,7 +48,13 @@ Unresolved facts are marked `// NEEDS: ...` inline, grep for `NEEDS` before trea
 anything as final. Current open items:
 - `riding.bike`, real make/model. Several bikes show up in photos, unconfirmed which is his.
 - `trips[].blurb`, still empty for Badrinath and Mana Village.
-- `watching`, empty by design until Bhagath sends a list.
+- `watching`, titles are real (`src/content/watching.ts`) but every entry still needs
+  a real `youtubeId`/`startSeconds` and a `public/media/watching/<slug>.jpg` poster.
+  `WatchingCard` never requests a poster that doesn't exist (checked server-side in
+  `Watching.tsx` via `existsSync`, not client-side `onError`), so dropping a real
+  `<slug>.jpg` in place is the only step needed to light one up, no other code
+  changes. Same for a real `youtubeId`: leave it `""` and the card never tries to
+  create a player.
 
 Resolved this round: `person.linkedin`, `person.instagram`, `person.email` are real.
 `riding.namedRides` has Parigi. Ooty and Haridwar are deliberately left out of `trips`
@@ -99,9 +105,19 @@ Three earlier versions were tried and dropped: a dot-scatter "constellation" and
 orthographic rotating globe (both too abstract, the globe looked bad outright), then a
 one-photo-at-a-time card flight (split up photos that belong to the same trip).
 
-`StaticJourneys` is the reduced-motion version *and* the server-rendered one, so all 16
-photos are in the HTML for no-JS and for crawlers; the flowing version takes over after
-mount.
+`StaticJourneys` is the reduced-motion version *and* the server-rendered one, so all of
+the current 18 media items are in the HTML for no-JS and for crawlers; the flowing
+version takes over after mount.
+
+Each chapter's `position:sticky` pin releases with exactly one viewport-height of
+scroll still left in its container (inherent to a sticky child inside a tall
+container, not tunable away). `TravelChapter.tsx`'s `Reel` deliberately stops the
+ribbon short of `-ribbonWidth` (`-ribbonWidth + vw * 0.6`) so the last photo is still
+on screen at release and rides away with the natural unpin scroll, instead of
+already having faded to nothing and leaving that trailing screen blank. If you touch
+the ribbon's `x` transform, re-check this: it's easy to reintroduce a dead zone at
+every chapter boundary without it being obvious from a quick look, only shows up
+scrolling through slowly or with a `scrollYProgress` debug readout.
 
 ## Reduced motion
 
