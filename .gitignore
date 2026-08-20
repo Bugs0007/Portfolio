@@ -27,6 +27,12 @@
 # raw media originals, synced in locally, never committed
 /assets-src/
 
+# safety net: raw camera files sometimes land directly in public/media/ as a
+# handoff before being processed and moved to assets-src/, never committed
+# even if that move gets missed
+public/media/**/*.MOV
+public/media/**/*.mov
+
 # scratch output from Playwright/Lighthouse audit runs, never committed
 /.audit-tmp/
 
