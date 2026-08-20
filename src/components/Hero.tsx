@@ -34,7 +34,7 @@ export function Hero() {
           {person.tagline}
         </p>
         <p className="mt-2 font-mono text-xs uppercase tracking-wider text-stone">
-          {college.shortSchool} · {college.gradYear} Grad · {person.location}
+          {college.shortSchool} · {college.gradYear} CS Grad · {person.location}
         </p>
       </div>
     </section>

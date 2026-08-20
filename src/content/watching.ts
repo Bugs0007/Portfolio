@@ -90,4 +90,45 @@ export const watchingEntries: WatchingEntry[] = [
     youtubeId: "Si7pC7LdB4E",
     startSeconds: 12,
   },
+  {
+    slug: "silicon-valley",
+    title: "Silicon Valley",
+    category: "show",
+    youtubeId: "69V__a49xtw",
+    startSeconds: 5,
+  },
+  {
+    slug: "game-of-thrones",
+    title: "Game of Thrones",
+    category: "show",
+    youtubeId: "J7JYw5kQg_Y",
+    startSeconds: 8,
+  },
+  {
+    slug: "suits",
+    title: "Suits",
+    category: "show",
+    // NEEDS: could only confirm this against Universal Channel Germany's
+    // international broadcaster upload, not a USA Network/US channel one.
+    youtubeId: "qcqRbm56gIs",
+    startSeconds: 5,
+  },
+  {
+    slug: "house-md",
+    title: "House M.D.",
+    category: "show",
+    // NEEDS: no confirmed official Fox/NBCUniversal channel upload found
+    // for this one, correct content on a re-upload channel instead.
+    youtubeId: "izE5Dwy5b70",
+    startSeconds: 5,
+  },
+  {
+    slug: "big-bang-theory",
+    title: "The Big Bang Theory",
+    category: "show",
+    // NEEDS: same as above, correct trailer but not from CBS/Warner Bros.'
+    // own channel.
+    youtubeId: "WBb3fojgW0Q",
+    startSeconds: 5,
+  },
 ];
