@@ -15,6 +15,7 @@ export function Music() {
         width={music.media.width}
         height={music.media.height}
         alt="Bhagath practicing guitar at home, seated, guitar in hand, a monitor glowing in the background."
+        fit="cover"
         allowSound
       />
       <div

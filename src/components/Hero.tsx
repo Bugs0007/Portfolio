@@ -13,11 +13,10 @@ export function Hero() {
         poster="/media/intro/intro-poster.jpg"
         src="/media/intro/intro.mp4"
         alt="Bhagath giving a peace sign to the camera, mountains and clouds behind him."
-        width={1080}
-        height={608}
+        width={3840}
+        height={2160}
         fit="cover"
         position="top"
-        boomerangAt={2}
       />
       {/* type sits on the image, not beside it: legibility gradient only, no card */}
       <div

@@ -159,6 +159,47 @@ to git (Bhagath had placed it directly in `public/media/music/`, not
 wasn't in the Windows Recycle Bin either (checked). Flagged directly to
 Bhagath rather than staying quiet about it.
 
+## Fifth follow-up, same session: real quality this time
+
+Bhagath came back with a screenshot showing the boomerang not reading as a
+boomerang, the Music video pillarboxed instead of filling the section width,
+a direct complaint that the re-encoded loops looked bad, and, critically,
+re-added the raw source files with an explicit "don't mess it up this time."
+
+Investigated before touching anything: `IMG_0084.MOV` (music) turned out to
+be byte-identical (same MD5) to the file already deleted, so nothing was
+actually lost there, he'd kept another copy. `IMG_0202.MOV` (intro) was also
+byte-identical to `assets-src/intro/peace_sign_intro.MOV`, which had been
+safely archived the whole time and I'd never touched. The real surprise:
+`IMG_0202.MOV`'s raw stream reports as `2160x3840`, but that's the
+pre-rotation sensor encoding, once ffmpeg applies the video's own rotation
+metadata (the same way any correct player does) the true orientation is a
+proper landscape `3840x2160`, genuine 4K, dramatically higher quality than
+the `1080x608` derivative this site had been using. That derivative must
+have been cropped down by an earlier pass at some point before this
+session, which is almost certainly why the crop looked "zoomed in" in the
+first place.
+
+- **Hero:** re-encoded straight from the true 4K source at native
+  resolution (CRF 19, no cropping/scaling beyond what the encode needs),
+  confirmed orientation and content by extracting and viewing a frame before
+  installing it. Removed the boomerang per Bhagath's call ("just loop the
+  whole thing") and reverted `VideoClip`'s `loop` to its default behavior.
+- **Music:** re-encoded `IMG_0084.MOV` with the same crop as before (removes
+  the baked-in letterbox) but at CRF 18 instead of 23 (visually much
+  closer to source, file size roughly doubled: ~4.1MB for 12s versus
+  ~2MB), and switched `fit` from `contain` to `cover` so it fills the full
+  section width edge to edge instead of pillarboxing.
+- **Fixed the archival mistake this round:** moved `IMG_0084.MOV` into
+  `assets-src/music/` instead of deleting it. `IMG_0202.MOV` was safe to
+  remove from `public/media/intro/` since the identical file already lives
+  in `assets-src/intro/`, confirmed via MD5 before deleting anything.
+- Noted but did not act on: `assets-src/music/` also holds a separate,
+  larger, higher-resolution file (`IMG_0067.MOV`, ~3.4K HEVC, already
+  letterbox-cropped, 226MB) from earlier work, a different clip Bhagath
+  didn't reference this round. Left alone rather than assumed to be "the
+  real" source he meant.
+
 ---
 
 Chronological, most recent at the bottom of each session's block. Full context and

@@ -3,6 +3,30 @@
 One line each, most recent first. Reversible by design, if any of these should
 have gone the other way, say so and they get flipped.
 
+## After Bhagath returned (fifth round: real quality, fixing the archival mistake)
+
+- **Verified file identity via MD5 before assuming anything was lost or
+  needed reprocessing.** `IMG_0084.MOV` turned out identical to the file
+  deleted last round (nothing actually lost), `IMG_0202.MOV` identical to
+  what was already safely in `assets-src/intro/`. Guessing here instead of
+  checking would have meant either needlessly re-warning Bhagath about data
+  that was fine, or missing that the intro source needed real work.
+- **Trusted ffmpeg's rotation-corrected output over the raw stream
+  dimensions.** `ffprobe`'s raw `width`/`height` said `2160x3840`
+  (portrait); decoding with rotation metadata applied (the same correction
+  every real player performs) gives `3840x2160`, landscape. Verified this
+  wasn't a wrong assumption by extracting and looking at an actual frame
+  before committing to it, rather than trusting either number blind.
+- **Did not touch `IMG_0067.MOV`**, a different, larger, already-cropped
+  file sitting in `assets-src/music/` from earlier work. Higher resolution
+  than what Bhagath just handed me, but he didn't reference it this round,
+  and guessing it was "the real" source instead of `IMG_0084.MOV` (which he
+  explicitly just placed in `public/media/music/`) would have been
+  overriding a direct instruction with a guess.
+- **Moved `IMG_0084.MOV` to `assets-src/music/` this time** instead of
+  deleting it, correcting last round's mistake now that it's actually
+  possible to (there's a file to move rather than one already gone).
+
 ## After Bhagath returned (fourth round: boomerang, crop, new guitar footage)
 
 - **Mistake, not a decision: deleted the raw `guitar_video.MOV` after
