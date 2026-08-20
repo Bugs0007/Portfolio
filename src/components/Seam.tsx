@@ -31,7 +31,7 @@ export function Seam() {
       }`}
     >
       <p className="max-w-3xl font-display text-3xl font-medium italic text-mist sm:text-5xl">
-        Everything below this line, no one&rsquo;s paying me for.
+        Life beyond work.
       </p>
     </motion.section>
   );

@@ -116,12 +116,22 @@ export const projects: Project[] = [
       "Runs the daily practice for a working law office, multi-tenant and live in production.",
     decision:
       "Underneath: eCourts automated end to end (sessions, CAPTCHA, anti-scraping headers) feeding a 3-node LangGraph pipeline for source-referenced document search.",
-    stack: ["Django", "DRF", "LangGraph", "pgvector", "PostgreSQL", "AWS EC2", "RDS", "Nginx", "gunicorn", "CI/CD"],
+    stack: [
+      "Django",
+      "DRF",
+      "LangGraph",
+      "pgvector",
+      "PostgreSQL",
+      "AWS EC2",
+      "RDS",
+      "Nginx",
+      "gunicorn",
+      "CI/CD",
+    ],
   },
   {
     name: "Composite Sketch & Criminal Face Identification System",
     year: "2026",
-    status: "in progress",
     summary:
       "A forensic face-recognition platform: Django REST Framework and PostgreSQL pgvector doing similarity search across criminal profile datasets.",
     decision:
@@ -164,8 +174,16 @@ export const caseIntelShowcase: ShowcasePanel[] = [
     label: "Find",
     headline: "Search the state, not one court at a time.",
     rows: [
-      { primary: "WP/14882/2025", secondary: "High Court, Telangana", status: "match" },
-      { primary: "CC/331/2024", secondary: "Hyderabad, CMM Court", status: "match" },
+      {
+        primary: "WP/14882/2025",
+        secondary: "High Court, Telangana",
+        status: "match",
+      },
+      {
+        primary: "CC/331/2024",
+        secondary: "Hyderabad, CMM Court",
+        status: "match",
+      },
     ],
     stat: { label: "Districts scanned", value: "33 / 33" },
   },
@@ -174,8 +192,16 @@ export const caseIntelShowcase: ShowcasePanel[] = [
     label: "Appear",
     headline: "Tomorrow's board, the evening before.",
     rows: [
-      { primary: "WP/14882/2025", secondary: "Court No. 4, Division Bench", status: "item 27" },
-      { primary: "CRP/887/2025", secondary: "Court No. 12, Single Judge", status: "item 6" },
+      {
+        primary: "WP/14882/2025",
+        secondary: "Court No. 4, Division Bench",
+        status: "item 27",
+      },
+      {
+        primary: "CRP/887/2025",
+        secondary: "Court No. 12, Single Judge",
+        status: "item 6",
+      },
     ],
     stat: { label: "List types read", value: "8 / 8" },
   },
@@ -184,8 +210,16 @@ export const caseIntelShowcase: ShowcasePanel[] = [
     label: "Record",
     headline: "The order lands on the hearing that produced it.",
     rows: [
-      { primary: "order_3_2025-09-14.pdf", secondary: "WP/14882/2025, 2 pages", status: "attached" },
-      { primary: "order_5_2025-11-21.pdf", secondary: "CRP/887/2025, 4 pages", status: "attached" },
+      {
+        primary: "order_3_2025-09-14.pdf",
+        secondary: "WP/14882/2025, 2 pages",
+        status: "attached",
+      },
+      {
+        primary: "order_5_2025-11-21.pdf",
+        secondary: "CRP/887/2025, 4 pages",
+        status: "attached",
+      },
     ],
     stat: { label: "Next hearing", value: "08 Jan 2027" },
   },
@@ -202,8 +236,7 @@ export const caseIntelShowcase: ShowcasePanel[] = [
 ];
 
 export const music = {
-  intro:
-    "Learning flute and guitar. The flute goal is the Krrish theme (Raga Hamsadhvani), which is exactly as hard as it sounds on an instrument with no frets.",
+  intro: "Learning flute and guitar.",
   media: {
     poster: "/media/music/poster.jpg",
     loop: "/media/music/loop.mp4",
@@ -244,8 +277,8 @@ export const journeys: Journey[] = [
   {
     id: "zanskar",
     title: "Zanskar",
-    region: "Lahaul and Ladakh",
-    when: "May to June 2026",
+    region: "Ladakh",
+    when: "June 2026",
     media: [
       {
         kind: "video",
@@ -382,7 +415,7 @@ export const journeys: Journey[] = [
   },
   {
     id: "manali-winter",
-    title: "Manali in the snow",
+    title: "Manali",
     region: "Himachal Pradesh",
     when: "January 2026",
     media: [

@@ -12,7 +12,7 @@ export function ProjectsTimeline({ projects }: { projects: Project[] }) {
   const ref = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.85", "end 0.4"],
+    offset: ["start 0.85", "end end"],
   });
 
   return (

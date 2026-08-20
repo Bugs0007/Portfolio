@@ -135,8 +135,8 @@ function ChapterHeader({
   );
 
   // The oversized divider is sized off a single clamp rather than fixed vw
-  // breakpoints, scaled down for longer titles ("Manali in the snow" vs
-  // "Zanskar") so every chapter's title stays on one line at any width.
+  // breakpoints, scaled down for longer titles ("Uttarakhand" vs "Zanskar")
+  // so every chapter's title stays on one line at any width.
   const titleScale = Math.min(1, 11 / journey.title.length);
   const titleFontSize = `clamp(${(2.6 * titleScale).toFixed(2)}rem, ${(15 * titleScale).toFixed(2)}vw, ${(10.5 * titleScale).toFixed(2)}rem)`;
 
