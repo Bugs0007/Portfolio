@@ -40,13 +40,17 @@ export function Watching() {
           const entries = watchingEntries.filter((e) => e.category === key);
           if (entries.length === 0) return null;
           return (
-            <div key={key} className="mt-14 first:mt-12">
+            <div key={key} className="mt-10">
               <Reveal>
                 <h3 className="font-mono text-xs uppercase tracking-wider text-stone">
                   {label}
                 </h3>
               </Reveal>
-              <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+              {/* Five thumbnail-scale columns at desktop width instead of three
+                  larger ones: this category's 5 entries then fill exactly one
+                  row instead of wrapping to two, which was the actual source of
+                  this section running long, not the padding around it. */}
+              <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-5">
                 {entries.map((entry, i) => (
                   <Reveal key={entry.slug} delay={i * 0.05}>
                     <WatchingCard entry={entry} hasPoster={hasPoster(entry.slug)} />

@@ -241,14 +241,14 @@ export function WatchingCard({
               src={`/media/watching/${entry.slug}.jpg`}
               alt={`${entry.title} poster`}
               fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
               className="object-cover object-top"
             />
           ) : (
             // No poster yet: the title itself fills the tile rather than
             // leaving it blank, real content standing in for a real image
             // instead of a placeholder graphic.
-            <p className="absolute inset-x-4 bottom-4 font-display text-2xl leading-tight text-stone/70">
+            <p className="absolute inset-x-3 bottom-3 font-display text-base leading-tight text-stone/70 sm:text-lg">
               {entry.title}
             </p>
           )}
@@ -277,8 +277,10 @@ export function WatchingCard({
         )}
       </motion.div>
 
-      <p className="mt-3 font-display text-xl font-medium text-mist">{entry.title}</p>
-      <p className="mt-1 font-mono text-xs uppercase tracking-wider text-stone">
+      <p className="mt-2.5 font-display text-sm font-medium text-mist sm:text-base">
+        {entry.title}
+      </p>
+      <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-stone">
         {CATEGORY_LABEL[entry.category]}
       </p>
     </div>

@@ -111,6 +111,34 @@ tilting, bobbing motion), but the pinned-chapter-per-journey scroll structure
 should stay ("same bones, heavily refined"). Asked a clarifying question first
 rather than guess at a full rebuild of the site's most complex section.
 
+## Eighth follow-up, same session: My Favorites layout, less vertical space
+
+Bhagath's last piece of the same request: "my favorite section is taking too
+much space so improve the layout of that." The section was a 3-column grid
+of `aspect-[2/3]` poster cards, 5 entries per category (anime, movies), which
+wrapped to 2 rows each, roughly 1.33 desktop screens of pure grid before this
+change and considerably more before that (measured with a scripted Playwright
+capture of the section's actual rendered height rather than eyeballing it).
+
+Changed the grid to 5 columns at desktop width (`grid-cols-2 sm:grid-cols-3
+lg:grid-cols-5`), so a 5-entry category now fills exactly one row instead of
+wrapping. Scaled the card title/label text down to match the smaller
+thumbnail size (`text-xl` -> `text-sm sm:text-base` for titles) and updated
+the `Image` `sizes` attribute to match the new column counts, so the
+optimizer isn't asked for oversized images at the smaller display width.
+Left section padding (`py-24 sm:py-32`) untouched since that's a shared
+convention across every section (`Work`, `ContactFooter` use the identical
+value) and the grid wrapping, not the padding, was the actual source of the
+extra height.
+
+Verified with a Playwright screenshot + boundingBox measurement (not just a
+visual glance): desktop went from an estimated ~2 rows per category (~1
+screen+ of scroll) to exactly 1 row per category. Also re-verified hover
+video playback still works correctly at the smaller card size and that
+lazy-loaded posters weren't a false "broken image" (an early capture caught
+Next Image's lazy-load race, not a real bug, resolved by waiting for
+network idle after scroll rather than changing any product code).
+
 ## Seventh follow-up, same session: full Travel content overhaul
 
 Bhagath reorganized the entire travel media folder into per-trip subfolders

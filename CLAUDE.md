@@ -50,12 +50,14 @@ anything as final. Current open items:
 - `trips[].blurb`, still empty for Badrinath and Mana Village.
 - `watching` (rendered as "My Favorites", `src/components/Watching.tsx`), grouped
   into anime/movie/show. All 10 current entries have real, individually-verified
-  trailer IDs; `show` has zero entries so far and its heading is simply skipped
-  (`Watching.tsx` hides any category with nothing in it). Still needs a real
-  `public/media/watching/<slug>.jpg` poster per entry. `WatchingCard` never requests
-  a poster that doesn't exist (checked server-side via `existsSync`, not client-side
-  `onError`), so dropping a real `<slug>.jpg` in place is the only step needed to
-  light one up, no other code changes.
+  trailer IDs and a real `public/media/watching/<slug>.jpg` poster; `show` has zero
+  entries so far and its heading is simply skipped (`Watching.tsx` hides any category
+  with nothing in it). `WatchingCard` never requests a poster that doesn't exist
+  (checked server-side via `existsSync`, not client-side `onError`), so a future
+  entry only needs a real `<slug>.jpg` dropped in place to light up, no other code
+  changes. Grid is 5 columns at desktop width (`2 / 3 / 5` across breakpoints) so a
+  5-entry category fills exactly one row instead of wrapping, kept deliberately
+  compact after Bhagath flagged the section as taking too much space.
 - `WatchingCard`'s YouTube player target is a plain DOM node created imperatively
   inside a React-owned wrapper, never a node that's part of this component's own
   JSX. The IFrame API replaces whatever element it's given with an `<iframe>`; if

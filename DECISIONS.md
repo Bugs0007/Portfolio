@@ -3,6 +3,24 @@
 One line each, most recent first. Reversible by design, if any of these should
 have gone the other way, say so and they get flipped.
 
+## After Bhagath returned (eighth round: My Favorites layout)
+
+- **Fixed the grid, not the padding.** The section's excess height came from
+  5-item categories wrapping to 2 rows at 3 columns, not from the shared
+  `py-24 sm:py-32` section padding (identical across `Work`/`ContactFooter`
+  too). Went to 5 columns at desktop so 5 entries fill one row, left padding
+  alone to keep the section rhythm consistent site-wide.
+- **Measured before and after with Playwright instead of eyeballing it.**
+  Scripted a boundingBox read of `#favorites`'s actual rendered height at
+  both breakpoints, confirmed the fix actually reduced it rather than just
+  looking plausible in a screenshot.
+- **Diagnosed an apparent "broken poster" in an early capture as a test
+  artifact, not a real bug**, before touching any product code. Playwright
+  scrolled to the section and screenshotted immediately, faster than Next
+  Image's lazy-load could finish for cards further down; waiting for
+  `networkidle` after the scroll made every poster render correctly. Worth
+  recording since it would have wasted the next round chasing a phantom bug.
+
 ## After Bhagath returned (seventh round: full Travel content overhaul)
 
 - **Treated the broken Travel paths as a P0 fix bundled into this same round**,
