@@ -200,6 +200,16 @@ first place.
   didn't reference this round. Left alone rather than assumed to be "the
   real" source he meant.
 
+## Sixth follow-up, same session: stop trimming, use the full clip
+
+Bhagath, understandably annoyed: "use the whole 55 seconds or however long
+the music video is but start from the 7 seconds mark. why the hell are you
+trimming it down." Re-encoded from `assets-src/music/IMG_0084.MOV` starting
+at 7s straight through to its actual end (56.77s total, so 49.77s of
+output), same crop and CRF 18 quality as before, regenerated the poster
+frame from the new range. No more picking an arbitrary short window without
+being asked to.
+
 ---
 
 Chronological, most recent at the bottom of each session's block. Full context and
