@@ -100,10 +100,13 @@ the three Zanskar frames, Zangla Palace) really is one trip, 31 May to 7 June, a
 the Manali snow photos are a separate January one.
 
 Each journey's media are laid out end to end in a ribbon and flowed across the viewport
-as a group. Every item rides a sine curve as it crosses (`y`, `rotate` and `scale` all
-derive from its current on-screen x), so the set moves like a current rather than cards
-being dealt. Scroll length per journey scales with its media count so each photo gets
-about the same screen time.
+as a group. Motion is deliberately calm: `scale` alone derives from an item's current
+on-screen position (grows slightly near center, recedes toward the edges), no rotation
+or vertical bob (an earlier version wobbled every item on a sine curve and read as
+chaotic rather than considered, dropped for this). Scroll length per journey scales with
+its media count (`railSpan = media.length * 0.6`, retuned down from `0.75` once Zanskar
+grew to 15 items) so each photo gets about the same screen time without the combined
+chapters ballooning past ~30 viewport-heights of scroll.
 
 Videos in Travel play inline through the shared `VideoClip`, same as Music and Riding.
 They are never flattened to stills; the `.jpg` next to each `.mp4` is only the poster
@@ -114,8 +117,8 @@ orthographic rotating globe (both too abstract, the globe looked bad outright), 
 one-photo-at-a-time card flight (split up photos that belong to the same trip).
 
 `StaticJourneys` is the reduced-motion version *and* the server-rendered one, so all of
-the current 18 media items are in the HTML for no-JS and for crawlers; the flowing
-version takes over after mount.
+the current 35 media items (Zanskar 15, Manali 8, Coimbatore 8, Uttarakhand 4) are in
+the HTML for no-JS and for crawlers; the flowing version takes over after mount.
 
 Each chapter's `position:sticky` pin releases with exactly one viewport-height of
 scroll still left in its container (inherent to a sticky child inside a tall

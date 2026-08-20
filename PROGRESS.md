@@ -111,6 +111,79 @@ tilting, bobbing motion), but the pinned-chapter-per-journey scroll structure
 should stay ("same bones, heavily refined"). Asked a clarifying question first
 rather than guess at a full rebuild of the site's most complex section.
 
+## Seventh follow-up, same session: full Travel content overhaul
+
+Bhagath reorganized the entire travel media folder into per-trip subfolders
+with real trip names, replaced every existing photo/video with the original
+(the old flat `public/media/travel/*` files this site had been built on were
+gone entirely, meaning **the live Travel section was fully broken, every
+image and video 404ing**, until this pass), and added a large amount of new,
+previously-unseen footage and photos. Asked to include everything and improve
+the scroll animation to match.
+
+Worked trip by trip rather than all at once, in each folder: found which
+files were direct renamed replacements for existing site.ts entries (matched
+by content, not just filename, viewed each one to confirm) versus genuinely
+new, undescribed content (`IMG_####` naming, per this project's own
+convention that generic names usually mean "not yet reviewed", but Bhagath's
+explicit "include all of them" this round meant reviewing and curating that
+content too rather than skipping it on the naming convention alone).
+
+- **Zanskar: 8 -> 15 items.** All 8 existing entries reprocessed from fresh,
+  higher-quality originals. Added 7 new pieces after reviewing every one
+  (extracted representative frames from each video before deciding, not
+  just filenames): a truck-roof road shot, washing up in a glacial river,
+  a misty granite cliff, a glacier overlook, a frozen alpine lake, a local
+  child's portrait, and monks outside a monastery. Re-sequenced into a
+  narrative arc (arrival -> nature -> landmarks -> people -> monastery ->
+  night sky -> Zangla Palace finale) rather than just appending new items.
+- **Manali: 2 -> 8 items.** Koksar reprocessed from the original. The
+  existing static paragliding photo was upgraded to video, matching the
+  exact tandem-paraglide-at-sunset moment already described in that entry's
+  caption. Added a Hidimba Temple group photo (real GPS matched the actual
+  temple location, confirming it), a rooftop/mountain establishing shot, a
+  street dog, a cold-weather portrait, a forest trail, and Mall Road at
+  night.
+- **Coimbatore: 4 -> 8 items.** The two Kenmangudi/sunset entries with new
+  labeled source files reprocessed. One new video, sourced from the same
+  labeled `coimbatore_watching_sunset_w_friends.MOV`, turned out to be a
+  different existing entry's moment (friends sitting in a row watching the
+  sunset) once actually watched, so it replaced that one instead of the one
+  its filename most resembled, confirmed by checking the frame content, not
+  assumed from the name. Found a genuine surprise via GPS: a new "friends on
+  a misty peak" group photo carries coordinates in Chikmagalur, Karnataka,
+  not anywhere near Coimbatore city, but matching coordinates on the
+  existing "Kenmangudi" entry proved it's the same Kemmangundi trek already
+  on the site (a real place, just not literally in Tamil Nadu), so it was
+  captioned consistently rather than left out on a false alarm or wrongly
+  captioned "Coimbatore." Added two solo trek shots and a group-lounging
+  photo besides.
+- **Uttarakhand: 4 -> 4 items**, all four reprocessed from fresh originals
+  at higher resolution, no new content in this folder.
+- **Two files set aside, not used:** a "parigi_sunrise.jpg" (windmill/sunset,
+  looks like Riding section content, not Travel) and an unlabeled cliffside
+  portrait that doesn't match any of the four established trips. Flagged to
+  Bhagath rather than guessed into a trip.
+- **Pacing:** with journeys now running up to 15 items, the old
+  `media.length * 0.75` viewport-height-per-item rate would have pushed the
+  four chapters combined past 30 viewport-heights of pure scroll. Trimmed to
+  `* 0.6` (still scales with content, Zanskar still the longest chapter by
+  a wide margin) rather than a flat cap, since a genuinely bigger trip
+  earning more scroll time is the whole point of that formula.
+- **Archival, done correctly this time:** every raw source folder moved into
+  `assets-src/travel/<trip>/`, not deleted, learning from the mistake
+  earlier this session. Verified `git status` afterward: zero raw files
+  tracked, all 49 processed derivatives correctly staged.
+
+Verified after: `npm run build` clean, every one of the 49 referenced media
+paths in the new site.ts content confirmed to exist on disk (scripted check,
+not spot-checked), a full scroll through the entire Travel section with
+console/network-error capture came back clean, and the chapter-boundary fix
+from earlier this session re-verified against the new, much larger Zanskar
+chapter specifically.
+
+## Sixth follow-up, side note
+
 Rewrote `TravelChapter.tsx`'s `Reel`/`ReelItem`: removed the four entrance
 variants, the sine-wave vertical bob, the per-item rotation, and the
 "drift-deep" horizontal offset entirely. Photos now travel level, on-axis, with

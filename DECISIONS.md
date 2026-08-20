@@ -3,6 +3,47 @@
 One line each, most recent first. Reversible by design, if any of these should
 have gone the other way, say so and they get flipped.
 
+## After Bhagath returned (seventh round: full Travel content overhaul)
+
+- **Treated the broken Travel paths as a P0 fix bundled into this same round**,
+  not a separate bug report. Bhagath's folder reorg had removed every old
+  flat `public/media/travel/*` file the live site was still pointing at, so
+  until this pass landed the entire Travel section 404'd on every image and
+  video. Fixing it was implicit in "include all of them," not optional.
+- **Curated the new, generically-named (`IMG_####`) files this round**
+  instead of leaving them out on this project's own "undescribed name means
+  unreviewed" convention. Bhagath's explicit "include all of them" overrides
+  that default; reviewed every file individually (frame extraction for
+  video) rather than batch-including blind.
+- **Re-sequenced Zanskar into a narrative arc** (arrival, nature, landmarks,
+  people, monastery, night sky, Zangla Palace finale) instead of appending
+  the 7 new items after the original 8 in whatever order they were found.
+- **Recaptioned one Coimbatore video by content, not filename.** A new
+  labeled source (`coimbatore_watching_sunset_w_friends.MOV`) matched an
+  existing entry's caption better once actually watched than the entry its
+  name most resembled. Confirmed by viewing the frame content before
+  reassigning it.
+- **Confirmed a GPS "mismatch" was consistent, not an error.** A new
+  "friends on a misty peak" photo's coordinates (Chikmagalur, Karnataka)
+  don't match Coimbatore city, but do match the existing "Kenmangudi" trek
+  entry's coordinates: same real place (Kemmangundi), so captioned
+  consistent with that entry instead of flagged as wrong or silently
+  corrected to something invented.
+- **Set aside two files instead of guessing their trip**:
+  `parigi_sunrise.jpg` (looks like Riding-section content, not Travel) and
+  an unlabeled cliffside/limestone photo matching none of the four
+  established trips. Archived under `assets-src/travel/` with `-stray`
+  suffixes and flagged to Bhagath rather than assigned on a guess.
+- **Retuned rail pacing from `media.length * 0.75` to `* 0.6`** rather than
+  a flat per-chapter scroll cap, once the content nearly doubled (18 -> 35
+  items). Keeps the formula's actual intent, more content earns more scroll
+  time, just at a rate that doesn't balloon past ~30vh of combined scroll.
+- **Archived every raw source folder into `assets-src/travel/<trip>/`
+  before considering this done**, correcting the process from two earlier
+  mistakes this session (a deleted-instead-of-moved raw file, and a
+  raw file that briefly got committed). Verified with `git status` that
+  zero raw files ended up tracked.
+
 ## After Bhagath returned (fifth round: real quality, fixing the archival mistake)
 
 - **Verified file identity via MD5 before assuming anything was lost or

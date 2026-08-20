@@ -34,8 +34,12 @@ export function TravelChapter({
 
   // One full viewport height for the title beat, then room for the rail
   // scaled to how much media this trip has.
+  // Trimmed from 0.75 now that journeys run up to 15 items (Zanskar): at the
+  // old rate the four chapters combined would run past 30 viewport-heights
+  // of pure scroll, which reads as dragging rather than generous. Still
+  // scales with content, just tighter per item.
   const introSpan = 1;
-  const railSpan = Math.max(1.6, journey.media.length * 0.75);
+  const railSpan = Math.max(1.6, journey.media.length * 0.6);
   const totalSpan = introSpan + railSpan;
   const introFraction = introSpan / totalSpan;
 
