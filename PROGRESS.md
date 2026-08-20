@@ -121,6 +121,44 @@ ribbon's own x-positioning (including the chapter-boundary fix from earlier
 this session) completely alone, verified the boundary transition still lands
 cleanly with the new per-item motion.
 
+## Fourth follow-up, same session: boomerang, crop fix, real guitar footage
+
+Three more requests, working from two screenshots Bhagath sent: a boomerang
+instead of a hard freeze on the peace sign, the Hero crop favoring the top of
+frame (his face) instead of cutting it off, and a new guitar clip he'd dropped
+into `public/media/music/` that has real audio this time.
+
+- **Boomerang:** browsers don't support native reverse video playback
+  (`playbackRate < 0` isn't reliable cross-browser), so `VideoClip.tsx` now
+  manually steps `currentTime` backward via `requestAnimationFrame` once
+  forward playback reaches `boomerangAt`, down to 0, then resumes native
+  forward playback and repeats. Verified by sampling `currentTime` over ~7s:
+  a clean 0 -> ~2 -> 0 -> ~2 ping-pong, zero console errors, correctly pauses
+  the reverse loop when scrolled out of view (checked against the
+  IntersectionObserver state, not just left running off-screen).
+- **Hero crop:** added a `position` prop (`center` / `top` / `bottom`) to
+  `VideoClip.tsx`, applied as `object-top` for Hero. His face and raised hand
+  now have real headroom instead of being cut at the frame edge, confirmed in
+  both the animated and reduced-motion (static poster) paths, both go through
+  the same class.
+- **New guitar footage:** Bhagath's `guitar_video.MOV` (1920x1080, PCM audio,
+  56.77s) had a baked-in cinematic letterbox, confirmed the exact bars via
+  `cropdetect` (content is `1920x800`, not the full frame) rather than guess.
+  Trimmed to a 12s segment, cropped out the bars, encoded to H.264 + AAC with
+  a 150ms audio fade at each cut to avoid a click at the loop point, replaced
+  `loop.mp4`/`poster.jpg`. `music.media.height` in `content/site.ts` updated
+  780 -> 800 to match. Verified the encoded audio is real and audible
+  (`ffmpeg volumedetect`: mean -22.2dB, max -7.9dB, not silence), and that the
+  now-real `allowSound` toggle on Music actually flips `video.muted`.
+
+**Mistake made and disclosed:** deleted `guitar_video.MOV` (the 68MB raw
+original) after processing it, instead of moving it to `assets-src/music/`
+per this project's own convention for raw originals. It was never committed
+to git (Bhagath had placed it directly in `public/media/music/`, not
+`assets-src/`), so this wasn't recoverable through version control, and it
+wasn't in the Windows Recycle Bin either (checked). Flagged directly to
+Bhagath rather than staying quiet about it.
+
 ---
 
 Chronological, most recent at the bottom of each session's block. Full context and

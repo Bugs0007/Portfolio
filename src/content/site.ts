@@ -208,7 +208,7 @@ export const music = {
     poster: "/media/music/poster.jpg",
     loop: "/media/music/loop.mp4",
     width: 1920,
-    height: 780,
+    height: 800,
   },
 } as const;
 

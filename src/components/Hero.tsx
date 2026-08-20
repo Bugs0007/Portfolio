@@ -16,7 +16,8 @@ export function Hero() {
         width={1080}
         height={608}
         fit="cover"
-        freezeAt={2}
+        position="top"
+        boomerangAt={2}
       />
       {/* type sits on the image, not beside it: legibility gradient only, no card */}
       <div

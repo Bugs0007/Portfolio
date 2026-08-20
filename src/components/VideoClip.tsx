@@ -18,6 +18,12 @@ function MuteIcon({ muted }: { muted: boolean }) {
   );
 }
 
+const POSITION_CLASS = {
+  center: "object-center",
+  top: "object-top",
+  bottom: "object-bottom",
+} as const;
+
 // Poster first, always: the video element carries a poster attribute and only
 // preloads metadata, so nothing waits on video bytes to paint. Playback is
 // driven by IntersectionObserver, so never more than one video decodes at a
@@ -30,7 +36,8 @@ export function VideoClip({
   width,
   height,
   fit = "contain",
-  freezeAt,
+  position = "center",
+  boomerangAt,
   allowSound = false,
 }: {
   poster: string;
@@ -39,20 +46,48 @@ export function VideoClip({
   width: number;
   height: number;
   fit?: "contain" | "cover";
-  // When set, the clip plays once and holds on this frame (seconds) instead
-  // of looping, landing on a specific beat rather than replaying the whole
-  // clip or ending on whatever frame the source happens to stop on.
-  freezeAt?: number;
+  // Which edge of the frame object-cover keeps on screen when the source's
+  // aspect ratio doesn't match its box. Only matters for fit="cover".
+  position?: "center" | "top" | "bottom";
+  // When set, playback ping-pongs between 0 and this timestamp (seconds)
+  // instead of looping straight through: plays forward to the beat, reverses
+  // back to the start via manually stepped currentTime (browsers don't
+  // support native reverse playback for video), then forward again.
+  boomerangAt?: number;
   // Shows a mute/unmute toggle. Playback still starts muted regardless
   // (autoplay triggered by IntersectionObserver, not a user gesture, so
   // browsers require it), unmuting only ever happens from the click itself.
   allowSound?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const frozenRef = useRef(false);
+  // Whether the section is currently on screen, i.e. whether anything should
+  // be animating at all right now, checked by the reverse-scrub loop before
+  // it schedules its next frame.
+  const inViewRef = useRef(false);
+  const directionRef = useRef<"forward" | "reverse">("forward");
+  const reverseRafRef = useRef<number | null>(null);
   const reduceMotion = usePrefersReducedMotion();
   const [muted, setMuted] = useState(true);
   const fitClass = fit === "cover" ? "object-cover" : "object-contain";
+  const positionClass = fit === "cover" ? POSITION_CLASS[position] : "";
+
+  const stepReverse = (video: HTMLVideoElement, lastTs: number) => {
+    const tick = (ts: number) => {
+      if (!inViewRef.current || directionRef.current !== "reverse") return;
+      const dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      const next = video.currentTime - dt;
+      if (next <= 0) {
+        video.currentTime = 0;
+        directionRef.current = "forward";
+        video.play().catch(() => {});
+        return;
+      }
+      video.currentTime = next;
+      reverseRafRef.current = requestAnimationFrame(tick);
+    };
+    reverseRafRef.current = requestAnimationFrame(tick);
+  };
 
   useEffect(() => {
     if (reduceMotion) return;
@@ -60,32 +95,41 @@ export function VideoClip({
     if (!video) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
+        inViewRef.current = entry.isIntersecting;
         if (entry.isIntersecting) {
-          if (!frozenRef.current) video.play().catch(() => {});
+          if (directionRef.current === "forward") {
+            video.play().catch(() => {});
+          } else {
+            stepReverse(video, performance.now());
+          }
         } else {
           video.pause();
+          if (reverseRafRef.current) cancelAnimationFrame(reverseRafRef.current);
         }
       },
       { threshold: 0.4 },
     );
     observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (reverseRafRef.current) cancelAnimationFrame(reverseRafRef.current);
+    };
   }, [reduceMotion]);
 
   useEffect(() => {
-    if (reduceMotion || freezeAt === undefined) return;
+    if (reduceMotion || boomerangAt === undefined) return;
     const video = videoRef.current;
     if (!video) return;
     const onTimeUpdate = () => {
-      if (video.currentTime >= freezeAt) {
+      if (directionRef.current === "forward" && video.currentTime >= boomerangAt) {
         video.pause();
-        video.currentTime = freezeAt;
-        frozenRef.current = true;
+        directionRef.current = "reverse";
+        if (inViewRef.current) stepReverse(video, performance.now());
       }
     };
     video.addEventListener("timeupdate", onTimeUpdate);
     return () => video.removeEventListener("timeupdate", onTimeUpdate);
-  }, [reduceMotion, freezeAt]);
+  }, [reduceMotion, boomerangAt]);
 
   const toggleSound = () => {
     const video = videoRef.current;
@@ -101,7 +145,7 @@ export function VideoClip({
         alt={alt}
         fill
         sizes="100vw"
-        className={fitClass}
+        className={`${fitClass} ${positionClass}`}
       />
     );
   }
@@ -112,13 +156,13 @@ export function VideoClip({
         ref={videoRef}
         muted
         playsInline
-        loop={freezeAt === undefined}
+        loop={boomerangAt === undefined}
         preload="metadata"
         poster={poster}
         width={width}
         height={height}
         aria-label={alt}
-        className={`absolute inset-0 h-full w-full ${fitClass}`}
+        className={`absolute inset-0 h-full w-full ${fitClass} ${positionClass}`}
       >
         <source src={src} type="video/mp4" />
       </video>

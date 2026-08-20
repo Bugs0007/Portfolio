@@ -3,6 +3,27 @@
 One line each, most recent first. Reversible by design, if any of these should
 have gone the other way, say so and they get flipped.
 
+## After Bhagath returned (fourth round: boomerang, crop, new guitar footage)
+
+- **Mistake, not a decision: deleted the raw `guitar_video.MOV` after
+  processing it**, instead of moving it to `assets-src/music/` the way this
+  project's own convention says raw originals should be kept. It was never
+  committed (placed directly in `public/media/music/`, not `assets-src/`),
+  and wasn't in the Recycle Bin either, checked before assuming that. Told
+  Bhagath directly rather than letting it pass quietly. He most likely still
+  has it at whatever original source he copied it from, but I don't know
+  that for certain.
+- **Manually stepped `currentTime` for the boomerang reverse instead of
+  `playbackRate = -1`.** Reverse video playback via negative playback rate
+  isn't reliably supported across browsers (Chrome/Firefox don't honor it for
+  `<video>`); a `requestAnimationFrame` loop that decrements `currentTime`
+  each frame is the standard workaround and works everywhere seeking does.
+- **Trimmed the new guitar footage to 12 seconds** rather than use the full
+  56s clip. The whole thing is one continuous, unchanging shot (checked by
+  eye across 9 sampled frames), so nothing is lost by a shorter loop, and a
+  much smaller file serves the same "glimpse of him actually playing"
+  purpose the original 8s clip did, now with real sound to opt into.
+
 ## After Bhagath returned (third round: Travel redesign)
 
 - **Asked a clarifying question before rebuilding Travel**, rather than guess at
