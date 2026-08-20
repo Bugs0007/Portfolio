@@ -2,24 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import type { Journey, JourneyMedia } from "@/content/site";
-import { EASE } from "@/lib/motion";
-import { MediaFrame } from "./TravelMap";
+import type { Journey } from "@/content/site";
+import type { TravelMode } from "@/lib/travel-mode";
+import { TRAVEL_MODE_DEFS } from "./travel/modes";
 
 // The pinned-chapter treatment: each journey gets its own pin, opening with an
 // oversized title beat, then converting further scroll into a horizontal,
 // scroll-scrubbed rail through that trip's media. Nothing here plays on a
 // timer, every motion value is a direct read of scroll position, reversible
-// in both directions.
+// in both directions. Which rail treatment plays is decided entirely by
+// `mode`: see src/components/travel/modes for the five interchangeable
+// implementations, all reading the same journey data.
 
 export function TravelChapter({
   journey,
   index,
   total,
+  mode,
 }: {
   journey: Journey;
   index: number;
   total: number;
+  mode: TravelMode;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ vw: 0, vh: 0 });
@@ -32,14 +36,15 @@ export function TravelChapter({
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  // One full viewport height for the title beat, then room for the rail
-  // scaled to how much media this trip has.
-  // Trimmed from 0.75 now that journeys run up to 15 items (Zanskar): at the
-  // old rate the four chapters combined would run past 30 viewport-heights
-  // of pure scroll, which reads as dragging rather than generous. Still
-  // scales with content, just tighter per item.
+  const isNarrow = size.vw > 0 && size.vw < 640;
+  const modeDef = TRAVEL_MODE_DEFS[mode];
+
+  // One full viewport height for the title beat, then room for the rail.
+  // Each mode compresses its own rail span from a beat count instead of raw
+  // media count (see src/lib/travel-beats.ts), so a 40-photo journey no
+  // longer drags the section out linearly the way one beat per photo did.
   const introSpan = 1;
-  const railSpan = Math.max(1.6, journey.media.length * 0.6);
+  const railSpan = modeDef.getSpan(journey.media.length, isNarrow);
   const totalSpan = introSpan + railSpan;
   const introFraction = introSpan / totalSpan;
 
@@ -76,11 +81,12 @@ export function TravelChapter({
             }}
           >
             {size.vw > 0 && (
-              <Reel
+              <modeDef.Component
                 journey={journey}
                 progress={railProgress}
                 vw={size.vw}
                 vh={size.vh}
+                isNarrow={isNarrow}
               />
             )}
           </div>
@@ -173,130 +179,5 @@ function ChapterHeader({
         </p>
       </motion.div>
     </>
-  );
-}
-
-function Reel({
-  journey,
-  progress,
-  vw,
-  vh,
-}: {
-  journey: Journey;
-  progress: MotionValue<number>;
-  vw: number;
-  vh: number;
-}) {
-  const isNarrow = vw < 640;
-  const height = vh * (isNarrow ? 0.42 : 0.5);
-  const gap = isNarrow ? 18 : 34;
-
-  const widths = journey.media.map((m) =>
-    Math.min((height * m.width) / m.height, vw * (isNarrow ? 0.85 : 0.55)),
-  );
-  const offsets: number[] = [];
-  let acc = 0;
-  for (const w of widths) {
-    offsets.push(acc);
-    acc += w + gap;
-  }
-  const ribbonWidth = acc;
-
-  // Stops short of -ribbonWidth on purpose: the sticky pin releases with
-  // exactly one viewport-height of scroll still left in the container (that's
-  // inherent to how a sticky child inside a tall container unpins), and if
-  // the last photo has already faded to nothing by then, that whole trailing
-  // screen is dead air. Landing the ribbon here instead means the last photo
-  // is still on screen at release and rides away with the natural unpin
-  // scroll, rather than the chapter ending on a blank hold.
-  const x = useTransform(progress, [0, 1], [vw, -ribbonWidth + vw * 0.6]);
-
-  return (
-    <motion.div className="absolute inset-y-0 left-0" style={{ x, width: ribbonWidth }}>
-      {journey.media.map((media, i) => (
-        <ReelItem
-          key={media.src}
-          media={media}
-          ribbonX={x}
-          left={offsets[i]}
-          width={widths[i]}
-          height={height}
-          vw={vw}
-        />
-      ))}
-    </motion.div>
-  );
-}
-
-function ReelItem({
-  media,
-  ribbonX,
-  left,
-  width,
-  height,
-  vw,
-}: {
-  media: JourneyMedia;
-  ribbonX: MotionValue<number>;
-  left: number;
-  width: number;
-  height: number;
-  vw: number;
-}) {
-  // Where this item's centre currently sits on screen, in px from the left
-  // edge. Every motion below reads only from this one value, so each item
-  // stays a pure function of scroll position.
-  const centre = useTransform(ribbonX, (v) => v + left + width / 2);
-
-  // The one depth cue: photos grow slightly as they approach centre-screen
-  // and recede slightly as they head for the edges, level and on-axis the
-  // whole way across, no rotation and no vertical bob. Calmer on purpose,
-  // an earlier version of this reel wobbled and tilted every item on a sine
-  // curve, which read as chaotic rather than considered.
-  const scale = useTransform(centre, [0, vw * 0.5, vw], [0.92, 1, 0.92]);
-
-  const opacity = useTransform(
-    centre,
-    [-width * 0.6, width * 0.4, vw - width * 0.4, vw + width * 0.6],
-    [0, 1, 1, 0],
-  );
-
-  // How centred this item currently is, independent of its own fade-in/out,
-  // used only to brighten its caption as it nears the middle of the screen.
-  const focus = useTransform(centre, [vw * 0.22, vw * 0.5, vw * 0.78], [0, 1, 0]);
-  const captionOpacity = useTransform(focus, [0, 1], [0.4, 1]);
-  const captionY = useTransform(focus, [0, 1], [4, 0]);
-
-  return (
-    <motion.figure
-      className="group absolute top-1/2"
-      style={{
-        left,
-        width,
-        height,
-        marginTop: -height / 2,
-        scale,
-        opacity,
-      }}
-    >
-      <motion.div
-        className="relative h-full w-full overflow-hidden bg-ink-soft"
-        whileHover={{ scale: 1.035 }}
-        transition={{ duration: 0.5, ease: EASE }}
-      >
-        <MediaFrame media={media} />
-      </motion.div>
-      <motion.figcaption
-        style={{ opacity: captionOpacity, y: captionY }}
-        className="mt-3 flex items-baseline gap-2 font-mono text-[10px] uppercase tracking-wider text-stone"
-      >
-        <span>{media.caption}</span>
-        {media.coords && (
-          <span className="text-stone/60">
-            {media.coords.lat.toFixed(3)}°, {media.coords.lon.toFixed(3)}°
-          </span>
-        )}
-      </motion.figcaption>
-    </motion.figure>
   );
 }
