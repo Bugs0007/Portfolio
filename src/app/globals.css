@@ -31,6 +31,23 @@
   --ease-site: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* The native scrollbar is replaced by <ScrollProgress />, which is mounted
+   once in the root layout. Only the bar's *rendering* is suppressed here:
+   scrolling itself stays entirely native, which is what Lenis drives and what
+   keeps the wheel, trackpad, keyboard (Space, PgDn, arrows, Home/End) and
+   touch all working. Setting overflow:hidden on html or body would take that
+   away and break Lenis with it, so it is deliberately not done. */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge/IE */
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 body {
   background: var(--ink);
   color: var(--mist);

@@ -7,6 +7,7 @@ import {
   Tiro_Telugu,
 } from "next/font/google";
 import { IntroSplash } from "@/components/IntroSplash";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-ink text-mist font-body">
         <IntroSplash />
+        <ScrollProgress />
         {children}
       </body>
     </html>

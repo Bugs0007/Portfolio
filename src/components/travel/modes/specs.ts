@@ -156,8 +156,13 @@ export const focusSpec: TravelModeSpec = {
 export const columnsSpec: TravelModeSpec = {
   id: "columns",
   label: "Columns",
-  getSpan: (n) => railSpanForBeats(columnsBeats(n), 0.55),
-  getSizes: (isNarrow) => (isNarrow ? "48vw" : "31vw"),
+  // Two columns instead of three means each one carries about half again as
+  // much content, so a beat needs more vertical distance to cross the frame at
+  // the same apparent speed. 0.55 with two columns felt rushed.
+  getSpan: (n) => railSpanForBeats(columnsBeats(n), 0.7),
+  // Two columns in a 76vw container (capped 1280) is ~37vw per tile at common
+  // desktop widths; phones collapse to a single ~92vw column.
+  getSizes: (isNarrow) => (isNarrow ? "92vw" : "37vw"),
 };
 
 export const radialSpec: TravelModeSpec = {
