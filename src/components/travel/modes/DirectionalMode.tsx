@@ -2,9 +2,10 @@
 
 import { useTransform, type MotionValue } from "motion/react";
 import type { JourneyMedia } from "@/content/site";
-import { beatCountFor, chunkMedia, railSpanForBeats } from "@/lib/travel-beats";
+import { chunkMedia } from "@/lib/travel-beats";
+import { directionalBeats } from "./specs";
 import { MediaTile, useBeatWindow } from "./shared";
-import type { TravelModeDef, TravelModeProps } from "./types";
+import type { TravelModeProps } from "./types";
 
 type Direction =
   | "left"
@@ -66,16 +67,15 @@ const BASE_X_OFFSETS: Record<number, number[]> = {
   3: [-0.19, 0, 0.19],
 };
 
-function beatCount(n: number) {
-  return beatCountFor(n, { base: 5, growth: 1.3, min: Math.min(5, n) || 1, max: 10 });
-}
-
-function getSpan(n: number) {
-  return railSpanForBeats(beatCount(n), 0.6);
-}
-
-function DirectionalMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
-  const count = beatCount(journey.media.length);
+export default function DirectionalMode({
+  journey,
+  progress,
+  vw,
+  vh,
+  isNarrow,
+  sizes,
+}: TravelModeProps) {
+  const count = directionalBeats(journey.media.length);
   const beats = chunkMedia(journey.media, count);
   const lastIndex = journey.media.length - 1;
 
@@ -119,6 +119,7 @@ function DirectionalMode({ journey, progress, vw, vh, isNarrow }: TravelModeProp
               vw={vw}
               vh={vh}
               isNarrow={isNarrow}
+              sizes={sizes}
             />
           );
         });
@@ -142,6 +143,7 @@ function DirectionalItem({
   vw,
   vh,
   isNarrow,
+  sizes,
 }: {
   media: JourneyMedia;
   progress: MotionValue<number>;
@@ -157,6 +159,7 @@ function DirectionalItem({
   vw: number;
   vh: number;
   isNarrow: boolean;
+  sizes: string;
 }) {
   const beatLocal = useBeatWindow(progress, beatIndex, beatCount, 0.16);
   // A short internal stagger so a multi-item beat still reads as a phrase
@@ -197,16 +200,10 @@ function DirectionalItem({
   return (
     <MediaTile
       media={media}
+      sizes={sizes}
       showCaption={depth === 0}
       captionOpacity={opacity}
       style={{ left: x, top: y, width, height, opacity, scale, rotate, zIndex: 3 - depth }}
     />
   );
 }
-
-export const directionalMode: TravelModeDef = {
-  id: "directional",
-  label: "Directional",
-  getSpan,
-  Component: DirectionalMode,
-};

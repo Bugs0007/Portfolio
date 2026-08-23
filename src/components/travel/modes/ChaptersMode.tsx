@@ -2,24 +2,17 @@
 
 import { useTransform, type MotionValue } from "motion/react";
 import type { JourneyMedia } from "@/content/site";
-import { beatCountFor, chunkMedia, railSpanForBeats } from "@/lib/travel-beats";
+import { chunkMedia } from "@/lib/travel-beats";
+import { chaptersBeats } from "./specs";
 import { MediaTile, useBeatWindow } from "./shared";
-import type { TravelModeDef, TravelModeProps } from "./types";
+import type { TravelModeProps } from "./types";
 
 // 3-5 cinematic scenes instead of one beat per photo: each scene is a hero
 // (the first, chronologically earliest, item in its slice) plus a handful of
 // supporting frames, so a 40-photo journey reads as roughly five considered
 // moments rather than forty individual beats.
-function beatCount(n: number) {
-  return beatCountFor(n, { base: 3, growth: 1.4, min: Math.min(3, n) || 1, max: 5 });
-}
-
-function getSpan(n: number) {
-  return railSpanForBeats(beatCount(n), 0.95);
-}
-
-function ChaptersMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
-  const count = beatCount(journey.media.length);
+export default function ChaptersMode({ journey, progress, vw, vh, isNarrow, sizes }: TravelModeProps) {
+  const count = chaptersBeats(journey.media.length);
   const chunks = chunkMedia(journey.media, count);
   const maxSupporting = isNarrow ? 2 : 4;
 
@@ -38,6 +31,7 @@ function ChaptersMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) 
           vw={vw}
           vh={vh}
           isNarrow={isNarrow}
+          sizes={sizes}
         />
       ))}
     </div>
@@ -53,6 +47,7 @@ function Scene({
   vw,
   vh,
   isNarrow,
+  sizes,
 }: {
   hero: JourneyMedia;
   supporting: JourneyMedia[];
@@ -62,6 +57,7 @@ function Scene({
   vw: number;
   vh: number;
   isNarrow: boolean;
+  sizes: string;
 }) {
   // Tighter than the other modes' overlap: hero and supporting positions are
   // fixed per scene (not sliding off-screen like a ribbon), so a wide
@@ -80,6 +76,7 @@ function Scene({
     <>
       <MediaTile
         media={hero}
+        sizes={sizes}
         captionOpacity={heroOpacity}
         style={{
           left: heroLeft,
@@ -103,6 +100,7 @@ function Scene({
           vw={vw}
           vh={vh}
           isNarrow={isNarrow}
+          sizes={sizes}
         />
       ))}
     </>
@@ -117,6 +115,7 @@ function SupportItem({
   vw,
   vh,
   isNarrow,
+  sizes,
 }: {
   media: JourneyMedia;
   local: MotionValue<number>;
@@ -125,6 +124,7 @@ function SupportItem({
   vw: number;
   vh: number;
   isNarrow: boolean;
+  sizes: string;
 }) {
   const height = vh * (isNarrow ? 0.16 : 0.2);
   const width = Math.min((height * media.width) / media.height, vw * (isNarrow ? 0.34 : 0.24));
@@ -150,6 +150,7 @@ function SupportItem({
   return (
     <MediaTile
       media={media}
+      sizes={sizes}
       showCaption={false}
       style={{
         ...style,
@@ -162,10 +163,3 @@ function SupportItem({
     />
   );
 }
-
-export const chaptersMode: TravelModeDef = {
-  id: "chapters",
-  label: "Chapters",
-  getSpan,
-  Component: ChaptersMode,
-};

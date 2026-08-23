@@ -2,24 +2,17 @@
 
 import { motion, useTransform, type MotionValue } from "motion/react";
 import type { JourneyMedia } from "@/content/site";
-import { beatCountFor, chunkMedia, railSpanForBeats } from "@/lib/travel-beats";
+import { chunkMedia } from "@/lib/travel-beats";
+import { filmstripBeats } from "./specs";
 import { MediaTile, useBeatWindow } from "./shared";
-import type { TravelModeDef, TravelModeProps } from "./types";
+import type { TravelModeProps } from "./types";
 
 // A denser, two-row contact-sheet variant of Stream: each cluster (usually
 // 1-3 items) rides across the screen as one unit, split into a top and
 // bottom row so several frames occupy the same visual interval instead of
 // one at a time. More, cheaper beats than Stream since each beat is smaller.
-function beatCount(n: number) {
-  return beatCountFor(n, { base: 6, growth: 1.3, min: Math.min(6, n) || 1, max: 12 });
-}
-
-function getSpan(n: number) {
-  return railSpanForBeats(beatCount(n), 0.5);
-}
-
-function FilmstripMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
-  const count = beatCount(journey.media.length);
+export default function FilmstripMode({ journey, progress, vw, vh, isNarrow, sizes }: TravelModeProps) {
+  const count = filmstripBeats(journey.media.length);
   const clusters = chunkMedia(journey.media, count);
   const rowHeight = vh * (isNarrow ? 0.22 : 0.28);
   const gap = isNarrow ? 12 : 20;
@@ -40,6 +33,7 @@ function FilmstripMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps)
           rowHeight={rowHeight}
           gap={gap}
           maxWidthRatio={maxWidthRatio}
+          sizes={sizes}
         />
       ))}
     </div>
@@ -57,6 +51,7 @@ function FilmstripCluster({
   rowHeight,
   gap,
   maxWidthRatio,
+  sizes,
 }: {
   items: JourneyMedia[];
   progress: MotionValue<number>;
@@ -66,6 +61,7 @@ function FilmstripCluster({
   rowHeight: number;
   gap: number;
   maxWidthRatio: number;
+  sizes: string;
 }) {
   const local = useBeatWindow(progress, index, count, 0.22);
 
@@ -93,13 +89,23 @@ function FilmstripCluster({
   return (
     <motion.div className="absolute inset-y-0 left-0" style={{ x, width: ribbonWidth }}>
       {laidOut.map((item) => (
-        <FilmstripItem key={item.media.src} item={item} clusterX={x} vw={vw} />
+        <FilmstripItem key={item.media.src} item={item} clusterX={x} vw={vw} sizes={sizes} />
       ))}
     </motion.div>
   );
 }
 
-function FilmstripItem({ item, clusterX, vw }: { item: LaidOutItem; clusterX: MotionValue<number>; vw: number }) {
+function FilmstripItem({
+  item,
+  clusterX,
+  vw,
+  sizes,
+}: {
+  item: LaidOutItem;
+  clusterX: MotionValue<number>;
+  vw: number;
+  sizes: string;
+}) {
   const { media, row, left, width, height } = item;
   const centre = useTransform(clusterX, (v) => v + left + width / 2);
   const scale = useTransform(centre, [0, vw * 0.5, vw], [0.94, 1, 0.94]);
@@ -114,16 +120,10 @@ function FilmstripItem({ item, clusterX, vw }: { item: LaidOutItem; clusterX: Mo
   return (
     <MediaTile
       media={media}
+      sizes={sizes}
       showCaption={row === 0}
       captionOpacity={opacity}
       style={{ left, width, height, scale, opacity, ...topStyle }}
     />
   );
 }
-
-export const filmstripMode: TravelModeDef = {
-  id: "filmstrip",
-  label: "Filmstrip",
-  getSpan,
-  Component: FilmstripMode,
-};

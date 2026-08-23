@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import type { Journey } from "@/content/site";
 import type { TravelMode } from "@/lib/travel-mode";
 import { TRAVEL_MODE_DEFS } from "./travel/modes";
@@ -43,8 +48,14 @@ export function TravelChapter({
   // Each mode compresses its own rail span from a beat count instead of raw
   // media count (see src/lib/travel-beats.ts), so a 40-photo journey no
   // longer drags the section out linearly the way one beat per photo did.
+  //
+  // Both of these come from the mode's eagerly-imported spec, never from its
+  // lazy component: the container has to be the right height and the images
+  // have to be requested at the right size on the very first frame, before
+  // the mode's own chunk has finished loading.
   const introSpan = 1;
   const railSpan = modeDef.getSpan(journey.media.length, isNarrow);
+  const sizes = modeDef.getSizes(isNarrow);
   const totalSpan = introSpan + railSpan;
   const introFraction = introSpan / totalSpan;
 
@@ -53,10 +64,17 @@ export function TravelChapter({
     offset: ["start start", "end end"],
   });
 
-  const railProgress = useTransform(scrollYProgress, [introFraction, 1], [0, 1]);
+  const railProgress = useTransform(
+    scrollYProgress,
+    [introFraction, 1],
+    [0, 1],
+  );
 
   return (
-    <section aria-label={`${journey.title} chapter`} className="relative bg-ink">
+    <section
+      aria-label={`${journey.title} chapter`}
+      className="relative bg-ink"
+    >
       <div
         ref={containerRef}
         style={{ height: `${totalSpan * 100}vh` }}
@@ -81,13 +99,20 @@ export function TravelChapter({
             }}
           >
             {size.vw > 0 && (
-              <modeDef.Component
-                journey={journey}
-                progress={railProgress}
-                vw={size.vw}
-                vh={size.vh}
-                isNarrow={isNarrow}
-              />
+              // Nothing is rendered while the mode's chunk is in flight. The
+              // chapter's title beat owns the first viewport-height of scroll
+              // either way, so the rail has not been reached yet and a
+              // spinner here would be an interruption, not a reassurance.
+              <Suspense fallback={null}>
+                <modeDef.Component
+                  journey={journey}
+                  progress={railProgress}
+                  vw={size.vw}
+                  vh={size.vh}
+                  isNarrow={isNarrow}
+                  sizes={sizes}
+                />
+              </Suspense>
             )}
           </div>
         </div>
@@ -116,9 +141,21 @@ function ChapterHeader({
   // Kept short deliberately: this window is exactly what's on screen right as
   // the previous chapter's last photo has already faded off, so the longer
   // this ramp, the longer the screen sits empty between chapters.
-  const revealOpacity = useTransform(scrollYProgress, [0, introFraction * 0.18], [0, 1]);
-  const revealY = useTransform(scrollYProgress, [0, introFraction * 0.18], [40, 0]);
-  const dividerScale = useTransform(scrollYProgress, [0, introFraction], [0.94, 1.04]);
+  const revealOpacity = useTransform(
+    scrollYProgress,
+    [0, introFraction * 0.18],
+    [0, 1],
+  );
+  const revealY = useTransform(
+    scrollYProgress,
+    [0, introFraction * 0.18],
+    [40, 0],
+  );
+  const dividerScale = useTransform(
+    scrollYProgress,
+    [0, introFraction],
+    [0.94, 1.04],
+  );
   const holdOutOpacity = useTransform(
     scrollYProgress,
     [introFraction * 0.62, introFraction * 0.92],
@@ -153,7 +190,8 @@ function ChapterHeader({
         className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center px-6 sm:px-10 lg:px-16"
       >
         <p className="font-mono text-xs uppercase tracking-wider text-stone">
-          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          {String(index + 1).padStart(2, "0")} /{" "}
+          {String(total).padStart(2, "0")}
           {"  "}— {journey.when}
         </p>
         <motion.h3
@@ -172,10 +210,13 @@ function ChapterHeader({
           <p className="font-mono text-xs uppercase tracking-wider text-stone">
             {journey.title}
           </p>
-          <p className="font-mono text-[11px] text-stone/70">{journey.region}</p>
+          <p className="font-mono text-[11px] text-stone/70">
+            {journey.region}
+          </p>
         </div>
         <p className="font-mono text-xs uppercase tracking-wider text-stone/70">
-          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          {String(index + 1).padStart(2, "0")} /{" "}
+          {String(total).padStart(2, "0")}
         </p>
       </motion.div>
     </>

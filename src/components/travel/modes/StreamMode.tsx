@@ -2,9 +2,10 @@
 
 import { motion, useTransform, type MotionValue } from "motion/react";
 import type { JourneyMedia } from "@/content/site";
-import { beatCountFor, chunkMedia, railSpanForBeats } from "@/lib/travel-beats";
+import { chunkMedia } from "@/lib/travel-beats";
+import { streamBeats } from "./specs";
 import { MediaTile, useBeatWindow } from "./shared";
-import type { TravelModeDef, TravelModeProps } from "./types";
+import type { TravelModeProps } from "./types";
 
 // The evolution of the original single-ribbon Reel: same right-to-left
 // motion, same centre-based scale/opacity/caption-focus math, but the media
@@ -13,16 +14,9 @@ import type { TravelModeDef, TravelModeProps } from "./types";
 // [vw -> -ribbonWidth+vw*0.6], so screen time per beat stays roughly
 // constant no matter how large the journey gets, only beat count grows (and
 // that growth is capped).
-function beatCount(n: number) {
-  return beatCountFor(n, { base: 5, growth: 1.3, min: Math.min(5, n) || 1, max: 10 });
-}
 
-function getSpan(n: number) {
-  return railSpanForBeats(beatCount(n), 0.6);
-}
-
-function StreamMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
-  const count = beatCount(journey.media.length);
+export default function StreamMode({ journey, progress, vw, vh, isNarrow, sizes }: TravelModeProps) {
+  const count = streamBeats(journey.media.length);
   const beats = chunkMedia(journey.media, count);
   const height = vh * (isNarrow ? 0.42 : 0.5);
   const gap = isNarrow ? 18 : 34;
@@ -43,6 +37,7 @@ function StreamMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
           height={height}
           gap={gap}
           maxWidthRatio={maxWidthRatio}
+          sizes={sizes}
         />
       ))}
     </div>
@@ -58,6 +53,7 @@ function StreamBeat({
   height,
   gap,
   maxWidthRatio,
+  sizes,
 }: {
   items: JourneyMedia[];
   progress: MotionValue<number>;
@@ -67,6 +63,7 @@ function StreamBeat({
   height: number;
   gap: number;
   maxWidthRatio: number;
+  sizes: string;
 }) {
   // A modest overlap: enough for a brief crossfade at the handoff, same as
   // how two adjacent items on the old single ribbon briefly shared the
@@ -102,6 +99,7 @@ function StreamBeat({
           width={widths[i]}
           height={height}
           vw={vw}
+          sizes={sizes}
         />
       ))}
     </motion.div>
@@ -115,6 +113,7 @@ function StreamItem({
   width,
   height,
   vw,
+  sizes,
 }: {
   media: JourneyMedia;
   ribbonX: MotionValue<number>;
@@ -122,6 +121,7 @@ function StreamItem({
   width: number;
   height: number;
   vw: number;
+  sizes: string;
 }) {
   const centre = useTransform(ribbonX, (v) => v + left + width / 2);
   const scale = useTransform(centre, [0, vw * 0.5, vw], [0.92, 1, 0.92]);
@@ -140,16 +140,10 @@ function StreamItem({
   return (
     <MediaTile
       media={media}
+      sizes={sizes}
       captionOpacity={captionOpacity}
       captionY={captionY}
       style={{ left, top: "50%", width, height, marginTop: -height / 2, scale, opacity }}
     />
   );
 }
-
-export const streamMode: TravelModeDef = {
-  id: "stream",
-  label: "Stream",
-  getSpan,
-  Component: StreamMode,
-};

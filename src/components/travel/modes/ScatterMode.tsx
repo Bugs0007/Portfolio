@@ -3,9 +3,10 @@
 import type { ReactNode } from "react";
 import { useTransform, type MotionValue } from "motion/react";
 import type { JourneyMedia } from "@/content/site";
-import { beatCountFor, chunkMedia, railSpanForBeats } from "@/lib/travel-beats";
+import { chunkMedia } from "@/lib/travel-beats";
+import { scatterBeats } from "./specs";
 import { MediaTile, useBeatWindow } from "./shared";
-import type { TravelModeDef, TravelModeProps } from "./types";
+import type { TravelModeProps } from "./types";
 
 // A curated set of positions across the canvas (fractions of the available
 // width/height), cycled deterministically rather than placed at random, so
@@ -20,16 +21,8 @@ const SLOTS: { x: number; y: number }[] = [
   { x: 0.56, y: 0.4 },
 ];
 
-function beatCount(n: number) {
-  return beatCountFor(n, { base: 5, growth: 1.2, min: Math.min(4, n) || 1, max: 8 });
-}
-
-function getSpan(n: number) {
-  return railSpanForBeats(beatCount(n), 0.65);
-}
-
-function ScatterMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
-  const count = beatCount(journey.media.length);
+export default function ScatterMode({ journey, progress, vw, vh, isNarrow, sizes }: TravelModeProps) {
+  const count = scatterBeats(journey.media.length);
   const beats = chunkMedia(journey.media, count);
   // Overlap is the whole point here: several beats stay partly visible
   // together so the composition feels spatial, not a single file of items.
@@ -58,6 +51,7 @@ function ScatterMode({ journey, progress, vw, vh, isNarrow }: TravelModeProps) {
           vw={vw}
           vh={vh}
           isNarrow={isNarrow}
+          sizes={sizes}
         />,
       );
       globalIndex++;
@@ -78,6 +72,7 @@ function ScatterItem({
   vw,
   vh,
   isNarrow,
+  sizes,
 }: {
   media: JourneyMedia;
   progress: MotionValue<number>;
@@ -89,6 +84,7 @@ function ScatterItem({
   vw: number;
   vh: number;
   isNarrow: boolean;
+  sizes: string;
 }) {
   const local = useBeatWindow(progress, beatIndex, beatCount, overlap);
 
@@ -115,6 +111,7 @@ function ScatterItem({
   return (
     <MediaTile
       media={media}
+      sizes={sizes}
       showCaption={depth === 0}
       captionOpacity={captionOpacity}
       style={{
@@ -129,10 +126,3 @@ function ScatterItem({
     />
   );
 }
-
-export const scatterMode: TravelModeDef = {
-  id: "scatter",
-  label: "Scatter",
-  getSpan,
-  Component: ScatterMode,
-};

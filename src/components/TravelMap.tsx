@@ -84,7 +84,19 @@ type Playable = {
   alt: string;
 };
 
-export function MediaFrame({ media }: { media: Playable }) {
+// `sizes` defaults to the two-breakpoint string StaticJourneys' grid wants.
+// The flowing modes each override it with their own realistic rendered width
+// (see TravelModeSpec.getSizes), since a route marker and a full-bleed cinema
+// frame differ by about 4x and one shared value made the small ones over-fetch.
+export function MediaFrame({
+  media,
+  sizes = "(min-width: 640px) 52vw, 82vw",
+  fit = "contain",
+}: {
+  media: Playable;
+  sizes?: string;
+  fit?: "contain" | "cover";
+}) {
   if (media.kind === "video" && media.poster) {
     return (
       <VideoClip
@@ -93,6 +105,7 @@ export function MediaFrame({ media }: { media: Playable }) {
         width={media.width}
         height={media.height}
         alt={media.alt}
+        fit={fit}
       />
     );
   }
@@ -101,7 +114,7 @@ export function MediaFrame({ media }: { media: Playable }) {
       src={media.src}
       alt={media.alt}
       fill
-      sizes="(min-width: 640px) 52vw, 82vw"
+      sizes={sizes}
       className="object-cover"
     />
   );
