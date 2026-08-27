@@ -55,6 +55,19 @@ export function WatchingCard({
   const loopRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wantsPlayRef = useRef(false);
   const creatingRef = useRef(false);
+  // The imperatively created node the API swaps for an <iframe>. Held so
+  // teardown can remove it: it is not in React's tree, so React will not.
+  const mountElRef = useRef<HTMLDivElement | null>(null);
+  // The <iframe> the API swaps in for mountEl, captured at onReady. Held in a
+  // ref of our own rather than looked up through the React-rendered wrapper at
+  // teardown, which would be reading a ref whose value has already moved on.
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  // Set while this component is torn down, so nothing that resolves late can
+  // touch a player that is on its way out.
+  const cancelledRef = useRef(false);
+  // Whether this player has ever actually been asked to play. Guards the
+  // pointless pause described in applyIntent.
+  const hasPlayedRef = useRef(false);
 
   // Device capability, not reactive state: computed once, safe to read
   // synchronously since it only ever gates which effects/handlers attach,
@@ -81,8 +94,12 @@ export function WatchingCard({
   // applied as soon as a player actually exists to act on it.
   const applyIntent = () => {
     const player = playerRef.current;
-    if (!player || !playerReady) return;
+    // playerReady is the gate for every API call in this component: the
+    // IFrame API rejects anything sent before onReady with "API calls should
+    // be made after the onReady event".
+    if (!player || !playerReady || cancelledRef.current) return;
     if (wantsPlayRef.current) {
+      hasPlayedRef.current = true;
       player.seekTo(entry.startSeconds, true);
       player.mute();
       player.playVideo();
@@ -92,6 +109,13 @@ export function WatchingCard({
         playerRef.current?.seekTo(entry.startSeconds, true);
       }, LOOP_MS);
     } else {
+      // Nothing to pause if it never started. This ran on every card the
+      // moment onReady fired, and was the actual source of "The YouTube
+      // player is not attached to the DOM": a player built with autoplay:0 is
+      // already paused, so the call bought nothing, but it still posted a
+      // message to an iframe whose channel had only just been handed over.
+      // Stack traces put all of the remaining warnings on this one line.
+      if (!hasPlayedRef.current) return;
       player.pauseVideo();
       clearLoop();
       setPlaying(false);
@@ -105,9 +129,25 @@ export function WatchingCard({
     creatingRef.current = true;
     const mountEl = document.createElement("div");
     wrapperEl.appendChild(mountEl);
+    mountElRef.current = mountEl;
     loadYouTubeApi()
       .then((YT) => {
-        if (playerRef.current || !wrapperRef.current) return;
+        // This is the fix for "The YouTube player is not attached to the DOM".
+        //
+        // There is a long async gap between appending mountEl and the API
+        // resolving, and React 19 tears every component down and remounts it
+        // once in development. When that happened mid-flight, mountEl was
+        // still referenced by this closure but had been detached along with
+        // the wrapper React discarded, and the old guard only asked whether
+        // *a* wrapper existed, not whether this node was still in it. The
+        // player then got constructed on an orphan, and every subsequent call
+        // logged the warning: once per card, which is exactly what was seen.
+        //
+        // Checking the node itself covers both the remount and the plain
+        // unmount case, because teardown removes it.
+        if (cancelledRef.current || playerRef.current) return;
+        if (!mountEl.isConnected || mountEl.parentNode !== wrapperRef.current) return;
+        creatingRef.current = false;
         playerRef.current = new YT.Player(mountEl, {
           videoId: entry.youtubeId,
           playerVars: {
@@ -124,12 +164,19 @@ export function WatchingCard({
             origin: window.location.origin,
           },
           events: {
-            onReady: () => setPlayerReady(true),
+            onReady: () => {
+              iframeRef.current =
+                wrapperRef.current?.querySelector("iframe") ?? null;
+              setPlayerReady(true);
+            },
             onError: () => setFailed(true),
           },
         });
       })
-      .catch(() => setFailed(true));
+      .catch(() => {
+        creatingRef.current = false;
+        setFailed(true);
+      });
   };
 
   useEffect(() => {
@@ -137,21 +184,52 @@ export function WatchingCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerReady]);
 
+  // Full teardown. Declared before the observer effects below so React runs it
+  // first on unmount: the player is gone before anything that could ask it to
+  // play or pause is still attached.
   useEffect(() => {
+    cancelledRef.current = false;
     return () => {
+      cancelledRef.current = true;
       clearLoop();
-      playerRef.current?.destroy();
+
+      const player = playerRef.current;
+      playerRef.current = null;
+
+      // destroy() is itself an API call, so it warns like any other if the
+      // iframe has already left the document. On a real unmount it always has:
+      // React detaches DOM during the mutation phase and only runs passive
+      // effect cleanups afterwards, so by the time this runs the wrapper and
+      // the iframe inside it are gone. Destroying then is both pointless (the
+      // element it would remove is already removed) and noisy.
+      //
+      // On the dev double-mount the node *is* still connected, which is the
+      // case that actually needs tearing down, and it still gets it.
+      const iframe = iframeRef.current;
+      iframeRef.current = null;
+      if (player && iframe && document.contains(iframe)) player.destroy();
+
+      // The API replaces mountEl with the iframe, so this only bites when
+      // teardown beats the API to it and the placeholder is still sitting there.
+      const mountEl = mountElRef.current;
+      if (mountEl && document.contains(mountEl)) mountEl.remove();
+      mountElRef.current = null;
+
+      creatingRef.current = false;
+      hasPlayedRef.current = false;
+      setPlayerReady(false);
     };
   }, []);
 
   const requestPlay = () => {
-    if (reduceMotion || failed) return;
+    if (reduceMotion || failed || cancelledRef.current) return;
     wantsPlayRef.current = true;
     ensurePlayer();
     applyIntent();
   };
 
   const requestPause = () => {
+    if (cancelledRef.current) return;
     wantsPlayRef.current = false;
     applyIntent();
   };
@@ -201,7 +279,9 @@ export function WatchingCard({
   const toggleMute = (e: MouseEvent) => {
     e.stopPropagation();
     const player = playerRef.current;
-    if (!player) return;
+    // Same onReady gate as applyIntent. This one used to check only that a
+    // player object existed, which is true well before it can accept calls.
+    if (!player || !playerReady || cancelledRef.current) return;
     if (muted) {
       player.unMute();
       setMuted(false);
