@@ -1,7 +1,7 @@
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { PersistentNav } from "@/components/PersistentNav";
 import { Hero } from "@/components/Hero";
-import { Work } from "@/components/Work";
+import { WorkRig } from "@/components/work/WorkRig";
 import { Seam } from "@/components/Seam";
 import { Music } from "@/components/Music";
 import { TravelMap } from "@/components/TravelMap";
@@ -16,7 +16,7 @@ export default function Home() {
       <PersistentNav />
       <main>
         <Hero />
-        <Work />
+        <WorkRig />
         <Seam />
         <Music />
         <TravelMap />

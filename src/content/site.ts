@@ -235,6 +235,144 @@ export const caseIntelShowcase: ShowcasePanel[] = [
   },
 ];
 
+// --- Work rig data model ---------------------------------------------------
+//
+// The Work section has a multi-mode display rig (src/components/work), the same
+// shape as Travel's. Every mode reads this one structure, so no mode has to
+// re-parse a metric back out of a prose sentence.
+//
+// This is additive: `experience`, `projects` and `caseIntelShowcase` above are
+// untouched and are still what the classic mode renders. `bullets` here are
+// those same sentences verbatim, and `metrics` are extracted *alongside* them,
+// never instead of them. Nothing here is a new claim: every number below is
+// already stated in the prose it was lifted from.
+
+export type WorkMetric = {
+  label: string; // "events/day"
+  value: string; // "1,000+"
+  from?: string; // "1.2s"  (for before/after pairs)
+  to?: string; // "0.8s"
+  note?: string;
+};
+
+export type WorkItem = {
+  id: string;
+  kind: "role" | "project";
+  title: string;
+  org?: string;
+  subtitle?: string;
+  when: string;
+  href?: string;
+  // Only brynklabs and caseintel. The heavier modes (tube, pipeline, product)
+  // give a full pinned treatment to featured items and fall back to a compact
+  // classic card for everything else, so this flag is what stops five projects
+  // from turning the section into thirty viewport-heights of scroll.
+  featured: boolean;
+  summary: string;
+  bullets: string[];
+  metrics: WorkMetric[];
+  stack: string[];
+  // NEEDS: no work item has media yet. Tube mode wants real screenshots (see
+  // src/components/work/modes/TubeMode.tsx for the exact format) and renders a
+  // text tube until they exist. Nothing is generated to fill the gap.
+  media?: { src: string; width: number; height: number; alt: string }[];
+};
+
+export const workItems: WorkItem[] = [
+  {
+    id: "brynklabs",
+    kind: "role",
+    title: "Brynklabs",
+    org: "Brynklabs",
+    subtitle: "Software Development Intern",
+    when: "Aug 2025-Mar 2026",
+    href: "https://www.brynklabs.com/",
+    featured: true,
+    // Derived from the bullets below, not a new claim: every noun in it appears
+    // in one of them.
+    summary:
+      "Backend and platform work on Django and AWS: notifications, queueing, auth, CI/CD, and an MCP integration for Gathr.",
+    bullets: [...experience[0].bullets],
+    metrics: [
+      {
+        label: "events/day",
+        value: "1,000+",
+        note: "multi-channel notification system",
+      },
+      { label: "onboarding effort", value: "-50%" },
+      { label: "feature rollout time", value: "-25%" },
+      { label: "release cycle", value: "under 15 min", from: "hours", to: "under 15 min" },
+    ],
+    stack: [...experience[0].stack],
+  },
+  {
+    id: "caseintel",
+    kind: "project",
+    title: "CaseIntel",
+    when: "2026",
+    href: "https://caseintel.in",
+    featured: true,
+    summary: projects[0].summary,
+    bullets: [projects[0].decision],
+    // The two coverage numbers are the showcase panels' own stats, already on
+    // screen in classic mode. The node count is stated in the decision line.
+    metrics: [
+      { label: "districts scanned", value: "33 / 33" },
+      { label: "list types read", value: "8 / 8" },
+      { label: "LangGraph pipeline", value: "3 nodes" },
+    ],
+    stack: [...projects[0].stack],
+  },
+  {
+    id: "composite-sketch",
+    kind: "project",
+    title: "Composite Sketch & Criminal Face Identification System",
+    when: "2026",
+    featured: false,
+    summary: projects[1].summary,
+    bullets: [projects[1].decision],
+    metrics: [{ label: "face embedding", value: "128-D", note: "dlib" }],
+    stack: [...projects[1].stack],
+  },
+  {
+    id: "attendance",
+    kind: "project",
+    title: "Automated Attendance Management System",
+    when: "2024",
+    featured: false,
+    summary: projects[2].summary,
+    bullets: [projects[2].decision],
+    metrics: [
+      { label: "manual effort", value: "-90%" },
+      {
+        label: "recognition latency",
+        value: "0.8s",
+        from: "1.2s",
+        to: "0.8s",
+        note: "33% faster, multithreaded frames",
+      },
+      { label: "recognition accuracy", value: "92%", from: "85%", to: "92%" },
+      { label: "uptime", value: "99.9%", note: "AWS EC2, semester-long pilot" },
+      { label: "students", value: "30+" },
+    ],
+    stack: [...projects[2].stack],
+  },
+  {
+    id: "youtube-shorts",
+    kind: "project",
+    title: "YouTube Shorts Automation Pipeline",
+    when: "",
+    featured: false,
+    summary: projects[3].summary,
+    bullets: [projects[3].decision],
+    metrics: [],
+    stack: [...projects[3].stack],
+  },
+];
+
+export const featuredWorkItems = workItems.filter((item) => item.featured);
+export const supportingWorkItems = workItems.filter((item) => !item.featured);
+
 export const music = {
   intro: "Learning flute and guitar.",
   media: {
@@ -609,28 +747,93 @@ export const journeys: Journey[] = [
   },
 ];
 
+export type ArtPiece = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption: string;
+  medium: "painting" | "sketch";
+};
+
 export const art = {
   note: "Paint and sketch when I get the chance.",
-  paintings: [
+  // Was `paintings`, now `pieces`: the section holds both mediums, and the old
+  // name would have been a lie the moment the sketchbook went in.
+  pieces: [
     {
       src: "/media/art/elephant.jpg",
       width: 1204,
       height: 1821,
       alt: "Acrylic painting by Bhagath of an elephant's face in warm oranges and yellows.",
+      caption: "Elephant",
+      medium: "painting",
     },
     {
       src: "/media/art/ganesh.jpg",
       width: 1539,
       height: 1818,
       alt: "Acrylic painting by Bhagath of Ganesh in warm reds and golds.",
+      caption: "Ganesh",
+      medium: "painting",
     },
     {
       src: "/media/art/tiger.jpg",
       width: 923,
       height: 1389,
       alt: "Acrylic painting by Bhagath of a tiger wading through blue water.",
+      caption: "Tiger",
+      medium: "painting",
     },
-  ],
+    {
+      src: "/media/art/sketch-eye.jpg",
+      width: 1500,
+      height: 1934,
+      alt: "Pencil study by Bhagath of a single eye, close up, with detailed lashes and a highlight on the iris.",
+      caption: "Eye study",
+      medium: "sketch",
+    },
+    {
+      src: "/media/art/sketch-rain-traveller.jpg",
+      width: 1500,
+      height: 1774,
+      alt: "Pencil sketch by Bhagath of a figure in a wide straw hat and long coat walking through heavy rain.",
+      caption: "Rain",
+      medium: "sketch",
+    },
+    {
+      src: "/media/art/sketch-portrait-suit.jpg",
+      width: 1500,
+      height: 1710,
+      alt: "Charcoal portrait by Bhagath of a man in a suit and tie, face half in shadow.",
+      caption: "Portrait",
+      medium: "sketch",
+    },
+    {
+      src: "/media/art/sketch-hanuman.jpg",
+      width: 1500,
+      height: 2056,
+      alt: "Pencil sketch by Bhagath of Hanuman wearing a crown, drawn in fine line work.",
+      caption: "Hanuman",
+      medium: "sketch",
+    },
+    {
+      src: "/media/art/sketch-hat-figure.jpg",
+      width: 1500,
+      height: 2126,
+      alt: "Pen sketch by Bhagath of a standing figure in a wide-brimmed hat, one arm raised to the brim.",
+      caption: "Standing figure",
+      medium: "sketch",
+    },
+    {
+      src: "/media/art/sketch-anime-figure.jpg",
+      width: 1400,
+      height: 2192,
+      alt: "Pen sketch by Bhagath of an anime-style character with spiked hair, captioned in Japanese.",
+      caption: "Tenjou tenge",
+      medium: "sketch",
+    },
+  ] satisfies ArtPiece[] as ArtPiece[],
 };
 
 export type RidingMedia = {

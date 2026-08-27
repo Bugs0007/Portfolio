@@ -1,32 +1,10 @@
 "use client";
 
-import { motion, useTransform, type MotionStyle, type MotionValue } from "motion/react";
+import { motion, type MotionStyle, type MotionValue } from "motion/react";
 import type { JourneyMedia } from "@/content/site";
 import { EASE } from "@/lib/motion";
 import { MediaFrame } from "@/components/TravelMap";
 
-// Maps a beat's index within a fixed-size sequence to a local 0 -> 1
-// progress, padded so neighbouring beats overlap and cross-fade rather than
-// hard-cutting. `overlap` is a fraction of one beat's own width.
-//
-// Deliberately generic over its input: the modes that show one frame at a
-// time (Clip, Focus, Cinema, Ring) call it a second time on a beat's own
-// local value to sub-divide that beat between its items, so every item gets
-// screen time without the beat count, and therefore the span, going up.
-export function useBeatWindow(
-  progress: MotionValue<number>,
-  index: number,
-  count: number,
-  overlap = 0.35,
-): MotionValue<number> {
-  const width = 1 / count;
-  const start = index * width;
-  const end = start + width;
-  const pad = width * overlap;
-  const paddedStart = Math.max(0, start - pad);
-  const paddedEnd = Math.min(1, end + pad);
-  return useTransform(progress, [paddedStart, paddedEnd], [0, 1]);
-}
 
 // The one leaf renderer every mode composes with: a media frame plus its
 // mono caption, styled entirely through motion values so no mode needs its
@@ -101,20 +79,4 @@ export function layOut(lengths: number[], gap: number): number[] {
     acc += len + gap;
   }
   return out;
-}
-
-// Fits a media item into a box by height, capped to a fraction of the
-// viewport width. Every mode was doing this same two-line calculation
-// inline; the portrait shots (several are 1237x2200) are the reason the cap
-// exists at all.
-export function fitByHeight(
-  media: JourneyMedia,
-  height: number,
-  vw: number,
-  maxWidthRatio: number,
-): { width: number; height: number } {
-  return {
-    width: Math.min((height * media.width) / media.height, vw * maxWidthRatio),
-    height,
-  };
 }

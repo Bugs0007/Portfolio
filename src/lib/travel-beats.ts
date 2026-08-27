@@ -4,7 +4,9 @@
 // raw media count. A journey with 6 items or fewer is already a handful of
 // beats, so it passes through unchanged; compression only kicks in once a
 // journey has enough media that one-beat-per-item would drag.
-export function clamp(value: number, min: number, max: number): number {
+// Module-private: nothing outside this file used it once the other gallery
+// modes were deleted.
+function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 

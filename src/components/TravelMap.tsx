@@ -4,11 +4,8 @@ import Image from "next/image";
 import { useSyncExternalStore } from "react";
 import { journeys } from "@/content/site";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { useTravelMode } from "@/hooks/useTravelMode";
-import type { TravelMode } from "@/lib/travel-mode";
 import { VideoClip } from "./VideoClip";
 import { TravelChapter } from "./TravelChapter";
-import { TravelModeDevTools } from "./travel/TravelModeDevTools";
 
 const noopSubscribe = () => () => {};
 
@@ -26,37 +23,19 @@ function useIsMounted() {
 export function TravelMap() {
   const reduceMotion = usePrefersReducedMotion();
   const mounted = useIsMounted();
-  // Mode selection is independent of the reduced-motion branch below: the
-  // dev tools mount either way (a keyboard switch is harmless under
-  // StaticJourneys, which never reads the mode), but only FlowingJourneys
-  // actually renders a different gallery treatment per mode.
-  const mode = useTravelMode();
 
   // Server render and the first client render both produce the static list, so
   // hydration matches exactly and the photos are in the HTML either way. The
   // flowing version takes over once mounted, and never for reduced motion.
-  if (reduceMotion || !mounted) {
-    return (
-      <>
-        <StaticJourneys />
-        <TravelModeDevTools />
-      </>
-    );
-  }
+  if (reduceMotion || !mounted) return <StaticJourneys />;
 
-  return (
-    <>
-      <FlowingJourneys mode={mode} />
-      <TravelModeDevTools />
-    </>
-  );
+  return <FlowingJourneys />;
 }
 
-// Every journey gets its own pinned chapter: an oversized title beat, then a
-// scroll-scrubbed horizontal rail through that trip's media. See
-// TravelChapter.tsx for the mechanics, and src/components/travel/modes for
-// the five interchangeable rail treatments `mode` switches between.
-function FlowingJourneys({ mode }: { mode: TravelMode }) {
+// Every journey gets its own pinned chapter: an oversized title beat, then two
+// counter-travelling columns of that trip's media. See TravelChapter.tsx for
+// the mechanics.
+function FlowingJourneys() {
   return (
     <div id="travel">
       {journeys.map((journey, i) => (
@@ -65,7 +44,6 @@ function FlowingJourneys({ mode }: { mode: TravelMode }) {
           journey={journey}
           index={i}
           total={journeys.length}
-          mode={mode}
         />
       ))}
     </div>
