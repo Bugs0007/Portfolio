@@ -320,8 +320,23 @@ export const workItems: WorkItem[] = [
       { label: "districts scanned", value: "33 / 33" },
       { label: "list types read", value: "8 / 8" },
       { label: "LangGraph pipeline", value: "3 nodes" },
+      { label: "tests passing", value: "360" },
     ],
-    stack: [...projects[0].stack],
+    // Extends projects[0].stack rather than editing it, so the classic project
+    // card is unchanged. These are the terms from the architecture that are
+    // real parts of the stack but have no step of their own in the flow, and
+    // the density rule says a term without a place in a flow belongs in the
+    // tags rather than in a box.
+    stack: [
+      ...projects[0].stack,
+      "spaCy",
+      "HyDE",
+      "RRF",
+      "cross-encoder",
+      "tsvector",
+      "pdfminer",
+      "fpdf2",
+    ],
   },
   {
     id: "composite-sketch",

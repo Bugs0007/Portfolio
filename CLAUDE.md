@@ -162,18 +162,91 @@ rather than running off into it.
 ## Work section
 
 `WorkRig.tsx` renders `PipelineMode`: scroll-driven architecture diagrams, one pinned
-chapter per featured item, with SVG paths drawn via `pathLength` + `strokeDashoffset`
-read off scroll position.
+chapter per featured item, drawn via `pathLength` + `strokeDashoffset` read off scroll
+position.
+
+The diagrams are a **hybrid, not SVG**. Nodes are HTML divs the browser sizes from their
+own text (`width: max-content` between a min and a max that wraps); edges are one SVG
+layer behind them, computed from the measured rects. This is structural, not cosmetic:
+the previous version estimated node width from label character count and dropped edge
+labels at the midpoint of two node *centres*, which is what produced every clipped pill
+and every metric sitting on top of a box. A node can no longer be narrower than its
+content, and a label can no longer land on a node, because the two live in bands that
+never overlap.
+
+The pieces, in `src/components/work/modes/`:
+
+- `diagram-spec.ts`, the shape (lanes, rows, slots, stacks, groups, anchors, edges) plus
+  `deriveTiming`. **No geometry**, so nothing here can encode a width. Reveal times are
+  derived from lane order and slot depth, never hand-tuned: at roughly forty nodes,
+  hand-tuning would be forty numbers that rot the moment a step is inserted.
+- `diagram-layout.ts`, pure geometry: band stacking, port selection, cubics, the label
+  sweep, `tuneGaps`, `fitScale`, `computeFit`. No React, no DOM.
+- `specs/brynklabs.ts` and `specs/caseintel.ts`, the content.
+- `Diagram.tsx`, measurement and rendering.
+- `work-beats.ts`, `pinSpanFor` from the beat count. Deliberately not Travel's
+  `railSpanForBeats`: a photo is glanced at, a diagram node is read.
+
+Load-bearing details, all of them learned the hard way:
+
+- Measure with **`offsetWidth`/`offsetHeight`, never `getBoundingClientRect`**. The stage
+  carries the fit transform; `offset*` comes from the layout box and is immune to it,
+  while `getBoundingClientRect` returns the scaled box and would feed a smaller content
+  size back into the fit and oscillate. Everything measurable is tagged `data-mid` and
+  read in one `querySelectorAll` pass, and a signature string guards the `setState` so
+  the effect is idempotent under StrictMode, resize and `document.fonts.ready`.
+- **Bands alternate**: node band, label band, node band. Every edge label sits in a label
+  band with a short leader to its edge, and colliding labels drop into a second row via a
+  greedy interval sweep (`sweepRows`). No label position is hand-placed.
+- The label anchor is the **analytic Bezier midpoint**, `B(0.5) = (P0+3C1+3C2+P3)/8`, not
+  the midpoint of two node centres, which sits well off the curve on exactly the edges
+  that carry labels.
+- Edge ports come from the **gap between measured rects**, not the centre delta. When two
+  boxes overlap on an axis that axis is unavailable and the choice is forced, which is
+  what the old `1.2` fudge factor was standing in for.
+- Arrowheads are their own `motion.path` on their own window, **never `marker-end`**: a
+  marker is placed by path geometry rather than stroke visibility, so it would sit at
+  full opacity on its destination for the whole draw.
+- `transformOrigin: "0 0"` on the stage is mandatory; the default would add a silent
+  `(1-k)*size/2` term and the centring maths would stop matching. Pan lives on a separate
+  outer element from the fit so the two cannot multiply.
+- **Fit, then pan.** `fitScale` holds the legibility floor (`K_MIN` 0.78) when the
+  composition nearly fits, which keeps the pan short and every lane on screen. When the
+  composition is more than two frames tall it is a scroll-through anyway, so it takes
+  whatever the width allows instead. `tuneGaps` runs one corrective layout pass, spending
+  spare height on the band gaps and spare width on the step gaps.
+- Reorientation to a top-to-bottom flow is **measured, not a breakpoint**: `needsReorient`
+  asks whether the flow fits across the frame at a readable size. The two diagrams have
+  very different natural widths, so the width at which one has to reorient is not the
+  width at which the other does. `WorkRig` still picks the *preferred* orientation, and
+  falls back to `Work.tsx` entirely under 640px wide or 640px tall.
+- A lane that has handed off dims to `LANE_DIM` (0.5) and **never unmounts**. The dim
+  lives on the lane wrapper and the 0 -> 1 reveal on the nodes: CSS opacity nests, so a
+  lane fading in at the same time as its nodes would sit at 0.04 halfway through.
+
+`globals.css`'s print block strips every transform, which is right for scroll state but
+would collapse all forty nodes onto the origin now that layout *is* transforms. Print
+therefore hides `[data-diagram-frame]`; the heading, bullets, metrics and tags still print.
 
 `Work.tsx` is the fallback and is a real, complete layout rather than a degraded one:
 it is the server render, the no-JS output, and what `prefers-reduced-motion` gets. It
-holds every bullet and every metric, so nothing is lost by landing there.
+holds every bullet and every metric, so nothing is lost by landing there. It is
+**unchanged** by the diagram rebuild. CaseIntel architecture terms that have no step in a
+flow went into `workItems.caseintel.stack` instead, which extends `projects[0].stack`
+rather than editing it, so the classic project card is untouched.
 
 Work also had a `?workMode` rig (tube/product/metrics/terminal, tube on Three.js).
 **Deleted**, along with the dependency: `three`, `@react-three/fiber` and
 `@types/three` are uninstalled and nothing imports WebGL anywhere. The `WorkItem` /
 `WorkMetric` split in `site.ts` stays, because the extracted numbers are what pipeline
 rides along its edges.
+
+`.verify/` holds the Playwright audits: `layout.mjs` (clipping and overflow, including
+the 150% and 200% zoom cases as proportionally smaller viewports, which is what browser
+zoom actually does), `diagram-geom.mjs` (no node overlaps, no label on a node, nothing
+outside its frame), `findable.mjs` (every diagram term reachable by Ctrl+F) and
+`reverse.mjs` (scroll-up reverses exactly). They default to port 3100; set
+`VERIFY_BASE=http://localhost:3000` to point them at the normal dev server.
 
 ## Art section
 

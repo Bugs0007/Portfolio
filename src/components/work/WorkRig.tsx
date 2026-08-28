@@ -32,30 +32,50 @@ function useIsMounted() {
   );
 }
 
-function useIsNarrow() {
-  const [narrow, setNarrow] = useState(false);
+// Four bands. Under 640px, or under 640px tall, a pinned diagram has nothing to
+// offer that the stacked layout does not, so classic takes over entirely rather
+// than the diagram being shrunk past reading. The height bound matters most
+// under browser zoom, which shrinks the CSS viewport in both directions.
+//
+// Between 640 and 900 the flow reorients top to bottom instead of scaling its
+// text into illegibility. The side column is a separate question from the
+// orientation and needs more room than the reorientation does: a diagram and a
+// bullet list splitting 1000px leaves neither enough, so below 1280 the diagram
+// takes the full width and the bullets sit under it.
+type ViewportClass = "narrow" | "compact" | "wide" | "roomy";
+
+function useViewportClass(): ViewportClass {
+  const [klass, setKlass] = useState<ViewportClass>("roomy");
   useEffect(() => {
-    const query = window.matchMedia("(max-width: 639px)");
-    const update = () => setNarrow(query.matches);
+    const queries = [
+      ["narrow", window.matchMedia("(max-width: 639px), (max-height: 639px)")],
+      ["compact", window.matchMedia("(max-width: 899px)")],
+      ["wide", window.matchMedia("(max-width: 1279px)")],
+    ] as const;
+    const update = () =>
+      setKlass(queries.find(([, q]) => q.matches)?.[0] ?? "roomy");
     update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    for (const [, q] of queries) q.addEventListener("change", update);
+    return () => {
+      for (const [, q] of queries) q.removeEventListener("change", update);
+    };
   }, []);
-  return narrow;
+  return klass;
 }
 
 export function WorkRig() {
   const reduceMotion = usePrefersReducedMotion();
   const mounted = useIsMounted();
-  const isNarrow = useIsNarrow();
+  const viewport = useViewportClass();
 
-  if (reduceMotion || !mounted) return <Work />;
+  if (reduceMotion || !mounted || viewport === "narrow") return <Work />;
 
   return (
     <PipelineMode
       featured={featuredWorkItems}
       supporting={supportingWorkItems}
-      isNarrow={isNarrow}
+      orientation={viewport === "compact" ? "column" : "row"}
+      allowSideColumn={viewport === "roomy"}
     />
   );
 }

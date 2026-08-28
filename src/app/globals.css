@@ -89,4 +89,12 @@ body {
     animation: none !important;
     transition: none !important;
   }
+
+  /* The Work diagrams position every node with a transform, which the rule
+     above deliberately strips, so on paper they would collapse into one pile at
+     the origin. Print drops the diagram instead; the heading, the bullets, the
+     metrics and the stack tags around it all still print. */
+  [data-diagram-frame] {
+    display: none !important;
+  }
 }
