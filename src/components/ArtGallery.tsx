@@ -256,15 +256,10 @@ function ArtTile({
             : "object-cover transition-transform duration-500 ease-[var(--ease-site)] group-hover:scale-[1.02]"
         }
       />
-      <span
-        className={`pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/70 to-transparent p-3 font-mono text-[10px] uppercase tracking-wider text-mist ${
-          reduceMotion
-            ? "opacity-0 group-focus-visible:opacity-100"
-            : "opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
-        }`}
-      >
-        {piece.caption}
-      </span>
+      {/* No caption plate over the artwork. The tiles carry their own titles
+          nowhere on screen by design: the name is on the button as its
+          accessible name, and it is shown in full in the lightbox, so nothing
+          is lost by letting the pictures sit unadorned in the grid. */}
     </button>
   );
 }
