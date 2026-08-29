@@ -1,9 +1,29 @@
 "use client";
 
-import { education, type WorkItem } from "@/content/site";
+import { education, type ProjectLink, type WorkItem } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
 
 const college = education[0];
+
+// Mirrors Work.tsx's ProjectLinks: Composite Sketch is two repos, so it needs
+// more than one link. Rendered instead of item.href when set, never with it.
+function ItemLinks({ links }: { links: ProjectLink[] }) {
+  return (
+    <>
+      {links.map((link) => (
+        <a
+          key={link.href}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-sm font-mono text-xs text-jacket-bright underline decoration-jacket-bright/40 underline-offset-4 hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright"
+        >
+          {link.label}
+        </a>
+      ))}
+    </>
+  );
+}
 
 // The extracted numbers, rendered as pills. Module-private: SupportingCards is
 // the only caller left now that the alternative Work treatments are gone.
@@ -112,15 +132,19 @@ export function SupportingCards({ items }: { items: WorkItem[] }) {
                       {item.when}
                     </span>
                   )}
-                  {item.href && (
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-sm font-mono text-xs text-jacket-bright underline decoration-jacket-bright/40 underline-offset-4 hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright"
-                    >
-                      {item.href.replace("https://", "")}
-                    </a>
+                  {item.links ? (
+                    <ItemLinks links={item.links} />
+                  ) : (
+                    item.href && (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-sm font-mono text-xs text-jacket-bright underline decoration-jacket-bright/40 underline-offset-4 hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright"
+                      >
+                        {item.href.replace("https://", "")}
+                      </a>
+                    )
                   )}
                 </div>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist/85">

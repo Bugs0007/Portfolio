@@ -51,7 +51,7 @@ export const education = [
     degree: "B.Tech in Computer Science",
     years: "2022-2026",
     gradYear: "2026",
-    detail: "CGPA 8.15/10, no backlogs",
+    detail: "CGPA 8.15/10",
   },
   {
     school: "Meluha International School",
@@ -94,11 +94,17 @@ export const experience = [
   },
 ] as const;
 
+// A named link on a project card. Plural because Composite Sketch is two
+// repos (frontend, backend) rather than one, so a single href/linkLabel pair
+// (still used by CaseIntel, for its live site) can't express it.
+export type ProjectLink = { href: string; label: string };
+
 export type Project = {
   name: string;
   year?: string;
   href?: string;
   linkLabel?: string;
+  links?: ProjectLink[];
   status?: string;
   summary: string;
   decision: string;
@@ -137,6 +143,16 @@ export const projects: Project[] = [
     decision:
       "Faces are embedded with dlib's 128-D face embeddings and matched by vector similarity search; uploads, retrieval, and search all go through S3-backed REST APIs.",
     stack: ["Django REST Framework", "pgvector", "dlib", "AWS S3", "REST APIs"],
+    links: [
+      {
+        href: "https://github.com/Bugs0007/Major-Project-Criminal-Forensics-Face-Match",
+        label: "frontend",
+      },
+      {
+        href: "https://github.com/Bugs0007/Major-Project-Criminal-Forensics",
+        label: "backend",
+      },
+    ],
   },
   {
     name: "Automated Attendance Management System",
@@ -146,6 +162,7 @@ export const projects: Project[] = [
     decision:
       "Multithreaded frame processing brought recognition latency from 1.2s down to 0.8s (33% faster), and iterative testing plus dataset tuning pushed recognition accuracy from 85% to 92%. Ran on AWS EC2 at 99.9% uptime through a semester-long pilot with 30+ students.",
     stack: ["OpenCV", "Redis", "SQLite", "AWS EC2"],
+    links: [{ href: "https://github.com/Bugs0007/attendance-system-app", label: "GitHub" }],
   },
   {
     name: "YouTube Shorts Automation Pipeline",
@@ -154,6 +171,7 @@ export const projects: Project[] = [
     decision:
       "Groq writes the script, edge-tts voices it, ComfyUI drives Ken Burns motion over still frames, then it's a straight shot through the YouTube Data API to publish.",
     stack: ["Groq", "edge-tts", "ComfyUI", "YouTube Data API v3"],
+    links: [{ href: "https://github.com/Bugs0007/YT-Channel-Automation", label: "GitHub" }],
   },
 ];
 
@@ -263,6 +281,10 @@ export type WorkItem = {
   subtitle?: string;
   when: string;
   href?: string;
+  // The composite-sketch project is two repos (frontend, backend), so it
+  // can't be said with the single href above. When links is set, it's
+  // rendered instead of href, never alongside it.
+  links?: ProjectLink[];
   // Only brynklabs and caseintel. The heavier modes (tube, pipeline, product)
   // give a full pinned treatment to featured items and fall back to a compact
   // classic card for everything else, so this flag is what stops five projects
@@ -348,6 +370,7 @@ export const workItems: WorkItem[] = [
     bullets: [projects[1].decision],
     metrics: [{ label: "face embedding", value: "128-D", note: "dlib" }],
     stack: [...projects[1].stack],
+    links: projects[1].links,
   },
   {
     id: "attendance",
@@ -357,6 +380,7 @@ export const workItems: WorkItem[] = [
     featured: false,
     summary: projects[2].summary,
     bullets: [projects[2].decision],
+    links: projects[2].links,
     metrics: [
       { label: "manual effort", value: "-90%" },
       {
@@ -382,6 +406,7 @@ export const workItems: WorkItem[] = [
     bullets: [projects[3].decision],
     metrics: [],
     stack: [...projects[3].stack],
+    links: projects[3].links,
   },
 ];
 

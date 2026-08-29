@@ -1,8 +1,29 @@
-import { education, experience, projects } from "@/content/site";
+import { education, experience, projects, type ProjectLink } from "@/content/site";
 import { CaseIntelShowcase } from "./CaseIntelShowcase";
 import { Reveal } from "./Reveal";
 
 const college = education[0];
+
+// Composite Sketch is two repos rather than one, so it needs more than the
+// single href/linkLabel pair CaseIntel's live-site link uses. Rendered
+// instead of that pair when a project sets links, never alongside it.
+function ProjectLinks({ links }: { links: ProjectLink[] }) {
+  return (
+    <>
+      {links.map((link) => (
+        <a
+          key={link.href}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs text-jacket-bright underline decoration-jacket-bright/40 underline-offset-4 hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright rounded-sm"
+        >
+          {link.label}
+        </a>
+      ))}
+    </>
+  );
+}
 
 function StackTags({ items }: { items: readonly string[] }) {
   return (
@@ -102,15 +123,19 @@ export function Work() {
                         {project.status}
                       </span>
                     )}
-                    {project.href && (
-                      <a
-                        href={project.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-mono text-xs text-jacket-bright underline decoration-jacket-bright/40 underline-offset-4 hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright rounded-sm"
-                      >
-                        {project.linkLabel ?? project.href.replace("https://", "")}
-                      </a>
+                    {project.links ? (
+                      <ProjectLinks links={project.links} />
+                    ) : (
+                      project.href && (
+                        <a
+                          href={project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-xs text-jacket-bright underline decoration-jacket-bright/40 underline-offset-4 hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright rounded-sm"
+                        >
+                          {project.linkLabel ?? project.href.replace("https://", "")}
+                        </a>
+                      )
                     )}
                   </div>
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist/85">
