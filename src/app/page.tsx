@@ -1,5 +1,7 @@
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { PersistentNav } from "@/components/PersistentNav";
+import { SectionNav } from "@/components/SectionNav";
+import { BackToTop } from "@/components/BackToTop";
 import { Hero } from "@/components/Hero";
 import { WorkRig } from "@/components/work/WorkRig";
 import { Seam } from "@/components/Seam";
@@ -14,6 +16,7 @@ export default function Home() {
   return (
     <SmoothScroll>
       <PersistentNav />
+      <SectionNav />
       <main>
         <Hero />
         <WorkRig />
@@ -25,6 +28,7 @@ export default function Home() {
         <Watching />
       </main>
       <ContactFooter />
+      <BackToTop />
     </SmoothScroll>
   );
 }

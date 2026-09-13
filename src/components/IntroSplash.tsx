@@ -22,6 +22,25 @@ const GREETINGS = [
 // blowing the brief's 2.5s LCP budget. This timing keeps the three-greeting
 // beat recognizable while getting out of the way fast.
 const WORD_MS = 450;
+const EXIT_S = 0.4;
+
+// How long the splash covers the page, every word's hold plus its fade out.
+const SPLASH_SECONDS = (WORD_MS * GREETINGS.length) / 1000 + EXIT_S;
+
+// The splash lives in the root layout, so it plays once per full page load,
+// while page content remounts on every client-side navigation back to "/"
+// (the résumé and 404 pages both link there). An entrance that always waited
+// out the splash would sit blank for nearly two seconds on those remounts with
+// nothing covering it.
+const splash = { finished: false };
+
+/**
+ * Seconds an entrance on load should wait so it doesn't play behind the
+ * splash. Zero once the splash has already gone.
+ */
+export function introSplashDelay() {
+  return splash.finished ? 0 : SPLASH_SECONDS;
+}
 
 // Plays once on every load, Apple-style: one greeting at a time, then out.
 // Skipped entirely under reduced motion rather than shown as a static
@@ -38,7 +57,10 @@ export function IntroSplash() {
       const t = setTimeout(() => setIndex((i) => i + 1), WORD_MS);
       return () => clearTimeout(t);
     }
-    const t = setTimeout(() => setVisible(false), WORD_MS);
+    const t = setTimeout(() => {
+      splash.finished = true;
+      setVisible(false);
+    }, WORD_MS);
     return () => clearTimeout(t);
   }, [index, reduceMotion, visible]);
 
@@ -50,7 +72,7 @@ export function IntroSplash() {
         <motion.div
           aria-hidden
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: EASE }}
+          transition={{ duration: EXIT_S, ease: EASE }}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-ink"
         >
           <AnimatePresence mode="wait">

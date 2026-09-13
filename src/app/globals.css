@@ -59,6 +59,15 @@ body {
   color: var(--mist);
 }
 
+/* SectionNav and BackToTop move focus to the section they scroll to, the way a
+   native in-page link does, so the next Tab continues from there. Sections are
+   not focusable by themselves and get tabindex="-1" plus this attribute at that
+   moment (see focusSection). A ring around an entire section would be noise,
+   not a focus indicator. */
+[data-scroll-target]:focus {
+  outline: none;
+}
+
 /* One consistent easing + duration scale for every scroll-entry animation on the site. */
 .reveal {
   transition-property: opacity, transform;

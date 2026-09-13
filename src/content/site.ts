@@ -43,6 +43,21 @@ export const person = {
   ],
 } as const;
 
+// The in-page index (SectionNav), in page order. Each `id` is the element id
+// that section already renders; each `label` is its heading, shortened where
+// the heading is a phrase. The Seam between Work and Music is deliberately not
+// here: it is a transition, not somewhere anyone wants to land.
+export const pageSections = [
+  { id: "intro", label: "Intro" },
+  { id: "work", label: "Work" },
+  { id: "music", label: "Music" },
+  { id: "travel", label: "Travel" },
+  { id: "art", label: "Art" },
+  { id: "riding", label: "Riding" },
+  { id: "favorites", label: "Favorites" },
+  { id: "contact", label: "Contact" },
+] as const;
+
 export const education = [
   {
     school: "Mahatma Gandhi Institute of Technology",

@@ -266,6 +266,51 @@ row, latched on so it never replays or reverses on scroll-up. This section was b
 a drag-to-explore pannable canvas with cursor drift and inertia; it was removed because
 the interaction was doing more work than the pictures were.
 
+## Section nav and back-to-top
+
+`SectionNav.tsx` is an index of `pageSections` (in `site.ts`, page order, one entry per
+section id; Hero is `#intro`, the Seam is deliberately absent). `BackToTop.tsx` is its
+companion. Placement is load-bearing, all of it measured:
+
+- **lg and up: a rail of ticks on the right edge**, 34px wide at 20px in. From 1024px
+  every section keeps at least a 64px side gutter, so the rail never sits over content.
+  Hover or keyboard focus reveals the labels; Escape dismisses them (WCAG 1.4.13). The
+  labels are positioned outside each link's box and are `pointer-events: none` while
+  hidden, so a closed rail covers nothing but itself.
+- **Below lg: one button in the bottom-right corner** that opens the same list upward.
+  The gutter there is 24 to 40px, too narrow for a rail that doesn't cover something.
+  Both layouts are always mounted; CSS shows one.
+- **BackToTop is bottom-left** at every width, opposite the nav so the two never meet. It
+  appears a full viewport past the hero's bottom and leaves within 0.3vh of the top. The
+  gap between the two thresholds is deliberate hysteresis.
+- Music's mute toggle sits at `lg:right-16` for this reason: at `right-4` it scrolled
+  straight under the rail. `next.config.ts` moves Next's dev badge to top-left because
+  its default bottom-left spot covers BackToTop (dev only).
+
+Scrolling goes through `useSiteScroll`: `lenis.scrollTo` with the site `EASE`, or an
+instant native jump under reduced motion, where there is no Lenis instance. The links are
+real `href="#id"` anchors, so modified clicks and no-JS still work. `focusSection` then
+moves focus to the target, the way a native in-page link would, so the next Tab
+continues from the section. It does that by setting `tabindex="-1"` and
+`data-scroll-target` at call time, and `globals.css` suppresses the outline. The
+attributes are not rendered because Work and Travel swap their root element.
+
+Active state (`useActiveSection`) is IntersectionObserver only, no per-frame work: a
+zero-height root at 40% of the viewport, and when it fires, the active section is the last
+one whose top has crossed that line. That rule hands the Seam to Work. The footer is
+shorter than the space under the line on most screens, so it also counts once half of it
+is visible. A MutationObserver on `<main>`'s children re-attaches the observers when Work
+or Travel replace their root element after hydration. **Don't cache section elements**;
+look them up by id.
+
+The nav's entrance waits out the intro splash via `introSplashDelay()`, which drops to 0
+once the splash has run. Client-side navigation back from `/resume` remounts the page
+without replaying the splash.
+
+`.verify/section-nav.mjs` audits all of it (jumps, active sync at every scroll step,
+thresholds, keyboard, reduced motion, and hit-tests under both controls) at 1440, 1024,
+1023, 768 and 375.
+
 ## Reduced motion
 
 Use `usePrefersReducedMotion` from `src/hooks/`, never Motion's `useReducedMotion`, for

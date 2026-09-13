@@ -6,6 +6,7 @@ const college = education[0];
 export function Hero() {
   return (
     <section
+      id="intro"
       aria-label="Introduction"
       className="relative flex min-h-[72vh] w-full items-end overflow-hidden bg-ink"
     >

@@ -167,11 +167,15 @@ export function VideoClip({
         <source src={src} type="video/mp4" />
       </video>
       {allowSound && (
+        // From lg the toggle lines up with the 64px content edge every section
+        // keeps (the heading opposite it sits at lg:px-16), which also keeps it
+        // out of the right-hand gutter SectionNav's rail lives in. At right-4
+        // it scrolled straight underneath the rail.
         <button
           type="button"
           onClick={toggleSound}
           aria-label={muted ? "Play sound" : "Mute sound"}
-          className="absolute bottom-4 right-4 z-20 rounded-full bg-ink/70 p-2.5 text-mist/90 backdrop-blur-sm transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright"
+          className="absolute bottom-4 right-4 z-20 rounded-full bg-ink/70 p-2.5 text-mist/90 backdrop-blur-sm transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright lg:right-16"
         >
           <MuteIcon muted={muted} />
         </button>
