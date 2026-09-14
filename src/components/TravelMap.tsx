@@ -66,14 +66,24 @@ type Playable = {
 // The flowing modes each override it with their own realistic rendered width
 // (see TravelModeSpec.getSizes), since a route marker and a full-bleed cinema
 // frame differ by about 4x and one shared value made the small ones over-fetch.
+//
+// `soon` and `near` are for frames that sit inside a clipped container
+// (Travel's pinned columns), where neither native lazy loading nor an
+// observer's rootMargin can see a tile coming: `soon` fetches stills (a photo,
+// or a clip's poster) ahead of everything else, `near` fetches the clip itself.
+// Left undefined everywhere else.
 export function MediaFrame({
   media,
   sizes = "(min-width: 640px) 52vw, 82vw",
   fit = "contain",
+  soon,
+  near,
 }: {
   media: Playable;
   sizes?: string;
   fit?: "contain" | "cover";
+  soon?: boolean;
+  near?: boolean;
 }) {
   if (media.kind === "video" && media.poster) {
     return (
@@ -84,6 +94,9 @@ export function MediaFrame({
         height={media.height}
         alt={media.alt}
         fit={fit}
+        sizes={sizes}
+        soon={soon}
+        near={near}
       />
     );
   }
@@ -93,6 +106,8 @@ export function MediaFrame({
       alt={media.alt}
       fill
       sizes={sizes}
+      loading={soon ? "eager" : "lazy"}
+      fetchPriority={soon ? "high" : undefined}
       className="object-cover"
     />
   );

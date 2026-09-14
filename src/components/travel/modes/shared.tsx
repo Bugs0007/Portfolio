@@ -25,6 +25,8 @@ export function MediaTile({
   captionOpacity,
   captionY,
   hoverScale = 1.035,
+  soon,
+  near,
 }: {
   media: JourneyMedia;
   style: MotionStyle;
@@ -39,6 +41,9 @@ export function MediaTile({
   captionOpacity?: MotionValue<number> | number;
   captionY?: MotionValue<number> | number;
   hoverScale?: number;
+  // Settled reach, stills first and then the clip, see MediaFrame.
+  soon?: boolean;
+  near?: boolean;
 }) {
   return (
     <motion.figure className="group absolute" style={style}>
@@ -48,7 +53,7 @@ export function MediaTile({
         whileHover={{ scale: hoverScale }}
         transition={{ duration: 0.5, ease: EASE }}
       >
-        <MediaFrame media={media} sizes={sizes} fit={fit} />
+        <MediaFrame media={media} sizes={sizes} fit={fit} soon={soon} near={near} />
       </motion.div>
       {showCaption && (
         <motion.figcaption

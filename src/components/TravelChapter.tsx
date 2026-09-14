@@ -1,10 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import type { Journey, JourneyMedia } from "@/content/site";
 import { beatCountFor, chunkMedia, railSpanForBeats } from "@/lib/travel-beats";
 import { MediaTile, layOut } from "./travel/modes/shared";
+import { useSettled } from "@/hooks/useSettled";
+import {
+  DWELL_MS,
+  POSTER_LOOKAHEAD_VH,
+  VIDEO_LOOKAHEAD_PX,
+  latest,
+} from "./VideoClip";
 
 // The pinned-chapter treatment: each journey gets its own pin, opening with an
 // oversized title beat, then converting further scroll into two parallel
@@ -94,6 +107,40 @@ export function TravelChapter({
 
   const railProgress = useTransform(scrollYProgress, [introFraction, 1], [0, 1]);
 
+  // Whether this chapter is within loading distance at all, at both of the
+  // tiles' reaches. The tall container sits in normal flow with nothing
+  // clipping it, so an observer's rootMargin works here, unlike on the tiles
+  // inside the pinned frame.
+  //
+  // Two observers rather than one at the wider margin: tiles work out their
+  // own reach as if the frame were already pinned, so before a chapter arrives
+  // the chapter margin is the only thing separating "fetch the stills" from
+  // "fetch the clips". With one margin, a new chapter's opening clips started
+  // at the same moment as their posters, and on a slow connection the photos
+  // at that handoff were the tiles left blank.
+  const [inReach, setInReach] = useState<ChapterReach>({ soon: false, near: false });
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const watch = (key: "soon" | "near", rootMargin: string) => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const hit = latest(entries).isIntersecting;
+          setInReach((r) => (r[key] === hit ? r : { ...r, [key]: hit }));
+        },
+        { rootMargin },
+      );
+      observer.observe(el);
+      return observer;
+    };
+    const soon = watch("soon", `${POSTER_LOOKAHEAD_VH * 100}% 0px`);
+    const near = watch("near", `${VIDEO_LOOKAHEAD_PX}px 0px`);
+    return () => {
+      soon.disconnect();
+      near.disconnect();
+    };
+  }, []);
+
   return (
     <section aria-label={`${journey.title} chapter`} className="relative bg-ink">
       <div
@@ -127,6 +174,7 @@ export function TravelChapter({
                 vh={size.vh}
                 isNarrow={isNarrow}
                 sizes={sizes}
+                inReach={inReach}
               />
             )}
           </div>
@@ -250,6 +298,7 @@ function JourneyColumns({
   vh,
   isNarrow,
   sizes,
+  inReach,
 }: {
   journey: Journey;
   progress: MotionValue<number>;
@@ -257,6 +306,7 @@ function JourneyColumns({
   vh: number;
   isNarrow: boolean;
   sizes: string;
+  inReach: ChapterReach;
 }) {
   const beats = chunkMedia(journey.media, columnsBeats(journey.media.length));
 
@@ -328,6 +378,7 @@ function JourneyColumns({
           vh={vh}
           gap={rowGap}
           sizes={sizes}
+          inReach={inReach}
         />
       ))}
     </div>
@@ -344,6 +395,7 @@ function Column({
   vh,
   gap,
   sizes,
+  inReach,
 }: {
   items: JourneyMedia[];
   progress: MotionValue<number>;
@@ -354,6 +406,7 @@ function Column({
   vh: number;
   gap: number;
   sizes: string;
+  inReach: ChapterReach;
 }) {
   // Each tile keeps its own aspect ratio at the column's width, so a portrait
   // stays tall and the column reads as a real strip of photographs rather
@@ -400,10 +453,58 @@ function Column({
           height={heights[i]}
           vh={vh}
           sizes={sizes}
+          inReach={inReach}
         />
       ))}
     </motion.div>
   );
+}
+
+// How close a tile is to the frame, worked out from the column's own transform
+// instead of observed: the tiles live inside the pinned, overflow-clipped
+// frame, and an observer clips its target to that frame before applying
+// rootMargin, so a tile 60px below the frame reads as not intersecting at any
+// margin (measured). Native lazy loading has the same blind spot.
+//
+// Two reaches, as VideoClip expects them: `soon` (a viewport away) fetches the
+// stills, `near` (400px away) fetches the clip. Both live, not latched, so a
+// clip scrolled past stops downloading; both settle through the same dwell
+// VideoClip uses, so a section-nav jump through Travel starts nothing.
+//
+// The frame's own offset is ignored on purpose. It is 0 while pinned, and on
+// the approach, before the pin, it only means the tiles that will open the
+// chapter start a little early.
+const REACH_NONE = 0;
+const REACH_SOON = 1;
+const REACH_NEAR = 2;
+
+// The chapter container's own distance, at each of the two reaches.
+type ChapterReach = { soon: boolean; near: boolean };
+
+function useTileReach(
+  columnY: MotionValue<number>,
+  top: number,
+  height: number,
+  vh: number,
+  inReach: ChapterReach,
+) {
+  const reachOf = (v: number) => {
+    const edge = v + top;
+    const outside = Math.max(edge - vh, -(edge + height), 0);
+    if (outside <= VIDEO_LOOKAHEAD_PX) return REACH_NEAR;
+    if (outside <= vh * POSTER_LOOKAHEAD_VH) return REACH_SOON;
+    return REACH_NONE;
+  };
+  const [reach, setReach] = useState(() => reachOf(columnY.get()));
+
+  useMotionValueEvent(columnY, "change", (v) => {
+    const next = reachOf(v);
+    if (next !== reach) setReach(next);
+  });
+
+  const soon = useSettled(inReach.soon && reach >= REACH_SOON, DWELL_MS);
+  const near = useSettled(inReach.near && reach >= REACH_NEAR, DWELL_MS);
+  return { soon, near };
 }
 
 function ColumnTile({
@@ -414,6 +515,7 @@ function ColumnTile({
   height,
   vh,
   sizes,
+  inReach,
 }: {
   media: JourneyMedia;
   columnY: MotionValue<number>;
@@ -422,7 +524,10 @@ function ColumnTile({
   height: number;
   vh: number;
   sizes: string;
+  inReach: ChapterReach;
 }) {
+  const { soon, near } = useTileReach(columnY, top, height, vh, inReach);
+
   // Distance of this tile's centre from the middle of the viewport, 0 at the
   // centre line and 1 at either edge. Read straight off the column's own
   // transform, so it stays a pure function of scroll and reverses exactly.
@@ -441,6 +546,8 @@ function ColumnTile({
     <MediaTile
       media={media}
       sizes={sizes}
+      soon={soon}
+      near={near}
       captionOpacity={captionOpacity}
       style={{ left: 0, top, width, height, scale, opacity }}
     />

@@ -18,6 +18,7 @@ export function Hero() {
         height={2160}
         fit="cover"
         position="top"
+        priority
       />
       {/* type sits on the image, not beside it: legibility gradient only, no card */}
       <div

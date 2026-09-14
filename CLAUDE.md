@@ -99,6 +99,77 @@ Resolved this round: `person.linkedin`, `person.instagram`, `person.email` are r
   original file actually carried it (5 of the travel photos). Everywhere else the
   coordinate is simply absent rather than filled in with a place-level lookup, so a
   number on screen always means a real one read off the photo.
+- Web video encodes, all H.264 High, yuv420p TV range, `+faststart`, no audio (Music's
+  loop keeps its audio and is untouched). Travel clips: width capped at 1280, 30fps
+  (only sources above 30 are dropped to it), CRF 24 with `-maxrate 2500k -bufsize 5000k`,
+  keyframe every second. That took them from 56MB to 16MB: they were 1080p at 4 to
+  19 Mbps, several at 60 or 120fps, rendered into tiles about 530px wide. The cap is
+  what matters on busy footage (forest, river), where CRF alone left 4 to 5MB clips.
+  Hero: 1920 wide, 60fps kept, CRF 23, 18MB to 3.1MB. It was a 4K60 file at 42.7 Mbps
+  and dropped 69 of its first 115 frames decoding.
+
+  ```bash
+  ffmpeg -i in.mp4 -vf "fps=30,scale='min(1280,iw)':-2:flags=lanczos:out_range=tv,format=yuv420p" -color_range tv -c:v libx264 -preset slow -crf 24 -maxrate 2500k -bufsize 5000k -profile:v high -level 4.0 -g 30 -keyint_min 30 -sc_threshold 0 -movflags +faststart -an out.mp4
+  ```
+
+## Video playback and loading (`VideoClip.tsx`)
+
+Every video on the site goes through `VideoClip`. What it does, and why, all measured
+with `.verify/video-probe.mjs` (Intro round trips through the section nav) and
+`.verify/travel-video.mjs` (wheel-scrolling all of Travel, frame by frame, optionally
+throttled with `THROTTLE_MBPS`):
+
+- **The `<video>` is mounted once and never recreated for scroll reasons.** Leaving the
+  viewport pauses it and coming back resumes it from the same frame. The hero was never
+  actually remounted; "breaks when you come back to Intro" was a 4K60 file dropping
+  most of its frames, getting evicted and re-downloaded (85MB over five round trips),
+  while every section-nav jump started downloads for each clip it flew past.
+- **Poster is a `next/image` underneath the video**, not the `poster` attribute, which
+  fetched every full-size JPEG on the page at load. The video stays at opacity 0 until
+  it has a frame, then fades in over it. `priority` (hero only) preloads that image
+  as the LCP element and fetches the video straight away.
+- **`preload` is `"none"` until near, `"auto"` while near or playing, and `"metadata"`
+  once started and out of reach again.** Never `"metadata"` up front: measured in Edge,
+  that fetched the first megabyte of every clip at page load, which is the whole of most
+  Travel clips. And never left at `"auto"` behind the reader: throttled to 4 Mbps,
+  Music's 16MB loop kept downloading through all of Travel and starved the tiles coming
+  on screen. Dropping to `"metadata"` stops the read-ahead and keeps what's buffered.
+- **`DWELL_MS` (150ms)** before a clip fetches or plays. Without it a nav jump started a
+  download for every clip it crossed, and `pause()` does not cancel one.
+- **Read the last IntersectionObserver entry (`latest(entries)`), never `([entry])`.**
+  Under a busy main thread the browser batches an "entered" and a "left" together, and
+  reading the first one left clips playing off screen with no pause coming.
+- **The play check is a strict `ratio >= PLAY_RATIO`, no tolerance.** The browser reports
+  a downward crossing at a ratio just under the threshold, and an element left touching
+  the viewport edge sits at ratio 0 in the same threshold bucket, so a tolerance meant
+  the pause never fired.
+- **Travel tiles are told their reach** (`soon` and `near` props, from `useTileReach` in
+  `TravelChapter.tsx`) instead of observing themselves. They sit inside the pinned,
+  overflow-clipped frame, and an observer clips its target to that frame *before*
+  applying `rootMargin`, so a tile 60px below the frame reads as not intersecting at any
+  margin. Native `loading="lazy"` has the same blind spot. `useTileReach` works from the
+  column's own transform plus observers on the (unclipped) chapter container, all
+  settled through `useSettled` (true after the dwell, false at once, never latched).
+  The chapter gets **two** observers, one per reach: tiles compute their reach as if the
+  frame were already pinned, so before a chapter arrives the chapter margin is the only
+  thing keeping its opening clips from starting at the same moment as their posters.
+- **Stills go first.** `soon` (one viewport away, `POSTER_LOOKAHEAD_VH`) fetches a
+  photo or a clip's poster eagerly with `fetchPriority="high"`; `near` (400px) fetches
+  the clip. A poster is tens of KB against a clip's megabytes, and loading both at once
+  let open video streams hold every connection (the dev server is HTTP/1.1, six per
+  host) while photo tiles sat blank. Vercel serves HTTP/2, so throttled local runs are
+  the pessimistic case.
+- Continuous scrolling through Travel at about 900px/s needs roughly 6 Mbps to have
+  every clip fully loaded on arrival. Below that, the guarantee is posters, with clips
+  starting as bandwidth allows, not instant playback everywhere.
+
+Measuring the realistic case locally: `next dev` and `next start` only speak HTTP/1.1,
+so `.verify/h2-proxy.mjs` puts an HTTP/2 TLS front (self-signed, generated on first run)
+on a production build. `.claude/launch.json` has `portfolio-prod` (`next start` on
+3100) and `h2-proxy` (3443); then
+`THROTTLE_MBPS=4 VERIFY_BASE=https://localhost:3443 node .verify/travel-video.mjs`.
+Starting a preview server in a tab another server owns stops that server, so the dev
+server needs restarting afterwards.
 
 ## Travel section
 
