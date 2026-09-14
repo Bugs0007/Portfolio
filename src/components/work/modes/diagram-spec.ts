@@ -102,6 +102,11 @@ export type DiagramSpec = {
   // Index-aligned with the item's bullets: which node each bullet describes, so
   // the bullet brightens as the flow reaches it.
   bulletNodes?: string[];
+  // "sequential" (the default) hands off lane to lane, which suits lanes that
+  // tell one story in order. "parallel" starts every lane at once for lanes that
+  // are separate systems, and the scroll only has to be as long as the deepest
+  // lane rather than all of them end to end.
+  reveal?: "sequential" | "parallel";
 };
 
 // --- timing ----------------------------------------------------------------
@@ -172,6 +177,17 @@ function* flowDepths(row: RowSpec): Generator<{ slot: FlowSlot; depth: number }>
   }
 }
 
+// How many reveal steps a lane needs: its deepest slot, plus one. The +1 leaves
+// the lane a tail beat after its last node, so the lane is fully lit for a
+// moment before it starts dimming.
+export function laneSteps(lane: LaneSpec): number {
+  let maxDepth = 0;
+  for (const row of lane.rows) {
+    for (const { depth } of flowDepths(row)) if (depth > maxDepth) maxDepth = depth;
+  }
+  return maxDepth + 1;
+}
+
 // Reveal times for every node, edge, lane and group, derived from lane order
 // and slot position rather than hand-tuned. With roughly forty nodes across the
 // two diagrams, hand-tuning would be forty numbers that silently rot the moment
@@ -191,21 +207,28 @@ export function deriveTiming(spec: DiagramSpec): Timing {
 
   const pending: NodeSpec[] = []; // anchored nodes, resolved after the flow
 
+  // Parallel lanes share one pace, set by the deepest lane, so the same depth
+  // lights at the same moment in every lane and a shorter lane simply finishes
+  // first. Stretching each lane to fill the window instead would make the same
+  // column of the diagram arrive at a different time in each lane.
+  const parallel = spec.reveal === "parallel";
+  const sharedStep = 1 / Math.max(1, ...lanes.map(laneSteps));
+
   let cursor = 0;
   lanes.forEach((l, li) => {
-    const span = weights[li] / total;
-    const start = li > 0 ? cursor - LANE_OVERLAP : 0;
-    const end = cursor + span;
-    cursor = end;
+    let start: number;
+    let end: number;
+    if (parallel) {
+      start = 0;
+      end = laneSteps(l) * sharedStep;
+    } else {
+      start = li > 0 ? cursor - LANE_OVERLAP : 0;
+      end = cursor + weights[li] / total;
+      cursor = end;
+    }
     lane.set(l.id, [start, end]);
 
-    let maxDepth = 0;
-    for (const row of l.rows) {
-      for (const { depth } of flowDepths(row)) if (depth > maxDepth) maxDepth = depth;
-    }
-    // The +1 leaves the lane a tail beat after its last node, so the lane is
-    // fully lit for a moment before it starts dimming.
-    const step = (end - start) / (maxDepth + 1);
+    const step = (end - start) / laneSteps(l);
 
     for (const row of l.rows) {
       for (const { slot, depth } of flowDepths(row)) {

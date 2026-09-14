@@ -5,7 +5,7 @@
 // needs dwell time, so the two grow at different rates and sharing a function
 // would only couple them.
 
-import { lanesOf, type DiagramSpec } from "./diagram-spec";
+import { laneSteps, lanesOf, type DiagramSpec } from "./diagram-spec";
 
 const PER_BEAT_VH = 0.16;
 const BASE_VH = 1.6;
@@ -24,6 +24,12 @@ const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v
 
 export function diagramBeats(spec: DiagramSpec): number {
   const lanes = lanesOf(spec);
+  // Lanes drawing side by side take as long as the deepest one, not the sum of
+  // all of them. Each lane still counts once, since every step lights one more
+  // node per lane.
+  if (spec.reveal === "parallel") {
+    return lanes.length + Math.max(0, ...lanes.map(laneSteps));
+  }
   const slots = lanes.reduce(
     (n, lane) => n + lane.rows.reduce((r, row) => r + row.items.length, 0),
     0,

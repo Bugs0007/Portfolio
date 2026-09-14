@@ -91,8 +91,8 @@ function PipelineChapter({
   // mid-draw as the section scrolls away.
   const draw = useTransform(scrollYProgress, [drawStart, drawEnd], [0, 1], { clamp: true });
   // Only used when the composition is taller than the frame even at the
-  // legibility floor. Starts after the first lane has drawn, ends before the
-  // pin releases.
+  // legibility floor. Starts once the top of the diagram has begun drawing,
+  // ends before the pin releases.
   const pan = useTransform(scrollYProgress, [0.3, drawEnd - 0.02], [0, 1], { clamp: true });
 
   // Metrics looked up by label, so an edge naming a metric that was renamed in

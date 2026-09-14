@@ -11,11 +11,17 @@ const BASE = process.env.VERIFY_BASE ?? "http://localhost:3100";
 // up in a computed transform, so a remeasure between the two probes that landed
 // on a different scale would show here as a mismatch. That is what the scale
 // quantisation in computeFit is protecting.
+//
+// Only the pinned chapters are sampled. The supporting cards under them reveal
+// once and stay revealed by design, so a jump that passes them would read as a
+// mismatch that has nothing to do with the diagrams.
 const SNAPSHOT = () => {
-  const section = document.querySelector("#work");
-  if (!section) return "no-section";
+  const chapters = [...document.querySelectorAll("[data-diagram-frame]")].map((f) =>
+    f.closest("[style*='height']"),
+  );
+  if (!chapters.length) return "no-chapters";
   const parts = [];
-  for (const el of section.querySelectorAll("*")) {
+  for (const el of chapters.flatMap((c) => [...c.querySelectorAll("*")])) {
     const s = getComputedStyle(el);
     const bits = [s.opacity, s.transform, s.strokeDashoffset, s.strokeDasharray];
     if (bits.some((b) => b && b !== "none" && b !== "1" && b !== "0px")) {
@@ -37,24 +43,31 @@ const page = await context.newPage();
 await page.goto(BASE, { waitUntil: "networkidle" });
 await page.waitForTimeout(1800);
 
-const top = await page.evaluate(
-  () => document.querySelector("#work").getBoundingClientRect().top + window.scrollY,
+// Each chapter's pin runs over its container height minus one viewport.
+// Probes are fractions of that rather than pixel offsets, so they stay inside
+// the chapter they name when a pin span changes.
+const chapters = await page.evaluate(() =>
+  [...document.querySelectorAll("[data-diagram-frame]")].map((f) => {
+    const r = f.closest("[style*='height']").getBoundingClientRect();
+    return { top: r.top + window.scrollY, usable: r.height - window.innerHeight };
+  }),
 );
+const at = (i, frac) => chapters[i].top + chapters[i].usable * frac;
 
 // Inside the first chapter's draw, inside the second chapter's draw, and inside
 // the part of the second chapter where the frame is panning as well as drawing.
 const PROBES = [
-  ["chapter 1 draw", 1600],
-  ["chapter 1 late", 2600],
-  ["chapter 2 draw", 5200],
-  ["chapter 2 pan", 8000],
+  ["chapter 1 draw", at(0, 0.35)],
+  ["chapter 1 late", at(0, 0.8)],
+  ["chapter 2 draw", at(1, 0.35)],
+  ["chapter 2 pan", at(1, 0.7)],
 ];
 
 const hash = (v) => crypto.createHash("sha1").update(v).digest("hex").slice(0, 10);
 const rows = [];
 
-for (const [label, offset] of PROBES) {
-  const probe = Math.round(top + offset);
+for (const [label, y] of PROBES) {
+  const probe = Math.round(y);
 
   const yA = await settle(page, probe);
   const a = await page.evaluate(SNAPSHOT);

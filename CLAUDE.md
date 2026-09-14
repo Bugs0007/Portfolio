@@ -258,6 +258,13 @@ The pieces, in `src/components/work/modes/`:
 - `work-beats.ts`, `pinSpanFor` from the beat count. Deliberately not Travel's
   `railSpanForBeats`: a photo is glanced at, a diagram node is read.
 
+Lanes reveal one after another by default. CaseIntel sets `reveal: "parallel"`: all
+four lanes start together at one shared pace (set by the deepest lane), so the same
+depth lights at the same moment in every lane, no lane dims, and the beat count is
+the deepest lane plus the lane count rather than every slot summed. That took its pin
+from 650vh (the `MAX_SPAN` clamp) to 336vh after visitors said it took too much
+scrolling. Brynklabs stays sequential, since its deploy lane reads as a follow-on.
+
 Load-bearing details, all of them learned the hard way:
 
 - Measure with **`offsetWidth`/`offsetHeight`, never `getBoundingClientRect`**. The stage

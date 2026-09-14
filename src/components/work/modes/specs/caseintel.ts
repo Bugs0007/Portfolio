@@ -10,8 +10,12 @@ import type { DiagramSpec } from "../diagram-spec";
 // specifics that make it interesting (the rotating header key, per-document
 // column detection, the cross-encoder model name) are sublabels or label-band
 // notes, sized smaller, never boxes of their own.
+//
+// The lanes draw at the same time. They are separate systems, not one handing
+// off to the next, and drawing them in turn cost 6.5 viewport-heights of scroll.
 export const caseintelDiagram: DiagramSpec = {
   id: "caseintel",
+  reveal: "parallel",
   headline: { value: "360", label: "tests passing" },
   lanes: [
     {

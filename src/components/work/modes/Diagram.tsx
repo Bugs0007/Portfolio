@@ -521,11 +521,16 @@ export function Diagram({
   }, [lanes, spec.edges]);
 
   const labelled = useMemo(() => spec.edges.filter((e) => e.label), [spec.edges]);
-  // A lane steps back only for a later lane of equal standing.
+  // A lane steps back only for a later lane of equal standing. Parallel lanes
+  // never hand off, so none of them steps back.
   const dimsAtEnd = useMemo(
     () =>
-      lanes.map((_, i) => lanes.slice(i + 1).some((l) => (l.tone ?? "primary") !== "dim")),
-    [lanes],
+      lanes.map(
+        (_, i) =>
+          spec.reveal !== "parallel" &&
+          lanes.slice(i + 1).some((l) => (l.tone ?? "primary") !== "dim"),
+      ),
+    [lanes, spec.reveal],
   );
   const content = layout?.content ?? { x: 0, y: 0, w: 1, h: 1 };
 
