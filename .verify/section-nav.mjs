@@ -16,7 +16,7 @@ const SHOTS = process.env.VERIFY_SHOTS ?? os.tmpdir();
 //    clipping, pointer-events and Travel's moving columns are all accounted for;
 //  - reduced motion jumps instantly.
 
-const IDS = ["intro", "work", "music", "travel", "art", "riding", "favorites", "contact"];
+const IDS = ["intro", "work", "game", "music", "travel", "art", "riding", "favorites", "contact"];
 
 const VIEWPORTS = [
   { label: "1440 x 900", width: 1440, height: 900, layout: "rail" },
@@ -393,7 +393,7 @@ for (const vp of VIEWPORTS.filter((v) => !ONLY || ONLY.some((o) => v.label.inclu
   // 2. Jumps, long ones in both directions first.
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(400);
-  for (const id of ["favorites", "work", "travel", "contact", "intro", "art", "riding", "music"]) {
+  for (const id of ["favorites", "game", "work", "travel", "contact", "intro", "art", "riding", "music"]) {
     const r = await jumpCheck(page, vp, id);
     console.log(`  jump ${r.id.padEnd(9)} ${r.ok ? "ok  " : "FAIL"} ${r.from} -> ${r.to} top=${r.top} frames=${r.frames} active=${r.active} focus=${r.focused}${r.why ? " " + r.why : ""}`);
     if (!r.ok) fail(`jump to ${id}`);

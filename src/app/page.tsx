@@ -9,6 +9,7 @@ import { Music } from "@/components/Music";
 import { TravelMap } from "@/components/TravelMap";
 import { Art } from "@/components/Art";
 import { Riding } from "@/components/Riding";
+import { Game } from "@/components/Game";
 import { Watching } from "@/components/Watching";
 import { ContactFooter } from "@/components/ContactFooter";
 
@@ -20,6 +21,7 @@ export default function Home() {
       <main>
         <Hero />
         <WorkRig />
+        <Game />
         <Seam />
         <Music />
         <TravelMap />

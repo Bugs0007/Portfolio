@@ -344,6 +344,30 @@ row, latched on so it never replays or reverses on scroll-up. This section was b
 a drag-to-explore pannable canvas with cursor drift and inertia; it was removed because
 the interaction was doing more work than the pictures were.
 
+## Game section
+
+`Game.tsx` (server) and `GameTrailer.tsx` (client), content in `game` in `site.ts`, assets in
+`public/media/game/` (the trailer is the 1920x1080 60fps original, mp4 + webm, poster is its
+first frame). It sits directly under Work, ahead of the "Life beyond work" Seam, because it is something
+Bhagath built rather than a hobby. Nav label is "Game", heading is "Brawlkai".
+
+- The frame is a fixed `aspect-video`, so nothing shifts while the poster or video arrives.
+- The `<video>` has **no `<source>`s until the frame is within `VIDEO_LOOKAHEAD_PX`** (after
+  `DWELL_MS`), so the 10MB file is never requested by someone who doesn't scroll there. When
+  they are attached it calls `load()` itself, since adding `<source>` children does not
+  reload an element. `preload="metadata"` as specced.
+- Plays at 40% visible (strict `>=`, last observer entry, same reasons as `VideoClip`), pauses
+  when it drops below. MP4 is listed first on purpose: H.264 is hardware decoded, which
+  matters for 1080p60 on phones.
+- Reduced motion: no video is mounted, the poster shows with a play control, and pressing it
+  plays once (not looped) with sound, since that is a deliberate act. Sound toggle and a pause
+  control are there after.
+- Play is a plain `target="_blank"` link to the live game, no iframe. The game is keyboard or
+  gamepad only (`input.touch: false` in its `main.ts`), so a "best on desktop" line shows under
+  the button on narrow screens and on touch-first devices (`sm:pointer-fine:hidden`).
+- `.verify/game-trailer.mjs` audits all of it (lazy fetch, play/pause, no layout shift, hint,
+  reduced motion, overflow) at desktop, 600px, phone and both reduced-motion cases.
+
 ## Section nav and back-to-top
 
 `SectionNav.tsx` is an index of `pageSections` (in `site.ts`, page order, one entry per
