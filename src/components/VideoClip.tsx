@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useSettled } from "@/hooks/useSettled";
 
-function MuteIcon({ muted }: { muted: boolean }) {
+export function MuteIcon({ muted }: { muted: boolean }) {
   return muted ? (
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="M4 9v6h4l5 5V4L8 9H4Z" />

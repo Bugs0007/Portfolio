@@ -50,6 +50,7 @@ export const person = {
 export const pageSections = [
   { id: "intro", label: "Intro" },
   { id: "work", label: "Work" },
+  { id: "game", label: "Game" },
   { id: "music", label: "Music" },
   { id: "travel", label: "Travel" },
   { id: "art", label: "Art" },
@@ -953,6 +954,27 @@ export const riding = {
     },
   ] satisfies RidingMedia[],
 };
+
+// The game is something I built, so it sits right under Work, ahead of the
+// "Life beyond work" Seam, rather than with the hobbies.
+// The trailer is the original 1920x1080, 60fps render, copied in untouched. The
+// poster is its first frame.
+export const game = {
+  name: "Brawlkai",
+  url: "https://supa-figh.vercel.app",
+  blurb:
+    "A 2D pixel fighter with anime characters. I built it, and it runs right in your browser.",
+  // Controls are keyboard (WASD and arrows) or gamepad. It has no touch input.
+  controlsHint: "It needs a keyboard, so it plays best on desktop.",
+  trailer: {
+    poster: "/media/game/poster.jpg",
+    mp4: "/media/game/trailer.mp4",
+    webm: "/media/game/trailer.webm",
+    width: 1920,
+    height: 1080,
+    alt: "Brawlkai trailer: a pixel-art Super Saiyan fires a beam across a night-sky arena at a dark red orb.",
+  },
+} as const;
 
 // My Favorites (anime/movie/show list) has grown enough fields (YouTube
 // config, captions) to outgrow this file: see src/content/watching.ts.
