@@ -326,6 +326,25 @@ outside its frame), `findable.mjs` (every diagram term reachable by Ctrl+F) and
 `reverse.mjs` (scroll-up reverses exactly). They default to port 3100; set
 `VERIFY_BASE=http://localhost:3000` to point them at the normal dev server.
 
+## Learning platforms (Tracewise and NINES)
+
+`LearningPlatforms.tsx` renders two featured side projects directly under CaseIntel in
+Work: in `PipelineMode` (between the pinned chapters and the smaller Projects cards) and in
+`Work.tsx` (right after the CaseIntel entry), so the pinned and fallback layouts match.
+Content is `learningPlatforms` in `src/content/site.ts`; add a third platform by adding one
+entry and its WebP screenshots in `public/media/projects/`.
+
+- Screenshots are real captures from each app's own Playwright run (Tracewise
+  `docs/screenshots`, NINES `e2e/__shots__`), converted to WebP, 1400 to 1440px wide.
+- All screenshots are in the HTML at once and the thumbnails only toggle opacity, so they
+  work without JS and under reduced motion.
+- Layout uses a container query (`@container`, `@5xl:`), so one component fits both the
+  narrow classic column and the wide pinned one. Screenshots lead on small screens.
+- Links go to the public GitHub repos. Neither project has a live URL yet; when one is
+  deployed, add it to that entry's `links`.
+- Numbers (274 concepts, 6 modules, 11 panels, 10 missions, 7 review formats) come from the
+  projects' own docs and code. Recheck them if either project changes.
+
 ## Art section
 
 Justified rows, two labelled groups (Paintings, Sketches), in `ArtGallery.tsx`. Rows

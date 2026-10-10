@@ -1,5 +1,7 @@
+import { Fragment } from "react";
 import { education, experience, projects, type ProjectLink } from "@/content/site";
 import { CaseIntelShowcase } from "./CaseIntelShowcase";
+import { LearningPlatforms } from "./LearningPlatforms";
 import { Reveal } from "./Reveal";
 
 const college = education[0];
@@ -107,7 +109,8 @@ export function Work() {
           </Reveal>
           <div className="mt-4 space-y-10">
             {projects.map((project) => (
-              <Reveal key={project.name}>
+              <Fragment key={project.name}>
+              <Reveal>
                 <div className="border-t border-mist/10 pt-6">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <h4 className="font-body text-lg font-semibold text-mist">
@@ -170,6 +173,8 @@ export function Work() {
                   <StackTags items={project.stack} />
                 </div>
               </Reveal>
+              {project.name === "CaseIntel" && <LearningPlatforms />}
+              </Fragment>
             ))}
           </div>
         </div>

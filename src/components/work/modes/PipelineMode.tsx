@@ -10,6 +10,7 @@ import { brynklabsDiagram } from "./specs/brynklabs";
 import { caseintelDiagram } from "./specs/caseintel";
 import { diagramBeats, drawWindow, pinSpanFor } from "./work-beats";
 import { StackTags, SupportingCards, WorkSectionShell } from "./shared";
+import { LearningPlatforms } from "@/components/LearningPlatforms";
 
 // Scroll-driven architecture diagrams. Each featured item pins for a few
 // viewport-heights while its system draws itself: paths advance via a
@@ -238,6 +239,13 @@ export function PipelineMode({
             allowSideColumn={allowSideColumn}
           />
         ))}
+      </div>
+      {/* Right under CaseIntel, ahead of the smaller projects. Wider than the
+          project cards because the screenshots want the room. */}
+      <div className="px-6 pb-20 pt-8 sm:px-10 sm:pb-24 lg:px-16">
+        <div className="mx-auto max-w-6xl">
+          <LearningPlatforms />
+        </div>
       </div>
       <SupportingCards items={supporting} />
     </WorkSectionShell>

@@ -978,3 +978,168 @@ export const game = {
 
 // My Favorites (anime/movie/show list) has grown enough fields (YouTube
 // config, captions) to outgrow this file: see src/content/watching.ts.
+
+// Two learning platforms built after CaseIntel, shown right under it in Work
+// (src/components/LearningPlatforms.tsx). Screenshots are real captures from
+// each app's own Playwright run, converted to WebP, in public/media/projects.
+// Every number below comes from the project's own docs or code: 274 concepts
+// and 11 panel types from Tracewise's PROGRESS.md and COVERAGE.md; the mission
+// count is the number of packs in NINES's src/content/packs, and the review
+// formats come from its ROADMAP.
+export type PlatformShot = {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  // Short label for the thumbnail, and the line under the stage.
+  label: string;
+  caption: string;
+};
+
+export type LearningPlatform = {
+  id: string;
+  name: string;
+  tagline: string;
+  kind: string;
+  when: string;
+  pitch: string;
+  points: string[];
+  stats: { value: string; label: string }[];
+  stack: string[];
+  links: ProjectLink[];
+  shots: PlatformShot[];
+};
+
+export const learningPlatformsIntro =
+  "Two more things I built, both aimed at learning by doing instead of reading.";
+
+export const learningPlatforms: LearningPlatform[] = [
+  {
+    id: "tracewise",
+    name: "Tracewise",
+    tagline: "Watch it. Predict it. Type it yourself.",
+    kind: "Interview prep console",
+    when: "2026",
+    pitch:
+      "An interview-prep console for engineers who have leaned on AI tools and want their hands back on the keyboard. Each concept is a step-through of real code, then a typing ladder takes the scaffolding away until you can write it from a blank page.",
+    points: [
+      "Visualizers driven by real execution: arrays, trees, graphs, DP tables with dependency arrows, call trees. Predict mode asks you to guess each next step before it plays.",
+      "Python runs in WebAssembly (Pyodide), JavaScript in a worker, React in a sandboxed iframe. No backend, and it works offline.",
+      "Practice modes include spaced-repetition review, a timed no-hint Interview Mode with a score report, a Syntax Gym, and a capstone you build over an in-browser mock network.",
+      "A content validator runs every lesson's solution, buggy code and visualizer against real Python, Node and jsdom, so nothing ships unverified.",
+    ],
+    stats: [
+      { value: "274", label: "concepts" },
+      { value: "6", label: "modules" },
+      { value: "11", label: "visualizer panels" },
+    ],
+    stack: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Pyodide",
+      "WebAssembly",
+      "CodeMirror",
+      "Zustand",
+      "Supabase",
+      "Playwright",
+      "Vitest",
+    ],
+    links: [{ href: "https://github.com/Bugs0007/tracewise", label: "GitHub" }],
+    shots: [
+      {
+        src: "/media/projects/tracewise-home.webp",
+        width: 1400,
+        height: 900,
+        alt: "Tracewise home page with a binary search visualizer next to its code, and six learning modules listed below.",
+        label: "Home",
+        caption: "Home: a live binary search beside its code, then six modules and 274 concepts.",
+      },
+      {
+        src: "/media/projects/tracewise-dijkstra.webp",
+        width: 1400,
+        height: 900,
+        alt: "Tracewise visualizer stepping through Dijkstra's algorithm on a weighted graph, with the code, a heap and a distance table.",
+        label: "Graphs",
+        caption: "Dijkstra stepping through a real run, with the heap and distance table updating live.",
+      },
+      {
+        src: "/media/projects/tracewise-dp.webp",
+        width: 1400,
+        height: 900,
+        alt: "Tracewise visualizer showing a longest common subsequence DP table with a dependency arrow and a scrubbable timeline.",
+        label: "DP",
+        caption: "Longest common subsequence: a DP table with dependency arrows and a scrubbable timeline.",
+      },
+    ],
+  },
+  {
+    id: "nines",
+    name: "NINES",
+    tagline: "Learn system design by breaking systems.",
+    kind: "System design and AI engineering game",
+    when: "2026",
+    pitch:
+      "A game that teaches system design, AI engineering and dev fundamentals by letting you run the systems. You are the first backend engineer at a made-up chat app. You predict what will happen, then a real simulation shows you.",
+    points: [
+      "Every mission follows the same loop: predict with a confidence rating, play with live sliders, see the reveal, then explain it back. Bosses and a live incident room test it under pressure.",
+      "The engine is a deterministic discrete-event simulation in a Web Worker, checked against queueing theory (M/M/1, M/M/c, Little's Law) so the behavior is earned, not scripted.",
+      "Spaced repetition (FSRS) schedules reviews across seven card formats. An optional AI coach grades explanations and gives hints, and every feature still works with it off.",
+      "Guests play offline in the browser. Signing in syncs progress through Supabase, with server-side validation and your own AI key never touching the server.",
+    ],
+    stats: [
+      { value: "10", label: "missions and bosses" },
+      { value: "7", label: "review formats" },
+      { value: "2", label: "learning tracks" },
+    ],
+    stack: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind",
+      "Web Workers",
+      "Canvas 2D",
+      "Dexie",
+      "ts-fsrs",
+      "Supabase",
+      "Groq",
+      "Playwright",
+      "Vitest",
+    ],
+    links: [{ href: "https://github.com/Bugs0007/NINES", label: "GitHub" }],
+    shots: [
+      {
+        src: "/media/projects/nines-hq.webp",
+        width: 1440,
+        height: 900,
+        alt: "NINES HQ screen showing an uptime readout in nines, a daily shift card, and a map of infrastructure tracks.",
+        label: "HQ",
+        caption: "HQ: your uptime counted in nines, the daily shift, and a map of what you have built.",
+      },
+      {
+        src: "/media/projects/nines-launch-day.webp",
+        width: 1440,
+        height: 900,
+        alt: "NINES Launch Day boss fight with a live fleet simulation, a launch plan with sliders, and the challenge brief.",
+        label: "Boss fight",
+        caption: "Launch Day: size a fleet, pick a load balancer, then survive the traffic spike.",
+      },
+      {
+        src: "/media/projects/nines-incident.webp",
+        width: 1440,
+        height: 900,
+        alt: "NINES incident room with dashboards, a target health table, a service map, an evidence board and a list of actions.",
+        label: "Incident",
+        caption: "Incident room: read dashboards and logs, pin evidence, form a theory, then act.",
+      },
+      {
+        src: "/media/projects/nines-the-bill.webp",
+        width: 1440,
+        height: 900,
+        alt: "NINES The Bill challenge with a context window stack, policy controls, a token chart and a forecast prompt.",
+        label: "AI cost",
+        caption: "The Bill: shape the context policy and forecast the monthly cost before you ship.",
+      },
+    ],
+  },
+];
