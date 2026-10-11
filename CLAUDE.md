@@ -340,8 +340,8 @@ entry and its WebP screenshots in `public/media/projects/`.
   work without JS and under reduced motion.
 - Layout uses a container query (`@container`, `@5xl:`), so one component fits both the
   narrow classic column and the wide pinned one. Screenshots lead on small screens.
-- Links go to the public GitHub repos. Neither project has a live URL yet; when one is
-  deployed, add it to that entry's `links`.
+- Each entry's `links` has a "Live site" link (Vercel deployments) first, then the public
+  GitHub repo. Buttons render in array order.
 - Numbers (274 concepts, 6 modules, 11 panels, 10 missions, 7 review formats) come from the
   projects' own docs and code. Recheck them if either project changes.
 
