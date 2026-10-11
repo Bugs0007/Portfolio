@@ -842,6 +842,14 @@ export const art = {
       medium: "painting",
     },
     {
+      src: "/media/art/mountain-sunset.jpg",
+      width: 1200,
+      height: 1600,
+      alt: "Acrylic painting by Bhagath of a snow-capped peak lit gold and orange under a pink sky, with a low orange sun, a pink lake and pine-covered green slopes below.",
+      caption: "Mountain sunset",
+      medium: "painting",
+    },
+    {
       src: "/media/art/sketch-eye.jpg",
       width: 1500,
       height: 1934,
