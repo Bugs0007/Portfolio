@@ -47,7 +47,7 @@ All real content lives in `src/content/site.ts`, typed, no hardcoded copy in JSX
 Unresolved facts are marked `// NEEDS: ...` inline, grep for `NEEDS` before treating
 anything as final. Current open items:
 - `riding.bike`, real make/model. Several bikes show up in photos, unconfirmed which is his.
-- `art.pieces` holds 9: 3 paintings + 6 sketchbook pages. A 7th sketch was expected
+- `art.pieces` holds 10: 4 paintings + 6 sketchbook pages. A 7th sketch was expected
   but the seventh photo turned out to be the sketchbook's *cover*, not artwork, so it
   is deliberately not in the data. Adding it later is one entry, nothing else.
 - `workItems[].media` is still empty for every item, so nothing in Work renders a
