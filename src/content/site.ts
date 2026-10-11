@@ -1053,7 +1053,10 @@ export const learningPlatforms: LearningPlatform[] = [
       "Playwright",
       "Vitest",
     ],
-    links: [{ href: "https://github.com/Bugs0007/tracewise", label: "GitHub" }],
+    links: [
+      { href: "https://tracewise-blue.vercel.app/", label: "Live site" },
+      { href: "https://github.com/Bugs0007/tracewise", label: "GitHub" },
+    ],
     shots: [
       {
         src: "/media/projects/tracewise-home.webp",
@@ -1114,7 +1117,10 @@ export const learningPlatforms: LearningPlatform[] = [
       "Playwright",
       "Vitest",
     ],
-    links: [{ href: "https://github.com/Bugs0007/NINES", label: "GitHub" }],
+    links: [
+      { href: "https://nines-neon.vercel.app/", label: "Live site" },
+      { href: "https://github.com/Bugs0007/NINES", label: "GitHub" },
+    ],
     shots: [
       {
         src: "/media/projects/nines-hq.webp",
