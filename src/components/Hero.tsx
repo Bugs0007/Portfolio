@@ -1,43 +1,52 @@
 import { person, education } from "@/content/site";
 import { VideoClip } from "./VideoClip";
 
-const college = education[0];
-
 export function Hero() {
   return (
-    <section
-      id="intro"
-      aria-label="Introduction"
-      className="relative flex min-h-[72vh] w-full items-end overflow-hidden bg-ink"
-    >
-      <VideoClip
-        poster="/media/intro/intro-poster.jpg"
-        src="/media/intro/intro.mp4"
-        alt="Bhagath giving a peace sign to the camera, mountains and clouds behind him."
-        width={3840}
-        height={2160}
-        fit="cover"
-        position="top"
-        priority
-      />
-      {/* type sits on the image, not beside it: legibility gradient only, no card */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-transparent"
-      />
-
-      <div className="relative z-10 w-full px-6 pb-16 sm:px-10 sm:pb-20 lg:px-16">
-        <h1 className="font-display text-[15vw] leading-[0.92] font-medium tracking-tight text-mist sm:text-[9vw] lg:text-[7.5vw]">
-          Bhagath{" "}
-          <br />
-          Samalla
-        </h1>
-        <p className="mt-6 max-w-xl font-body text-base text-mist/85 sm:text-lg">
-          {person.tagline}
-        </p>
-        <p className="mt-2 font-mono text-xs uppercase tracking-wider text-stone">
-          {college.shortSchool} · {college.gradYear} CS Grad · {person.location}
-        </p>
+    <section id="intro" aria-label="Introduction" className="portfolio-hero">
+      <div className="hero-opening">
+        <div className="hero-heading">
+          <div className="hero-kicker">
+            <span>Software engineer & endlessly curious human</span>
+            <span className="hero-location"><i /> {person.location}</span>
+          </div>
+          <h1 className="hero-name">
+            BHAGATH<span className="sr-only"> Samalla</span><span aria-hidden className="hero-period">.</span>
+          </h1>
+          <div className="hero-byline">
+            <span>SAMALLA <span className="hero-byline-divider">/</span> {education[0].gradYear} CS GRAD</span>
+            <span>Building things. Collecting stories.</span>
+          </div>
+        </div>
+        <div className="hero-film">
+          <div className="hero-film-editorial">
+            <span className="hero-film-label">A FEW THINGS ABOUT ME ↘</span>
+            <div className="hero-film-copy">
+              <p>Engineer{" "}<br />by craft.<br /><em>Explorer{" "}<br />at heart.</em></p>
+              <a className="hero-work-link" href="#work">
+                <span>Explore my work</span><span className="hero-link-arrow" aria-hidden>↓</span>
+              </a>
+            </div>
+            <span className="hero-film-foot">CODE. CREATE. GET A LITTLE LOST.</span>
+          </div>
+          <div className="hero-video-frame">
+            <VideoClip
+              poster="/media/intro/intro-poster.jpg"
+              src="/media/intro/intro.mp4"
+              alt="Bhagath giving a peace sign to the camera, mountains and clouds behind him."
+              width={1920}
+              height={1080}
+              fit="contain"
+              sizes="(min-width: 800px) 65vw, 100vw"
+              priority
+            />
+            <span className="hero-video-caption">OUT OF OFFICE, IN MY ELEMENT.</span>
+          </div>
+        </div>
+      </div>
+      <div className="hero-note">
+        <span aria-hidden>✳</span><p>{person.tagline}</p>
+        <span className="hero-note-end">A WORK IN PROGRESS.<br />AND ALWAYS WILL BE.</span>
       </div>
     </section>
   );

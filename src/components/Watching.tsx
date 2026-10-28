@@ -27,12 +27,13 @@ export function Watching() {
     <section
       id="favorites"
       aria-label="My Favorites"
-      className="relative bg-ink px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
+      className="chapter-favorites relative bg-ink"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="chapter-inner">
         <Reveal>
-          <h2 className="font-display text-4xl font-medium text-mist sm:text-5xl">
-            My Favorites
+          <p className="chapter-eyebrow"><span>07 / ON REPEAT</span><span>MY FAVORITES</span></p>
+          <h2 className="chapter-title chapter-title-light">
+            Good stories<br /><em>stay with you.</em>
           </h2>
         </Reveal>
 
@@ -40,10 +41,10 @@ export function Watching() {
           const entries = watchingEntries.filter((e) => e.category === key);
           if (entries.length === 0) return null;
           return (
-            <div key={key} className="mt-10">
+            <div key={key} className="chapter-favorite-category">
               <Reveal>
-                <h3 className="font-mono text-xs uppercase tracking-wider text-stone">
-                  {label}
+                <h3 className="chapter-category-label">
+                  {label}<span aria-hidden>{String(entries.length).padStart(2, "0")}</span>
                 </h3>
               </Reveal>
               {/* Five thumbnail-scale columns at desktop width instead of three

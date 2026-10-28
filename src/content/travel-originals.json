@@ -1,0 +1,333 @@
+{
+  "sethan-forest": {
+    "src": "/media/travel/originals/sethan-forest.webp",
+    "width": 6048,
+    "height": 8064
+  },
+  "gonbo-rangjon": {
+    "src": "/media/travel/originals/gonbo-rangjon.jpg",
+    "width": 3840,
+    "height": 2160
+  },
+  "pensi-la": {
+    "src": "/media/travel/originals/pensi-la.webp",
+    "width": 2518,
+    "height": 1416
+  },
+  "zanskar-cliffside": {
+    "src": "/media/travel/originals/zanskar-cliffside.webp",
+    "width": 4032,
+    "height": 3024
+  },
+  "zanskar-dog": {
+    "src": "/media/travel/originals/zanskar-dog.jpg",
+    "width": 3840,
+    "height": 2160
+  },
+  "zanskar-monastery-tea": {
+    "src": "/media/travel/originals/zanskar-monastery-tea.png",
+    "width": 2778,
+    "height": 1284
+  },
+  "zanskar-baby": {
+    "src": "/media/travel/originals/zanskar-baby.png",
+    "width": 2778,
+    "height": 1284
+  },
+  "manali-hidimba": {
+    "src": "/media/travel/originals/manali-hidimba.webp",
+    "width": 5712,
+    "height": 4284
+  },
+  "koksar-group": {
+    "src": "/media/travel/originals/koksar-group.webp",
+    "width": 4032,
+    "height": 3024
+  },
+  "jispa-stargazing": {
+    "src": "/media/travel/originals/jispa-stargazing.jpg",
+    "width": 4032,
+    "height": 3024
+  },
+  "manali-portrait": {
+    "src": "/media/travel/originals/manali-portrait.jpeg",
+    "width": 4031,
+    "height": 2267
+  },
+  "coimbatore-trek": {
+    "src": "/media/travel/originals/coimbatore-trek.webp",
+    "width": 3024,
+    "height": 4032
+  },
+  "coimbatore-valley": {
+    "src": "/media/travel/originals/coimbatore-valley.jpeg",
+    "width": 3024,
+    "height": 4032
+  },
+  "coimbatore-friends-grass": {
+    "src": "/media/travel/originals/coimbatore-friends-grass.jpeg",
+    "width": 720,
+    "height": 1280
+  },
+  "coimbatore-ridge": {
+    "src": "/media/travel/originals/coimbatore-ridge.jpeg",
+    "width": 2268,
+    "height": 4032
+  },
+  "coimbatore-friends-peak": {
+    "src": "/media/travel/originals/coimbatore-friends-peak.webp",
+    "width": 4032,
+    "height": 3024
+  },
+  "coimbatore-sunset-silhouette": {
+    "src": "/media/travel/originals/coimbatore-sunset-silhouette.jpeg",
+    "width": 1752,
+    "height": 3115
+  },
+  "badrinath": {
+    "src": "/media/travel/originals/badrinath.jpeg",
+    "width": 4032,
+    "height": 2268
+  },
+  "kedarnath-horse-ride": {
+    "src": "/media/travel/originals/kedarnath-horse-ride.jpg",
+    "width": 3024,
+    "height": 4032
+  },
+  "kedarnath-temple": {
+    "src": "/media/travel/originals/kedarnath-temple.jpg",
+    "width": 1284,
+    "height": 2282
+  },
+  "mana-village": {
+    "src": "/media/travel/originals/mana-village.jpg",
+    "width": 2268,
+    "height": 4032
+  },
+  "zanskar-truck-ride": {
+    "src": "/media/travel/originals/zanskar-truck-ride.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zanskar-truck-ride.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/zanskar-truck-ride.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zanskar-truck-ride-poster-sdr.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 19.886
+  },
+  "zanskar-river-wash": {
+    "src": "/media/travel/originals/zanskar-river-wash.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zanskar-river-wash.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/zanskar-river-wash.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zanskar-river-wash-poster-sdr.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 2.977
+  },
+  "zanskar-glacier": {
+    "src": "/media/travel/originals/zanskar-glacier.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zanskar-glacier.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/zanskar-glacier.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zanskar-glacier-poster.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 23.0
+  },
+  "zanskar-frozen-lake": {
+    "src": "/media/travel/originals/zanskar-frozen-lake.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zanskar-frozen-lake.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/zanskar-frozen-lake.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zanskar-frozen-lake-poster-sdr.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 1.766667
+  },
+  "zanskar-local-child": {
+    "src": "/media/travel/originals/zanskar-local-child.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zanskar-local-child.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/zanskar-local-child.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zanskar-local-child-poster-sdr.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 14.911
+  },
+  "zangla-palace": {
+    "src": "/media/travel/originals/zangla-palace.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zangla-palace.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zangla-palace-poster.png",
+    "width": 1920,
+    "height": 1080,
+    "durationSeconds": 5.566667
+  },
+  "manali-village": {
+    "src": "/media/travel/originals/manali-village.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/manali-village.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/manali-village.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/manali-village-poster-sdr.png",
+    "width": 1080,
+    "height": 1920,
+    "durationSeconds": 4.607
+  },
+  "manali-dog": {
+    "src": "/media/travel/originals/manali-dog.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/manali-dog.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/manali-dog.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/manali-dog-poster.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 3.071
+  },
+  "manali-forest": {
+    "src": "/media/travel/originals/manali-forest.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/manali-forest.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/manali-forest-poster.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 4.266667
+  },
+  "manali-mall-road": {
+    "src": "/media/travel/originals/manali-mall-road.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/manali-mall-road.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/manali-mall-road-poster.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 4.244
+  },
+  "manali-paragliding": {
+    "src": "/media/travel/originals/manali-paragliding.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/manali-paragliding.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/manali-paragliding.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/manali-paragliding-poster.png",
+    "width": 1920,
+    "height": 1080,
+    "durationSeconds": 37.670967
+  },
+  "coimbatore-sunset": {
+    "src": "/media/travel/originals/coimbatore-sunset.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/coimbatore-sunset.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/coimbatore-sunset.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/coimbatore-sunset-poster-sdr.png",
+    "width": 1920,
+    "height": 1080,
+    "durationSeconds": 3.087007
+  },
+  "coimbatore-sunset-group": {
+    "src": "/media/travel/originals/coimbatore-sunset-group.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/coimbatore-sunset-group.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/coimbatore-sunset-group.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/coimbatore-sunset-group-poster.png",
+    "width": 3832,
+    "height": 2156,
+    "durationSeconds": 18.0
+  },
+  "zanskar-monks": {
+    "src": "/media/travel/originals/zanskar-monks.mp4",
+    "sources": [
+      {
+        "src": "/media/travel/originals/zanskar-monks.hevc.mp4",
+        "type": "video/mp4; codecs=\"hvc1\""
+      },
+      {
+        "src": "/media/travel/originals/zanskar-monks.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "poster": "/media/travel/originals/zanskar-monks-poster-sdr.png",
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 2.891
+  }
+}

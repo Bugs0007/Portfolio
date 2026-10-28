@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { game } from "@/content/site";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useVideoSound } from "@/hooks/useVideoSound";
 import { DWELL_MS, MuteIcon, VIDEO_LOOKAHEAD_PX, latest } from "./VideoClip";
 
 // Share of the frame that must be on screen for the trailer to play. Same
@@ -39,7 +40,7 @@ function PauseGlyph() {
 //     the browser reads the metadata (preload="metadata"). Before that the
 //     video has no sources at all, so the 10MB file is never requested by a
 //     reader who doesn't scroll this far.
-//  3. At 40% visible, after a short dwell, it plays, muted and looped, and it
+//  3. At 40% visible, after a short dwell, it plays with sound and looped, and it
 //     pauses the moment it drops below that again. The dwell is the same one
 //     VideoClip uses: a section-nav jump flies past this section, and without
 //     it every crossing would start a download that pause() doesn't cancel.
@@ -56,32 +57,15 @@ export function GameTrailer() {
   // the effect below can finish the job once they are.
   const wantsPlayRef = useRef(false);
   const loadedForRef = useRef<HTMLVideoElement | null>(null);
-  const unmuteOnStartRef = useRef(false);
 
   const [armed, setArmed] = useState(false);
   const [userStarted, setUserStarted] = useState(false);
   const [hasFrame, setHasFrame] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(true);
+  const { muted, soundBlocked, play, toggleSound, onVolumeChange } = useVideoSound(videoRef, wantsPlayRef, false);
 
   const manual = reduceMotion;
   const showVideo = !manual || userStarted;
-
-  const play = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.play().catch((err: unknown) => {
-      // An unmuted play can be refused if the browser no longer counts the
-      // page as having been interacted with. Fall back to muted rather than
-      // not playing. Any other rejection (no sources yet) is left alone: the
-      // armed effect plays again once they are attached.
-      if (err instanceof DOMException && err.name === "NotAllowedError" && !video.muted) {
-        video.muted = true;
-        setMuted(true);
-        video.play().catch(() => {});
-      }
-    });
-  }, []);
 
   // Arrive: attach the sources once the frame is within reach.
   useEffect(() => {
@@ -146,25 +130,14 @@ export function GameTrailer() {
       loadedForRef.current = video;
       video.load();
     }
-    if (unmuteOnStartRef.current) {
-      unmuteOnStartRef.current = false;
-      video.muted = false;
-    }
     if (wantsPlayRef.current) play();
   }, [armed, showVideo, play]);
 
   const start = () => {
     wantsPlayRef.current = true;
-    unmuteOnStartRef.current = true;
-    setMuted(false);
     setUserStarted(true);
     setArmed(true);
-    // Already mounted (started once before, then paused or ended).
-    if (videoRef.current && loadedForRef.current === videoRef.current) {
-      videoRef.current.muted = false;
-      unmuteOnStartRef.current = false;
-      play();
-    }
+    void play();
   };
 
   const pause = () => {
@@ -172,17 +145,19 @@ export function GameTrailer() {
     videoRef.current?.pause();
   };
 
-  const toggleSound = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setMuted(video.muted);
-  };
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) videoRef.current?.pause();
+      else if (wantsPlayRef.current) play();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [play]);
 
   return (
     <div
       ref={frameRef}
-      className="relative aspect-video w-full overflow-hidden bg-ink-soft"
+      className="game-trailer-frame relative aspect-video w-full overflow-hidden bg-ink-soft"
     >
       <Image
         src={trailer.poster}
@@ -191,23 +166,24 @@ export function GameTrailer() {
         alt={showVideo ? "" : trailer.alt}
         fill
         sizes="(min-width: 1152px) 1072px, 100vw"
-        className="object-cover"
+        className="object-contain"
       />
       {showVideo && (
         <video
           ref={videoRef}
-          muted
+          muted={muted}
           playsInline
           loop={!manual}
           preload="metadata"
           width={trailer.width}
           height={trailer.height}
           aria-label={trailer.alt}
+          onVolumeChange={onVolumeChange}
           onLoadedData={() => setHasFrame(true)}
           onPlaying={() => setHasFrame(true)}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ease-site ${
+          className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ease-site ${
             hasFrame ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -223,7 +199,7 @@ export function GameTrailer() {
         </video>
       )}
 
-      {manual && !playing && (
+      {!playing && (
         <button
           type="button"
           onClick={start}
@@ -233,7 +209,7 @@ export function GameTrailer() {
           <PlayGlyph size={28} />
         </button>
       )}
-      {manual && playing && (
+      {playing && (
         <button
           type="button"
           onClick={pause}
@@ -247,9 +223,10 @@ export function GameTrailer() {
         <button
           type="button"
           onClick={toggleSound}
-          aria-label={muted ? "Play sound" : "Mute sound"}
-          className={`absolute bottom-3 right-3 z-20 flex size-11 items-center justify-center sm:bottom-4 sm:right-4 ${BUTTON}`}
+          aria-label={soundBlocked ? "Enable trailer sound" : muted ? "Play sound" : "Mute sound"}
+          className={`absolute bottom-3 right-3 z-20 flex min-h-11 min-w-11 items-center justify-center gap-2 p-2.5 sm:bottom-4 sm:right-4 ${BUTTON}`}
         >
+          {soundBlocked && <span className="text-xs">Enable sound</span>}
           <MuteIcon muted={muted} />
         </button>
       )}

@@ -2,14 +2,14 @@
 
 :root {
   /* Design tokens, Section 6 of BRIEF.md. Each traced to a real photo or brief note, not a generator. */
-  --ink: #0d1219; /* Zanskar night sky, near the horizon glow */
-  --ink-soft: #161d27; /* lifted surface on ink */
-  --stone: #8b8478; /* fog-wrapped peak rock */
-  --mist: #e4e0d6; /* cloud light off the same peak */
+  --ink: #171c18;
+  --ink-soft: #202720;
+  --stone: #a4a89b;
+  --mist: #f0efe7;
   --mist-dim: #cfcabd;
   --moss: #77864a; /* high-pasture grass, Zanskar */
-  --jacket: #2f6e80; /* the jacket worn in most travel photos, the one signature accent */
-  --jacket-bright: #4a95a8;
+  --jacket: #52682b;
+  --jacket-bright: #d7fa6d;
   --ember: #b23a2e; /* tail-light red, Riding section only */
 }
 
@@ -31,21 +31,15 @@
   --ease-site: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* The native scrollbar is replaced by <ScrollProgress />, which is mounted
-   once in the root layout. Only the bar's *rendering* is suppressed here:
-   scrolling itself stays entirely native, which is what Lenis drives and what
-   keeps the wheel, trackpad, keyboard (Space, PgDn, arrows, Home/End) and
-   touch all working. Setting overflow:hidden on html or body would take that
-   away and break Lenis with it, so it is deliberately not done. */
+/* A native scrollbar tracks the page without a JavaScript scroll loop. */
 html {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* legacy Edge/IE */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-accent) var(--ink);
 }
 
 html::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
+  width: 6px;
+  height: 6px;
 }
 
 body {
@@ -55,8 +49,8 @@ body {
 }
 
 ::selection {
-  background: var(--jacket);
-  color: var(--mist);
+  background: var(--jacket-bright);
+  color: var(--ink);
 }
 
 /* SectionNav and BackToTop move focus to the section they scroll to, the way a

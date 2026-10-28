@@ -15,9 +15,6 @@ const CATEGORY_LABEL: Record<WatchingCategory, string> = {
 };
 
 const LOOP_MS = 8000;
-// How far below/above the viewport a card can be before we spin up its
-// player, so scrolling into hover range never has to wait on a cold start.
-const INIT_ROOT_MARGIN = "400px";
 
 function MuteIcon({ muted }: { muted: boolean }) {
   return muted ? (
@@ -234,38 +231,15 @@ export function WatchingCard({
     applyIntent();
   };
 
-  // Lazy init: create the player once the card is within reach, well before
-  // it's actually visible, so hovering it never waits on a cold start.
+  // Only an intentional hover or button press creates a YouTube player.
+  // Scrolling past fifteen posters should never initialize fifteen iframes.
   useEffect(() => {
     if (reduceMotion || failed) return;
     const el = containerRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([info]) => {
-        if (info.isIntersecting) {
-          ensurePlayer();
-          observer.disconnect();
-        }
-      },
-      { rootMargin: INIT_ROOT_MARGIN, threshold: 0 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduceMotion, failed]);
-
-  // Touch/no-hover path: play once at least half visible, pause once it
-  // drops below that. Skipped entirely on hover-capable devices, which use
-  // onMouseEnter/onMouseLeave instead.
-  useEffect(() => {
-    if (reduceMotion || failed || hoverCapable) return;
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([info]) => {
-        if (info.isIntersecting && info.intersectionRatio >= 0.5) {
-          requestPlay();
-        } else {
+        if (!info.isIntersecting || info.intersectionRatio < 0.5) {
           requestPause();
         }
       },
@@ -274,7 +248,7 @@ export function WatchingCard({
     observer.observe(el);
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduceMotion, failed, hoverCapable]);
+  }, [reduceMotion, failed, playerReady]);
 
   const toggleMute = (e: MouseEvent) => {
     e.stopPropagation();
@@ -345,6 +319,26 @@ export function WatchingCard({
           </motion.p>
         )}
 
+        {!reduceMotion && !failed && !playing && (
+          <button
+            type="button"
+            onClick={requestPlay}
+            aria-label={`Preview ${entry.title}`}
+            className="absolute bottom-3 right-3 z-20 grid size-9 place-items-center rounded-full border border-mist/30 bg-ink/90 text-mist focus-visible:outline-2 focus-visible:outline-jacket-bright"
+          >
+            <span aria-hidden>▶</span>
+          </button>
+        )}
+        {playing && (
+          <button
+            type="button"
+            onClick={requestPause}
+            aria-label={`Pause ${entry.title} preview`}
+            className="absolute bottom-3 left-3 z-20 grid size-9 place-items-center rounded-full bg-ink/90 text-mist focus-visible:outline-2 focus-visible:outline-jacket-bright"
+          >
+            <span aria-hidden>Ⅱ</span>
+          </button>
+        )}
         {playing && (
           <button
             type="button"

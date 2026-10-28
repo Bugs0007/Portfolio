@@ -191,7 +191,7 @@ function PipelineChapter({
                 ariaLabel={`${item.title} architecture diagram`}
               />
             </div>
-            <div className="flex min-h-0 flex-col overflow-y-auto">
+            <div className="work-detail-scroll flex min-h-0 min-w-0 flex-col overflow-y-auto">
               {bullets}
               <StackTags items={item.stack} className="mt-5" />
             </div>
@@ -206,7 +206,7 @@ function PipelineChapter({
               orientation={orientation}
               ariaLabel={`${item.title} architecture diagram`}
             />
-            <div className="mt-5 max-h-[22vh] shrink-0 overflow-y-auto border-t border-mist/10 pt-4">
+            <div className="work-detail-scroll mt-5 max-h-[22vh] shrink-0 overflow-y-auto border-t border-mist/10 pt-4">
               {bullets}
               <StackTags items={item.stack} className="mt-3" />
             </div>

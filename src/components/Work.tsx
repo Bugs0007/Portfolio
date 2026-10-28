@@ -1,10 +1,9 @@
 import { Fragment } from "react";
-import { education, experience, projects, type ProjectLink } from "@/content/site";
+import { experience, projects, type ProjectLink } from "@/content/site";
 import { CaseIntelShowcase } from "./CaseIntelShowcase";
 import { LearningPlatforms } from "./LearningPlatforms";
 import { Reveal } from "./Reveal";
-
-const college = education[0];
+import { WorkIntro } from "./WorkIntro";
 
 // Composite Sketch is two repos rather than one, so it needs more than the
 // single href/linkLabel pair CaseIntel's live-site link uses. Rendered
@@ -47,18 +46,10 @@ export function Work() {
     <section
       id="work"
       aria-label="Work"
-      className="relative bg-ink px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
+      className="work-classic relative bg-ink px-6 pb-24 sm:px-10 sm:pb-32 lg:px-16"
     >
       <div className="mx-auto max-w-4xl">
-        <Reveal>
-          <h2 className="font-display text-4xl font-medium text-mist sm:text-5xl">
-            Work
-          </h2>
-          <p className="mt-3 max-w-xl font-mono text-xs uppercase tracking-wider text-stone">
-            {college.degree} · {college.shortSchool} · {college.gradYear} ·{" "}
-            {college.detail}
-          </p>
-        </Reveal>
+        <WorkIntro />
 
         {/* Experience */}
         <div className="mt-16">

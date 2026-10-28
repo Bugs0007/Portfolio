@@ -1,38 +1,15 @@
-"use client";
+import Image from "next/image";
+import { Reveal } from "./Reveal";
 
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-
-// The deliberate gear-change: color bleeds from ink (work) toward jacket and
-// moss (the personal half) as this section crosses the viewport. Section 2
-// of the brief calls for this to be a moment, not just another boundary.
 export function Seam() {
-  const ref = useRef<HTMLElement>(null);
-  const reduceMotion = usePrefersReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const backgroundColor = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    ["#0d1219", "#2f6e80", "#77864a"],
-  );
-
   return (
-    <motion.section
-      ref={ref}
-      aria-label="Transition"
-      style={reduceMotion ? undefined : { backgroundColor }}
-      className={`relative flex min-h-[65vh] items-center justify-center px-6 text-center ${
-        reduceMotion ? "bg-jacket" : ""
-      }`}
-    >
-      <p className="max-w-3xl font-display text-3xl font-medium italic text-mist sm:text-5xl">
-        Life beyond work.
-      </p>
-    </motion.section>
+    <section className="portfolio-seam" aria-label="Life beyond work">
+      <div className="editorial-eyebrow"><span>END OF THE WORKDAY</span><span>THE REST OF THE STORY ↘</span></div>
+      <div className="seam-composition">
+        <Reveal className="seam-type"><p>There&rsquo;s more<br />to life than<br /><em>a screen.</em><span className="seam-asterisk" aria-hidden>✳</span></p></Reveal>
+        <figure className="seam-photo"><Image src="/media/travel/originals/gonbo-rangjon.jpg" alt="Gonbo Rangjon rising above the Zanskar valley." fill sizes="(min-width: 800px) 35vw, 65vw" className="object-cover" /><figcaption>Somewhere in Zanskar. Far from my desk.</figcaption></figure>
+      </div>
+      <div className="seam-bottom"><p>A sketchbook, six strings, an open road.<br />Here&rsquo;s what happens when I log off.</p><a href="#music" aria-label="Explore life beyond work">↓</a></div>
+    </section>
   );
 }

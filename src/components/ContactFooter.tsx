@@ -1,58 +1,38 @@
 import { person } from "@/content/site";
 import { Reveal } from "./Reveal";
+import "./portfolio-chrome.css";
 
 export function ContactFooter() {
   return (
-    <footer
-      id="contact"
-      aria-label="Contact"
-      className="relative bg-ink px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
-    >
-      <div className="mx-auto max-w-3xl">
+    <footer id="contact" aria-label="Contact" className="portfolio-footer">
+      <div className="portfolio-footer-inner">
+        <div className="portfolio-footer-eyebrow">
+          <span><span className="portfolio-footer-dot" aria-hidden /> A conversation starts here</span>
+          <span>{person.location}</span>
+        </div>
         <Reveal>
-          <h2 className="font-display text-4xl font-medium text-mist sm:text-6xl">
-            Get in touch
-          </h2>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-mist/75 sm:text-base">
-            Email works best. I&rsquo;m slower on everything else.
-          </p>
-          <a
-            href={`mailto:${person.email}`}
-            className="mt-8 inline-block font-display text-2xl text-jacket-bright underline decoration-jacket-bright/40 underline-offset-8 transition-colors hover:decoration-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright focus-visible:ring-offset-4 focus-visible:ring-offset-ink sm:text-3xl"
-          >
-            {person.email}
-          </a>
-
-          <div className="mt-14 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-mist/10 pt-6 font-mono text-xs uppercase tracking-wider text-stone">
-            <a
-              href={person.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright rounded-sm"
-            >
-              GitHub
+          <div className="portfolio-footer-invitation">
+            <h2>Have something<br />in <em>mind?</em></h2>
+            <a href={`mailto:${person.email}`} className="portfolio-footer-arrow" aria-label="Start a conversation with Bhagath by email">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">
+                <path d="M10 38 38 10M10 10h28v28" />
+              </svg>
             </a>
-            <a
-              href={person.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright rounded-sm"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={person.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright rounded-sm"
-            >
-              Instagram
-            </a>
-            <span className="ml-auto text-stone/60">
-              {person.name} · {new Date().getFullYear()}
-            </span>
+          </div>
+          <div className="portfolio-footer-email-row">
+            <p>Email works best.<br />I&rsquo;m slower on everything else.</p>
+            <a href={`mailto:${person.email}`} className="portfolio-footer-email">{person.email}<span aria-hidden>↗</span></a>
           </div>
         </Reveal>
+        <div className="portfolio-footer-bottom">
+          <a href="/#intro" className="portfolio-footer-signature" aria-label="Back to introduction">Bhagath Samalla<span aria-hidden>↟</span></a>
+          <div className="portfolio-footer-socials">
+            <a href={person.github} target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden>↗</span></a>
+            <a href={person.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden>↗</span></a>
+            <a href={person.instagram} target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden>↗</span></a>
+          </div>
+          <span className="portfolio-footer-copyright">© {new Date().getFullYear()}</span>
+        </div>
       </div>
     </footer>
   );

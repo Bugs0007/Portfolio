@@ -1,6 +1,8 @@
 // Real content only, no lorem ipsum, no invented achievements.
 // Unresolved facts are marked NEEDS and are also listed back to Bhagath in chat.
 
+import travelOriginals from "./travel-originals.json";
+
 export const person = {
   name: "Bhagath Samalla",
   tagline:
@@ -11,7 +13,7 @@ export const person = {
   email: "samallabhagath@gmail.com",
   phone: "+91-6300187099",
   github: "https://github.com/Bugs0007",
-  linkedin: "https://www.linkedin.com/in/bhagath-samalla-301282281/",
+  linkedin: "https://www.linkedin.com/in/bhagath-samalla/",
   instagram: "https://www.instagram.com/_bhagath_007/",
   stack: [
     "Python",
@@ -432,10 +434,10 @@ export const supportingWorkItems = workItems.filter((item) => !item.featured);
 export const music = {
   intro: "Learning flute and guitar.",
   media: {
-    poster: "/media/music/poster.jpg",
-    loop: "/media/music/loop.mp4",
-    width: 1920,
-    height: 800,
+      poster: "/media/music/poster.jpg",
+      loop: "/media/music/loop.mp4",
+      width: 1920,
+      height: 800,
   },
 } as const;
 
@@ -444,6 +446,8 @@ export type JourneyMedia = {
   src: string;
   // videos carry a poster frame so nothing waits on the video to paint
   poster?: string;
+  sources?: { src: string; type: string }[];
+  durationSeconds?: number;
   width: number;
   height: number;
   alt: string;
@@ -467,7 +471,7 @@ export type Journey = {
 // really is one trip (31 May to 7 June) and the Manali snow photos really are a
 // separate January one. Ooty and Haridwar are left out for now, no photo Bhagath
 // was happy with, easy to add back later.
-export const journeys: Journey[] = [
+const journeyCatalog: Journey[] = [
   {
     id: "zanskar",
     title: "Zanskar",
@@ -803,6 +807,19 @@ export const journeys: Journey[] = [
   },
 ];
 
+type NativeTravelMedia = Pick<JourneyMedia, "src" | "width" | "height"> & Partial<Pick<JourneyMedia, "poster" | "sources" | "durationSeconds">>;
+const nativeTravelMedia: Record<string, NativeTravelMedia> = travelOriginals;
+
+// Captions and trip ordering stay curated here; the verified native masters
+// supply their real dimensions, lossless photos and original video streams.
+export const journeys: Journey[] = journeyCatalog.map((journey) => ({
+  ...journey,
+  media: journey.media.map((media) => {
+    const base = media.src.split("/").pop()!.replace(/\.[^.]+$/, "");
+    return { ...media, ...nativeTravelMedia[base] };
+  }),
+}));
+
 export type ArtPiece = {
   src: string;
   width: number;
@@ -923,7 +940,29 @@ export const riding = {
     height: 1800,
     alt: "Three motorcycles parked in a field with wind turbines behind them, Parigi.",
   },
-  photos: [
+    photos: [
+      {
+        kind: "image",
+        src: "/media/riding/city-rider-original.jpg",
+        width: 960,
+        height: 1280,
+        alt: "Bhagath wearing a helmet while seated on a motorcycle on a tree-lined city street.",
+      },
+      {
+        kind: "image",
+        src: "/media/riding/bikes-in-the-shade-original.jpg",
+        width: 1280,
+        height: 960,
+        alt: "Three motorcycles parked together on grass beneath leafy trees.",
+      },
+      {
+        kind: "video",
+        src: "/media/riding/riding-moment-original.mp4",
+        poster: "/media/riding/riding-moment-poster-original.png",
+        width: 464,
+        height: 832,
+        alt: "Bhagath riding a red motorcycle along an urban flyover, filmed from a nearby vehicle.",
+      },
     {
       kind: "image",
       src: "/media/riding/yellow-grass-bike.jpg",
@@ -965,8 +1004,7 @@ export const riding = {
 
 // The game is something I built, so it sits right under Work, ahead of the
 // "Life beyond work" Seam, rather than with the hobbies.
-// The trailer is the original 1920x1080, 60fps render, copied in untouched. The
-// poster is its first frame.
+  // Use the full-resolution source and its original frame rate.
 export const game = {
   name: "Brawlkai",
   url: "https://supa-figh.vercel.app",
@@ -975,11 +1013,11 @@ export const game = {
   // Controls are keyboard (WASD and arrows) or gamepad. It has no touch input.
   controlsHint: "It needs a keyboard, so it plays best on desktop.",
   trailer: {
-    poster: "/media/game/poster.jpg",
-    mp4: "/media/game/trailer.mp4",
+      poster: "/media/game/poster.jpg",
+      mp4: "/media/game/trailer.mp4",
     webm: "/media/game/trailer.webm",
-    width: 1920,
-    height: 1080,
+      width: 1920,
+      height: 1080,
     alt: "Brawlkai trailer: a pixel-art Super Saiyan fires a beam across a night-sky arena at a dark red orb.",
   },
 } as const;

@@ -1,15 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Dev only. The default bottom-left badge sits on top of BackToTop, and the
-  // other bottom corner holds SectionNav's menu button below lg. Both top
-  // corners are clear of the site's fixed controls; top-right would cover the
-  // top end of the ScrollProgress rail.
-  devIndicators: {
-    position: "top-left",
-  },
+  // All four corners carry navigation; keep the dev badge off those controls.
+  devIndicators: false,
   images: {
-    qualities: [75, 80],
+    // Preserve the supplied photo/screenshot bytes, dimensions and format.
+    // Loading stays lazy; quality is never traded away for a smaller derivative.
+    unoptimized: true,
   },
 };
 

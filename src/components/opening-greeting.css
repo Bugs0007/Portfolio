@@ -1,0 +1,105 @@
+.opening-greeting {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--mist);
+  background: var(--ink);
+  outline: none;
+  animation: greeting-depart 1800ms ease both;
+}
+
+.opening-greeting-signature {
+  position: absolute;
+  top: clamp(28px, 5vh, 60px);
+  left: clamp(26px, 5vw, 80px);
+  color: color-mix(in srgb, var(--mist) 47.84%, transparent);
+  font: 9px/1.5 var(--font-mono);
+  letter-spacing: .14em;
+}
+
+.opening-greeting-words {
+  position: relative;
+  width: 100%;
+  height: clamp(160px, 30vw, 320px);
+  margin-top: -4vh;
+}
+
+.opening-greeting-word {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-size: clamp(78px, 12vw, 180px);
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0;
+  animation: greeting-word 600ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.opening-greeting-english {
+  font-family: "Segoe Script", "Snell Roundhand", "Apple Chancery", var(--font-display), cursive;
+  font-style: italic;
+  letter-spacing: -.075em;
+}
+.opening-greeting-hindi {
+  font-family: "Nirmala UI", "Kohinoor Devanagari", "Noto Serif Devanagari", serif;
+  animation-delay: 550ms;
+}
+.opening-greeting-telugu {
+  font-family: "Nirmala UI", "Kohinoor Telugu", "Noto Serif Telugu", serif;
+  animation-delay: 1100ms;
+}
+
+.opening-greeting-footer {
+  position: absolute;
+  inset-inline: clamp(26px, 5vw, 80px);
+  bottom: clamp(28px, 5vh, 60px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.opening-greeting-indicators { display: flex; gap: 9px; }
+.opening-greeting-indicators i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--mist) 18.82%, transparent);
+  animation: greeting-dot 600ms ease both;
+}
+.opening-greeting-indicators i:nth-child(2) { animation-delay: 550ms; }
+.opening-greeting-indicators i:nth-child(3) { animation-delay: 1100ms; }
+.opening-greeting-footer button {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 0 10px 12px;
+  font: 10px/1.5 var(--font-mono);
+  color: color-mix(in srgb, var(--mist) 60%, transparent);
+  cursor: pointer;
+}
+.opening-greeting-footer button span { color: var(--jacket-bright); font-size: 17px; }
+.opening-greeting-footer button:hover { color: var(--mist); }
+.opening-greeting-footer button:focus-visible { outline: 1px solid var(--jacket-bright); outline-offset: 7px; }
+
+@keyframes greeting-word {
+  0% { opacity: 0; visibility: hidden; transform: translateY(14px) scale(.97); }
+  12%, 78% { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+  100% { opacity: 0; visibility: hidden; transform: translateY(-10px) scale(1.015); }
+}
+@keyframes greeting-dot {
+  0%, 100% { background: color-mix(in srgb, var(--mist) 18.82%, transparent); }
+  12%, 78% { background: var(--jacket-bright); }
+}
+@keyframes greeting-depart {
+  0%, 88% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opening-greeting { animation-duration: 1ms; }
+  .opening-greeting-word, .opening-greeting-indicators i { animation: none; }
+}

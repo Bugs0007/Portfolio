@@ -14,7 +14,6 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { focusSection, useSiteScroll } from "@/hooks/useSiteScroll";
 import { EASE } from "@/lib/motion";
-import { introSplashDelay } from "./IntroSplash";
 
 const SECTION_IDS = pageSections.map((s) => s.id);
 
@@ -49,7 +48,7 @@ export function SectionNav() {
   const active = useActiveSection(SECTION_IDS);
   const scroll = useSiteScroll();
   // Read once per mount: whether this entrance has a splash to wait behind.
-  const [delay] = useState(introSplashDelay);
+  const delay = 0;
 
   const jump: Jump = (e, id) => {
     // Modified clicks keep their native meaning: new tab, new window, copy.

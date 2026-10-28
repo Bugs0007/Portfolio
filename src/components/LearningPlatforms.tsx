@@ -1,109 +1,10 @@
-"use client";
-
-import Image from "next/image";
-import { useState } from "react";
 import {
   learningPlatforms,
   learningPlatformsIntro,
   type LearningPlatform,
 } from "@/content/site";
+import { ProjectTrailer } from "./ProjectTrailer";
 import { Reveal } from "./Reveal";
-
-// Sits directly under CaseIntel in Work, in both the pinned layout and the
-// stacked fallback. It fills whatever width its parent gives it and decides
-// its own columns with a container query, so the same component works inside
-// the narrow classic column and the wide pinned one.
-//
-// Every screenshot is in the HTML at once, stacked, and the thumbnails only
-// change which one is visible. That keeps all of them reachable without
-// JavaScript, for crawlers, and under reduced motion (which just drops the
-// fade).
-
-function Stage({ platform }: { platform: LearningPlatform }) {
-  const [active, setActive] = useState(0);
-  const shot = platform.shots[active];
-
-  return (
-    <div>
-      <div className="overflow-hidden rounded-sm border border-mist/15 bg-ink-soft">
-        <div className="flex h-7 items-center gap-1.5 border-b border-mist/10 px-3">
-          <span aria-hidden className="size-2 rounded-full bg-mist/15" />
-          <span aria-hidden className="size-2 rounded-full bg-mist/15" />
-          <span aria-hidden className="size-2 rounded-full bg-mist/15" />
-          <span className="ml-auto truncate font-mono text-[10px] uppercase tracking-wider text-stone/70">
-            {platform.name.toLowerCase()} / {shot.label.toLowerCase()}
-          </span>
-        </div>
-        <div
-          className="relative w-full"
-          style={{ aspectRatio: `${shot.width} / ${shot.height}` }}
-        >
-          {platform.shots.map((s, i) => (
-            <Image
-              key={s.src}
-              src={s.src}
-              alt={s.alt}
-              width={s.width}
-              height={s.height}
-              sizes="(min-width: 1024px) 700px, 100vw"
-              aria-hidden={i === active ? undefined : true}
-              className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-500 motion-reduce:transition-none ${
-                i === active ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      <p
-        className="mt-3 min-h-[2.5rem] text-sm leading-relaxed text-mist/70"
-        aria-live="polite"
-      >
-        {shot.caption}
-      </p>
-
-      <ul
-        className="mt-3 grid gap-2"
-        style={{
-          gridTemplateColumns: `repeat(${platform.shots.length}, minmax(0, 1fr))`,
-        }}
-        aria-label={`${platform.name} screenshots`}
-      >
-        {platform.shots.map((s, i) => (
-          <li key={s.src}>
-            <button
-              type="button"
-              onClick={() => setActive(i)}
-              aria-pressed={i === active}
-              aria-label={`Show ${s.label} screenshot`}
-              className={`group block w-full rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright ${
-                i === active ? "" : "opacity-60 hover:opacity-100"
-              } transition-opacity`}
-            >
-              <span
-                className={`block overflow-hidden rounded-sm border ${
-                  i === active ? "border-jacket-bright" : "border-mist/15"
-                }`}
-              >
-                <Image
-                  src={s.src}
-                  alt=""
-                  width={s.width}
-                  height={s.height}
-                  sizes="160px"
-                  className="aspect-[16/10] w-full object-cover object-top"
-                />
-              </span>
-              <span className="mt-1.5 block truncate font-mono text-[10px] uppercase tracking-wider text-stone">
-                {s.label}
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
 
 function Platform({
   platform,
@@ -194,7 +95,13 @@ function Platform({
         <div
           className={`order-1 min-w-0 @5xl:col-span-7 ${flip ? "@5xl:order-1" : "@5xl:order-2"}`}
         >
-          <Stage platform={platform} />
+          <ProjectTrailer
+            name={platform.name}
+            src={platform.id === "tracewise" ? "/media/projects/tracewise-launch.mp4" : "/media/projects/nines-launch.mp4"}
+            poster={platform.id === "tracewise" ? "/media/projects/tracewise-launch-poster.png" : "/media/projects/nines-launch-poster.png"}
+            width={platform.id === "tracewise" ? 1080 : 1920}
+            height={1080}
+          />
         </div>
       </div>
     </article>

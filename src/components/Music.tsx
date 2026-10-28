@@ -1,13 +1,14 @@
 import { music } from "@/content/site";
 import { VideoClip } from "./VideoClip";
 import { Reveal } from "./Reveal";
+import "./portfolio-chapters.css";
 
 export function Music() {
   return (
     <section
       id="music"
       aria-label="Music"
-      className="relative flex min-h-[62vh] w-full items-end overflow-hidden bg-ink"
+      className="chapter-music relative flex w-full items-end overflow-hidden bg-ink"
     >
       <VideoClip
         poster={music.media.poster}
@@ -17,17 +18,19 @@ export function Music() {
         alt="Bhagath practicing guitar at home, seated, guitar in hand, a monitor glowing in the background."
         fit="cover"
         allowSound
+        initiallyMuted={false}
       />
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent"
+        className="chapter-cinema-shade absolute inset-0"
       />
-      <div className="relative z-10 w-full px-6 py-14 sm:px-10 lg:px-16">
+      <div className="chapter-cinema-copy relative z-10 w-full">
         <Reveal>
-          <h2 className="font-display text-4xl font-medium text-mist sm:text-5xl">
-            Music
+          <p className="chapter-eyebrow"><span>03 / MUSIC</span><span>GUITAR & FLUTE</span></p>
+          <h2 className="chapter-title chapter-title-light">
+            A little<br /><em>out of tune.</em>
           </h2>
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-mist/85 sm:text-base">
+          <p className="chapter-cinema-note">
             {music.intro}
           </p>
         </Reveal>

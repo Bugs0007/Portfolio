@@ -1,9 +1,8 @@
 "use client";
 
-import { education, type ProjectLink, type WorkItem } from "@/content/site";
+import { type ProjectLink, type WorkItem } from "@/content/site";
 import { Reveal } from "@/components/Reveal";
-
-const college = education[0];
+import { WorkIntro } from "@/components/WorkIntro";
 
 // Mirrors Work.tsx's ProjectLinks: Composite Sketch is two repos, so it needs
 // more than one link. Rendered instead of item.href when set, never with it.
@@ -65,20 +64,8 @@ export function WorkSectionShell({
 }) {
   return (
     <section id="work" aria-label="Work" className="relative bg-ink">
-      <div className="px-6 pt-24 sm:px-10 sm:pt-32 lg:px-16">
-        <div className="mx-auto max-w-4xl">
-          <Reveal>
-            <h2 className="font-display text-4xl font-medium text-mist sm:text-5xl">
-              Work
-            </h2>
-            <p className="mt-3 max-w-xl font-mono text-xs uppercase tracking-wider text-stone">
-              {college.degree} · {college.shortSchool} · {college.gradYear} ·{" "}
-              {college.detail}
-            </p>
-            <p className="sr-only">Displayed in {label} mode.</p>
-          </Reveal>
-        </div>
-      </div>
+      <WorkIntro />
+      <p className="sr-only">Displayed in {label} mode.</p>
       {children}
     </section>
   );

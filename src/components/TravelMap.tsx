@@ -1,164 +1,45 @@
 "use client";
 
 import Image from "next/image";
-import { useSyncExternalStore } from "react";
-import { journeys } from "@/content/site";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useMemo, useState } from "react";
+import { journeys, type Journey } from "@/content/site";
 import { VideoClip } from "./VideoClip";
-import { TravelChapter } from "./TravelChapter";
+import { TravelAlbum } from "./travel/TravelViews";
+import "./travel-gallery.css";
 
-const noopSubscribe = () => () => {};
-
-// True only after hydration. useSyncExternalStore gives React an explicit
-// server snapshot, so this is a clean two-pass render rather than a setState
-// fired from an effect.
-function useIsMounted() {
-  return useSyncExternalStore(
-    noopSubscribe,
-    () => true,
-    () => false,
-  );
+const FEATURED: Record<string, string> = {
+  zanskar: "gonbo-rangjon",
+  "manali-winter": "manali-portrait",
+  coimbatore: "coimbatore-valley",
+  uttarakhand: "badrinath",
+};
+const number = (value: number) => String(value).padStart(2, "0");
+const frameCount = journeys.reduce((sum, trip) => sum + trip.media.length, 0);
+function albumFor(journey: Journey) {
+  const stem = (src: string) => src.split("/").pop()?.replace(/\.[^.]+$/, "").toLowerCase();
+  const cover = journey.media.find((media) => stem(media.src) === FEATURED[journey.id]);
+  return cover ? [cover, ...journey.media.filter((media) => media !== cover)] : journey.media;
 }
 
 export function TravelMap() {
-  const reduceMotion = usePrefersReducedMotion();
-  const mounted = useIsMounted();
+  const [destination, setDestination] = useState(0);
+  const journey = journeys[destination];
+  const album = useMemo(() => albumFor(journey), [journey]);
 
-  // Server render and the first client render both produce the static list, so
-  // hydration matches exactly and the photos are in the HTML either way. The
-  // flowing version takes over once mounted, and never for reduced motion.
-  if (reduceMotion || !mounted) return <StaticJourneys />;
-
-  return <FlowingJourneys />;
-}
-
-// Every journey gets its own pinned chapter: an oversized title beat, then two
-// counter-travelling columns of that trip's media. See TravelChapter.tsx for
-// the mechanics.
-function FlowingJourneys() {
   return (
-    <div id="travel">
-      {journeys.map((journey, i) => (
-        <TravelChapter
-          key={journey.id}
-          journey={journey}
-          index={i}
-          total={journeys.length}
-        />
-      ))}
-    </div>
-  );
-}
-
-// Deliberately minimal: only the fields MediaFrame actually reads, so it
-// works for Travel's JourneyMedia and Riding's RidingMedia alike without
-// either needing fields (caption, coords) the other doesn't have.
-type Playable = {
-  kind: "image" | "video";
-  src: string;
-  poster?: string;
-  width: number;
-  height: number;
-  alt: string;
-};
-
-// `sizes` defaults to the two-breakpoint string StaticJourneys' grid wants.
-// The flowing modes each override it with their own realistic rendered width
-// (see TravelModeSpec.getSizes), since a route marker and a full-bleed cinema
-// frame differ by about 4x and one shared value made the small ones over-fetch.
-//
-// `soon` and `near` are for frames that sit inside a clipped container
-// (Travel's pinned columns), where neither native lazy loading nor an
-// observer's rootMargin can see a tile coming: `soon` fetches stills (a photo,
-// or a clip's poster) ahead of everything else, `near` fetches the clip itself.
-// Left undefined everywhere else.
-export function MediaFrame({
-  media,
-  sizes = "(min-width: 640px) 52vw, 82vw",
-  fit = "contain",
-  soon,
-  near,
-}: {
-  media: Playable;
-  sizes?: string;
-  fit?: "contain" | "cover";
-  soon?: boolean;
-  near?: boolean;
-}) {
-  if (media.kind === "video" && media.poster) {
-    return (
-      <VideoClip
-        poster={media.poster}
-        src={media.src}
-        width={media.width}
-        height={media.height}
-        alt={media.alt}
-        fit={fit}
-        sizes={sizes}
-        soon={soon}
-        near={near}
-      />
-    );
-  }
-  return (
-    <Image
-      src={media.src}
-      alt={media.alt}
-      fill
-      sizes={sizes}
-      loading={soon ? "eager" : "lazy"}
-      fetchPriority={soon ? "high" : undefined}
-      className="object-cover"
-    />
-  );
-}
-
-// The deliberate static version: same content, same order, no pinning and no
-// flow. Also what gets server-rendered, so the photos are in the HTML.
-function StaticJourneys() {
-  return (
-    <section
-      id="travel"
-      aria-label="Travel"
-      className="bg-ink px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
-    >
-      <h2 className="font-display text-4xl font-medium text-mist sm:text-5xl">
-        Travel
-      </h2>
-      <div className="mt-14 space-y-20">
-        {journeys.map((journey) => (
-          <div key={journey.id}>
-            <p className="font-mono text-xs uppercase tracking-wider text-stone">
-              {journey.when}
-            </p>
-            <h3 className="mt-2 font-display text-3xl font-medium text-mist sm:text-4xl">
-              {journey.title}
-            </h3>
-            <p className="font-mono text-sm text-stone">{journey.region}</p>
-            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {journey.media.map((media) => (
-                <figure key={media.src}>
-                  <div
-                    className="relative overflow-hidden bg-ink-soft"
-                    style={{ aspectRatio: `${media.width} / ${media.height}` }}
-                  >
-                    <MediaFrame media={media} />
-                  </div>
-                  <figcaption className="mt-2 flex items-baseline gap-2 font-mono text-[10px] uppercase tracking-wider text-stone">
-                    <span>{media.caption}</span>
-                    {media.coords && (
-                      <span className="text-stone/60">
-                        {media.coords.lat.toFixed(3)}°,{" "}
-                        {media.coords.lon.toFixed(3)}°
-                      </span>
-                    )}
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+    <section id="travel" aria-labelledby="travel-heading" className="travel-journal">
+      <header className="travel-journal-heading">
+        <div className="travel-journal-eyebrow"><span>04 / FIELD NOTES IN MOTION</span><span>{number(journeys.length)} JOURNEYS · {frameCount} FRAMES</span></div>
+        <div className="travel-journal-title-row"><h2 id="travel-heading">Further from<br /><em>the familiar.</em></h2><p>A few places that stayed with me.<br />A moving collection of moments.</p></div>
+      </header>
+      <div className="travel-journal-destinations" role="group" aria-label="Travel destinations">{journeys.map((trip, index) => <button key={trip.id} type="button" onClick={() => setDestination(index)} aria-pressed={destination === index} aria-controls="travel-album"><span>{number(index + 1)}</span><strong>{trip.title}</strong><small>{trip.when}</small><span className="travel-destination-arrow" aria-hidden>↗</span></button>)}</div>
+      <TravelAlbum key={journey.id} journey={journey} album={album} />
     </section>
   );
+}
+
+type Playable = { kind: "image" | "video"; src: string; poster?: string; width: number; height: number; alt: string };
+export function MediaFrame({ media, sizes = "(min-width: 640px) 52vw, 82vw", fit = "contain", soon, near }: { media: Playable; sizes?: string; fit?: "contain" | "cover"; soon?: boolean; near?: boolean }) {
+  if (media.kind === "video" && media.poster) return <VideoClip poster={media.poster} src={media.src} width={media.width} height={media.height} alt={media.alt} fit={fit} sizes={sizes} soon={soon} near={near} />;
+  return <Image src={media.src} alt={media.alt} fill sizes={sizes} loading={soon ? "eager" : "lazy"} fetchPriority={soon ? "high" : undefined} className={fit === "contain" ? "object-contain" : "object-cover"} />;
 }

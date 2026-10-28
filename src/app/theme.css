@@ -1,0 +1,38 @@
+/* Original neon theme: semantic surfaces shared by every chapter. */
+:root {
+  --surface-paper: var(--mist);
+  --text-on-paper: var(--ink);
+  --line-on-paper: color-mix(in srgb, var(--ink) 21%, transparent);
+  --accent-on-paper: var(--jacket);
+  --text-muted-on-paper: #64715a;
+  --accent-hover: #c3e959;
+  --nav-accent: #5d7134;
+  --scrollbar-accent: #748164;
+  --location-accent: #62813b;
+  --name-accent: #708d31;
+  --byline-muted: #6a7264;
+  --hero-label: #b9c7ad;
+  --hero-note-muted: #666f61;
+  --copy-on-dark: #d0d3c7;
+  --stack-on-dark: #b4bbac;
+  --engineering-tags: #d1d6c9;
+  --project-summary: #cbd1c3;
+  --experience-copy: #d2d7cb;
+  --preview-paper: #e7eade;
+  --preview-paper-raised: #f7f8f0;
+  --preview-ink: #263229;
+  --preview-domain: #526348;
+  --preview-kicker: #5a6952;
+  --preview-label: #68755f;
+  --preview-headline: #4c5d47;
+  --preview-secondary: #65725e;
+  --preview-status-ink: #3c572a;
+  --preview-status-paper: #e2ebd4;
+  --preview-footnote: #5b6b52;
+  --media-underlay: #101711;
+  --riding-underlay: #101510;
+  --dialog-paper: #111710;
+  --dialog-stage: #0b100b;
+  --dialog-veil: #090d09;
+  --cinema-shade: #0d130f;
+}

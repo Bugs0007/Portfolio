@@ -2,28 +2,24 @@ import { art } from "@/content/site";
 import { ArtGallery } from "./ArtGallery";
 import { Reveal } from "./Reveal";
 
-// The one deliberate light passage in an otherwise dark site, per the design
-// plan. Paintings and sketchbook pages render whole, never cropped.
-//
-// Deliberately the calmest section on the site: justified rows, one fade as
-// they arrive, and a lightbox. It was a drag-to-explore canvas for a while and
-// the interaction was doing more work than the pictures were.
+// Paintings and sketchbook pages render whole, never cropped.
 export function Art() {
   return (
     <section
       id="art"
       aria-label="Art"
-      className="relative bg-mist px-6 py-24 text-ink sm:px-10 sm:py-32 lg:px-16"
+      className="chapter-art relative"
     >
-      <div className="mx-auto max-w-5xl">
+      <div className="chapter-inner">
         <Reveal>
-          <h2 className="font-display text-4xl font-medium sm:text-5xl">Art</h2>
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-ink/75 sm:text-base">
-            {art.note}
-          </p>
+          <p className="chapter-eyebrow"><span>05 / ART</span><span>AN ANALOG PRACTICE</span></p>
+          <div className="chapter-art-heading">
+            <h2 className="chapter-title">Away from<br /><em>the keyboard.</em></h2>
+            <p className="chapter-art-note">{art.note}</p>
+          </div>
         </Reveal>
       </div>
-      <div className="mx-auto max-w-6xl">
+      <div className="chapter-inner chapter-art-gallery">
         <ArtGallery />
       </div>
     </section>

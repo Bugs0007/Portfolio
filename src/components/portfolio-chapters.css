@@ -1,0 +1,123 @@
+.chapter-inner {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+}
+
+.chapter-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 0 0 42px;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: .1em;
+}
+
+.chapter-title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-hanken), sans-serif;
+  font-size: clamp(52px, 7.8vw, 112px);
+  font-weight: 600;
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+.chapter-title em {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 400;
+  letter-spacing: -.065em;
+}
+
+.chapter-title-light { color: var(--mist); }
+
+.chapter-music { min-height: 88svh; }
+.chapter-music .chapter-eyebrow,
+.chapter-riding .chapter-eyebrow { color: var(--mist); }
+.chapter-music .chapter-title em,
+.chapter-riding .chapter-title em { color: var(--jacket-bright); }
+
+.chapter-cinema-shade {
+  pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cinema-shade) 68%, transparent), color-mix(in srgb, var(--cinema-shade) 5%, transparent) 85%),
+    linear-gradient(0deg, color-mix(in srgb, var(--cinema-shade) 82%, transparent), transparent 85%);
+}
+
+.chapter-cinema-copy { padding: 58px clamp(24px, 4.45vw, 72px) 66px; }
+.chapter-cinema-copy .chapter-eyebrow { max-width: 1320px; margin: 0 auto 38px; }
+.chapter-cinema-copy .chapter-title,
+.chapter-cinema-note { max-width: 1320px; margin-inline: auto; }
+.chapter-cinema-note {
+  margin-top: 28px;
+  padding-right: max(0px, calc(100% - 530px));
+  color: color-mix(in srgb, var(--mist) 83%, transparent);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.chapter-art {
+  padding: 110px clamp(24px, 4.45vw, 72px) 120px;
+  color: var(--ink);
+  background: var(--mist);
+}
+.chapter-art .chapter-eyebrow { border-top: 1px solid color-mix(in srgb, var(--ink) 20%, transparent); padding-top: 20px; }
+.chapter-art-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 42px; }
+.chapter-art-note { max-width: 260px; margin-bottom: 5px; color: color-mix(in srgb, var(--ink) 70.2%, transparent); font-size: 15px; line-height: 1.7; }
+.chapter-art-gallery { margin-top: 72px; }
+
+.chapter-game {
+  padding: 90px clamp(24px, 4.45vw, 72px) 110px;
+  color: var(--mist);
+  border-top: 1px solid color-mix(in srgb, var(--mist) 14.12%, transparent);
+}
+.chapter-game .chapter-eyebrow,
+.chapter-favorites .chapter-eyebrow { color: var(--jacket-bright); }
+.chapter-game-heading { display: grid; grid-template-columns: 1fr .8fr; align-items: end; gap: 48px; }
+.chapter-game .chapter-title { font-size: clamp(52px, 6.4vw, 92px); }
+.chapter-game-note { max-width: 440px; color: color-mix(in srgb, var(--mist) 72.16%, transparent); font-size: 16px; line-height: 1.65; }
+.chapter-game-actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.chapter-play-link { padding: 17px 26px; border-radius: 100px; background: var(--jacket-bright); color: var(--ink); transition: background 180ms ease, transform 180ms ease; }
+.chapter-play-link:hover { background: var(--mist); transform: translateY(-2px); }
+.chapter-play-link > span[aria-hidden] { margin-left: 12px; font-size: 20px; }
+
+.chapter-riding-hero { min-height: 86svh; }
+.chapter-riding-photos { padding: 32px clamp(24px, 4.45vw, 72px) 72px; }
+.chapter-riding-photos figure { border-radius: 3px; }
+
+.chapter-favorites { padding: 82px clamp(24px, 4.45vw, 72px) 120px; }
+.chapter-favorites .chapter-eyebrow { border-top: 1px solid color-mix(in srgb, var(--mist) 14.12%, transparent); padding-top: 22px; }
+.chapter-favorites .chapter-title { font-size: clamp(52px, 6.8vw, 96px); }
+.chapter-favorite-category { margin-top: 64px; }
+.chapter-category-label { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid color-mix(in srgb, var(--mist) 14.12%, transparent); color: var(--mist); font-family: var(--font-jetbrains), monospace; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.chapter-category-label span { color: var(--jacket-bright); font-size: 10px; }
+
+@media (min-width: 1600px) {
+  .chapter-cinema-copy .chapter-title { max-width: 1320px; }
+}
+
+@media (max-width: 767px) {
+  .chapter-eyebrow { margin-bottom: 30px; font-size: 9px; }
+  .chapter-eyebrow > span:last-child { text-align: right; max-width: 48%; }
+  .chapter-music { min-height: 78svh; }
+  .chapter-riding-hero { min-height: 78svh; }
+  .chapter-cinema-copy { padding-top: 44px; padding-bottom: 58px; }
+  .chapter-cinema-note { padding-right: 20px; max-width: 460px; font-size: 14px; }
+  .chapter-art { padding-top: 72px; padding-bottom: 72px; }
+  .chapter-art-heading { flex-direction: column; align-items: flex-start; gap: 25px; }
+  .chapter-art-note { max-width: 380px; font-size: 14px; }
+  .chapter-art-gallery { margin-top: 42px; }
+  .chapter-game { padding-top: 64px; padding-bottom: 72px; }
+  .chapter-game-heading { grid-template-columns: 1fr; gap: 25px; }
+  .chapter-game-note { font-size: 14px; }
+  .chapter-favorites { padding-top: 64px; padding-bottom: 72px; }
+  .chapter-favorite-category { margin-top: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-play-link { transition: none; }
+  .chapter-play-link:hover { transform: none; }
+}

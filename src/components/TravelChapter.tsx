@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
-  useMotionValueEvent,
   useScroll,
   useTransform,
   type MotionValue,
@@ -488,23 +487,43 @@ function useTileReach(
   vh: number,
   inReach: ChapterReach,
 ) {
-  const reachOf = (v: number) => {
-    const edge = v + top;
-    const outside = Math.max(edge - vh, -(edge + height), 0);
-    if (outside <= VIDEO_LOOKAHEAD_PX) return REACH_NEAR;
-    if (outside <= vh * POSTER_LOOKAHEAD_VH) return REACH_SOON;
-    return REACH_NONE;
-  };
-  const [reach, setReach] = useState(() => reachOf(columnY.get()));
+  const [reach, setReach] = useState(() =>
+    tileReachAt(columnY.get(), top, height, vh),
+  );
 
-  useMotionValueEvent(columnY, "change", (v) => {
-    const next = reachOf(v);
-    if (next !== reach) setReach(next);
-  });
+  useEffect(() => {
+    let frame: number | null = null;
+    const scheduleReach = () => {
+      if (frame !== null) return;
+      // Resizing changes Column's useTransform endpoints. Motion can publish
+      // that new value while Column is rendering, so subscribers must not
+      // synchronously set React state in another component. Read the latest
+      // value once on the next frame, after React has committed the layout.
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        setReach(tileReachAt(columnY.get(), top, height, vh));
+      });
+    };
+    const unsubscribe = columnY.on("change", scheduleReach);
+    // Geometry can change without y changing, so re-evaluate after resize too.
+    scheduleReach();
+    return () => {
+      unsubscribe();
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, [columnY, top, height, vh]);
 
   const soon = useSettled(inReach.soon && reach >= REACH_SOON, DWELL_MS);
   const near = useSettled(inReach.near && reach >= REACH_NEAR, DWELL_MS);
   return { soon, near };
+}
+
+function tileReachAt(y: number, top: number, height: number, vh: number) {
+  const edge = y + top;
+  const outside = Math.max(edge - vh, -(edge + height), 0);
+  if (outside <= VIDEO_LOOKAHEAD_PX) return REACH_NEAR;
+  if (outside <= vh * POSTER_LOOKAHEAD_VH) return REACH_SOON;
+  return REACH_NONE;
 }
 
 function ColumnTile({

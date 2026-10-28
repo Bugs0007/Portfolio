@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useSettled } from "@/hooks/useSettled";
+import { useVideoSound } from "@/hooks/useVideoSound";
 
 export function MuteIcon({ muted }: { muted: boolean }) {
   return muted ? (
@@ -90,6 +91,7 @@ export function VideoClip({
   position = "center",
   boomerangAt,
   allowSound = false,
+  initiallyMuted = true,
   near,
   soon,
   priority = false,
@@ -109,10 +111,10 @@ export function VideoClip({
   // back to the start via manually stepped currentTime (browsers don't
   // support native reverse playback for video), then forward again.
   boomerangAt?: number;
-  // Shows a mute/unmute toggle. Playback still starts muted regardless
-  // (autoplay triggered by IntersectionObserver, not a user gesture, so
-  // browsers require it), unmuting only ever happens from the click itself.
+  // Shows a mute/unmute toggle. Audible autoplay is attempted when requested;
+  // browsers that require a gesture get an explicit sound-enable control.
   allowSound?: boolean;
+  initiallyMuted?: boolean;
   // Whether the video is within reach of the viewport, for parents that know
   // better than an observer can. Leave undefined to let VideoClip observe its
   // own distance. Travel needs this: its tiles sit inside a clipped, pinned
@@ -143,7 +145,7 @@ export function VideoClip({
   const directionRef = useRef<"forward" | "reverse">("forward");
   const reverseRafRef = useRef<number | null>(null);
   const reduceMotion = usePrefersReducedMotion();
-  const [muted, setMuted] = useState(true);
+  const { muted, soundBlocked, play, toggleSound, onVolumeChange } = useVideoSound(videoRef, wantsPlayRef, initiallyMuted);
   // Starts true for `priority`, so the server HTML already says preload="auto"
   // and the hero starts fetching before hydration. The first observer report
   // replaces it.
@@ -177,7 +179,7 @@ export function VideoClip({
       if (next <= 0) {
         video.currentTime = 0;
         directionRef.current = "forward";
-        video.play().catch(() => {});
+        void play();
         return;
       }
       video.currentTime = next;
@@ -241,7 +243,7 @@ export function VideoClip({
             wantsPlayRef.current = true;
             setInView(true);
             if (directionRef.current === "forward") {
-              video.play().catch(() => {});
+              void play();
             } else {
               stepReverse(video, performance.now());
             }
@@ -262,7 +264,7 @@ export function VideoClip({
       observer.disconnect();
       if (reverseRafRef.current) cancelAnimationFrame(reverseRafRef.current);
     };
-  }, [reduceMotion]);
+  }, [reduceMotion, play]);
 
   useEffect(() => {
     if (reduceMotion || boomerangAt === undefined) return;
@@ -279,12 +281,16 @@ export function VideoClip({
     return () => video.removeEventListener("timeupdate", onTimeUpdate);
   }, [reduceMotion, boomerangAt]);
 
-  const toggleSound = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setMuted(video.muted);
-  };
+  useEffect(() => {
+    const onVisibility = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      if (document.hidden) video.pause();
+      else if (activeRef.current && directionRef.current === "forward") void play();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [play]);
 
   return (
     <>
@@ -308,13 +314,14 @@ export function VideoClip({
       {!reduceMotion && (
         <video
           ref={videoRef}
-          muted
+          muted={muted}
           playsInline
           loop={boomerangAt === undefined}
           preload={preload}
           width={width}
           height={height}
           aria-label={alt}
+          onVolumeChange={onVolumeChange}
           // loadeddata can fire before hydration attaches this handler (the
           // hero is preload="auto" in the server HTML); playing always fires
           // again after, so between them the fade-in never gets stuck.
@@ -335,9 +342,10 @@ export function VideoClip({
         <button
           type="button"
           onClick={toggleSound}
-          aria-label={muted ? "Play sound" : "Mute sound"}
-          className="absolute bottom-4 right-4 z-20 rounded-full bg-ink/70 p-2.5 text-mist/90 backdrop-blur-sm transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright lg:right-16"
+          aria-label={soundBlocked ? "Enable sound" : muted ? "Play sound" : "Mute sound"}
+          className="absolute bottom-4 right-4 z-20 inline-flex items-center gap-2 rounded-full bg-ink/70 p-2.5 text-mist/90 backdrop-blur-sm transition-colors hover:text-jacket-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacket-bright lg:right-16"
         >
+          {soundBlocked && <span className="text-xs">Enable sound</span>}
           <MuteIcon muted={muted} />
         </button>
       )}

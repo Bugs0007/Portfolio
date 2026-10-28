@@ -12,25 +12,32 @@ import { Riding } from "@/components/Riding";
 import { Game } from "@/components/Game";
 import { Watching } from "@/components/Watching";
 import { ContactFooter } from "@/components/ContactFooter";
+import { OpeningGreeting } from "@/components/OpeningGreeting";
 
 export default function Home() {
   return (
-    <SmoothScroll>
-      <PersistentNav />
-      <SectionNav />
-      <main>
-        <Hero />
-        <WorkRig />
-        <Game />
-        <Seam />
-        <Music />
-        <TravelMap />
-        <Art />
-        <Riding />
-        <Watching />
-      </main>
-      <ContactFooter />
-      <BackToTop />
-    </SmoothScroll>
+    <>
+      <OpeningGreeting />
+      <div id="portfolio-page">
+        <SmoothScroll>
+          <a href="#work" className="skip-link">Skip to selected work</a>
+          <PersistentNav />
+          <SectionNav />
+          <main>
+            <Hero />
+            <WorkRig />
+            <Game />
+            <Seam />
+            <Music />
+            <TravelMap />
+            <Art />
+            <Riding />
+            <Watching />
+          </main>
+          <ContactFooter />
+          <BackToTop />
+        </SmoothScroll>
+      </div>
+    </>
   );
 }

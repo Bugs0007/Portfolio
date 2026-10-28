@@ -1,0 +1,247 @@
+[
+  {
+    "base": "gonbo-rangjon",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/zanskar_valley_gonbo_ranjon.jpg",
+    "current": "public/media/travel/gonbo-rangjon.jpg",
+    "note": "3840x2160 original JPEG; current2200x1238"
+  },
+  {
+    "base": "sethan-forest",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/manali_forest_near_sethan.HEIC",
+    "current": "public/media/travel/sethan-forest.jpg",
+    "note": "6048x8064 afterEXIForientation; current1650x2200"
+  },
+  {
+    "base": "zanskar-cliffside",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/IMG_0209.HEIC",
+    "current": "public/media/travel/zanskar-cliffside.jpg",
+    "note": "4032x3024; current2200x1650"
+  },
+  {
+    "base": "pensi-la",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/zankar_valley_pensila.jpg",
+    "current": "public/media/travel/pensi-la.jpg",
+    "note": "HEIC content despite .jpg extension; native2518x1416"
+  },
+  {
+    "base": "zanskar-dog",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/zankar_valley_petting_dog.jpg",
+    "current": "public/media/travel/zanskar-dog.jpg",
+    "note": "3840x2160 originalJPEG"
+  },
+  {
+    "base": "zanskar-baby",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/zanskar_trip_holding_a_baby.PNG",
+    "current": "public/media/travel/zanskar-baby.jpg",
+    "note": "2778x1284 originalPNG"
+  },
+  {
+    "base": "zanskar-monastery-tea",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/zanskar_valley_drinking_tea_at_monastry.PNG",
+    "current": "public/media/travel/zanskar-monastery-tea.jpg",
+    "note": "2778x1284 originalPNG"
+  },
+  {
+    "base": "jispa-stargazing",
+    "kind": "image",
+    "source": "assets-src/travel/zanskar/zanskar_valley_jispa_star_gazing.JPG",
+    "current": "public/media/travel/jispa-stargazing.jpg",
+    "note": "4032x3024 originalJPEG"
+  },
+  {
+    "base": "manali-hidimba",
+    "kind": "image",
+    "source": "assets-src/travel/manali/manali_hidimba_temple.HEIC",
+    "current": "public/media/travel/manali-hidimba.jpg",
+    "note": "5712x4284; fingerprinterror0.92 vs9.67 for nearby alternateIMG7107"
+  },
+  {
+    "base": "koksar-group",
+    "kind": "image",
+    "source": "assets-src/travel/manali/manali_group_pic_with_friends_at_koksar.HEIC",
+    "current": "public/media/travel/koksar-group.jpg",
+    "note": "4032x3024"
+  },
+  {
+    "base": "manali-portrait",
+    "kind": "image",
+    "source": "assets-src/travel/manali/IMG_7420.JPG.jpeg",
+    "current": "public/media/travel/manali-portrait.jpg",
+    "note": "4031x2267 originalJPEG"
+  },
+  {
+    "base": "coimbatore-trek",
+    "kind": "image",
+    "source": "assets-src/travel/coimbatore/coimbatore_kenmangudi_trek.HEIC",
+    "current": "public/media/travel/coimbatore-trek.jpg",
+    "note": "3024x4032 afterEXIForientation"
+  },
+  {
+    "base": "coimbatore-valley",
+    "kind": "image",
+    "source": "assets-src/travel/coimbatore/IMG_1754.JPG.jpeg",
+    "current": "public/media/travel/coimbatore-valley.jpg",
+    "note": "3024x4032 originalJPEG"
+  },
+  {
+    "base": "coimbatore-ridge",
+    "kind": "image",
+    "source": "assets-src/travel/coimbatore/IMG_1623.JPG.jpeg",
+    "current": "public/media/travel/coimbatore-ridge.jpg",
+    "note": "2268x4032 originalJPEG"
+  },
+  {
+    "base": "coimbatore-friends-grass",
+    "kind": "image",
+    "source": "assets-src/travel/coimbatore/IMG_1767.JPG.jpeg",
+    "current": "public/media/travel/coimbatore-friends-grass.jpg",
+    "note": "720x1280 source-limited; no larger originalfound"
+  },
+  {
+    "base": "coimbatore-friends-peak",
+    "kind": "image",
+    "source": "assets-src/travel/coimbatore/IMG_2516.HEIC",
+    "current": "public/media/travel/coimbatore-friends-peak.jpg",
+    "note": "4032x3024"
+  },
+  {
+    "base": "coimbatore-sunset-silhouette",
+    "kind": "image",
+    "source": "assets-src/travel/coimbatore/IMG_1973.JPG.jpeg",
+    "current": "public/media/travel/coimbatore-sunset-silhouette.jpg",
+    "note": "1752x3115 originalJPEG"
+  },
+  {
+    "base": "badrinath",
+    "kind": "image",
+    "source": "assets-src/travel/uttharakhand/badrinath.jpeg",
+    "current": "public/media/travel/badrinath.jpg",
+    "note": "4032x2268 originalJPEG"
+  },
+  {
+    "base": "kedarnath-horse-ride",
+    "kind": "image",
+    "source": "assets-src/travel/uttharakhand/kedarnath_horse_ride.JPG",
+    "current": "public/media/travel/kedarnath-horse-ride.jpg",
+    "note": "3024x4032 originalJPEG"
+  },
+  {
+    "base": "kedarnath-temple",
+    "kind": "image",
+    "source": "assets-src/travel/uttharakhand/kedarnath_temple.JPG",
+    "current": "public/media/travel/kedarnath-temple.jpg",
+    "note": "1284x2282 originalJPEG"
+  },
+  {
+    "base": "mana-village",
+    "kind": "image",
+    "source": "assets-src/travel/uttharakhand/uttharakand_mana_village_clouds_and_me.jpg",
+    "current": "public/media/travel/mana-village.jpg",
+    "note": "2268x4032 originalJPEG"
+  },
+  {
+    "base": "zanskar-truck-ride",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/IMG_9095.MOV",
+    "current": "public/media/travel/zanskar-truck-ride.mp4",
+    "note": "3840x2160 60000/1001fps 19.8817s 27.63Mbps; current1280x72030fps6s; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "zanskar-river-wash",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/IMG_9042.MOV",
+    "current": "public/media/travel/zanskar-river-wash.mp4",
+    "note": "3840x2160 120fps 2.973333s 47.93Mbps; current1280x72030fps; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "zanskar-glacier",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/IMG_9112.MOV",
+    "current": "public/media/travel/zanskar-glacier.mp4",
+    "note": "3840x2160 30fps 23.013333s 25.20Mbps; current1280x72030fps6s"
+  },
+  {
+    "base": "zanskar-frozen-lake",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/IMG_9242.MOV",
+    "current": "public/media/travel/zanskar-frozen-lake.mp4",
+    "note": "3840x2160 120fps 1.763333s 48.72Mbps; current1280x72030fps; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "zanskar-local-child",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/IMG_9218.MOV",
+    "current": "public/media/travel/zanskar-local-child.mp4",
+    "note": "3840x2160 60000/1001fps 14.9s105.65Mbps; current1280x72030fps4s; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "zanskar-monks",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/IMG_9082.MOV",
+    "current": "public/media/travel/zanskar-monks.mp4",
+    "note": "3840x2160 60fps 2.886667s53.20Mbps; current1280x72030fps; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "zangla-palace",
+    "kind": "video",
+    "source": "assets-src/travel/zanskar/zanskar_valley_zangla_palace_sitting_pose.mp4",
+    "current": "public/media/travel/zangla-palace.mp4",
+    "note": "1920x108030fps5.566667s19.98Mbps; current1280x72030fps"
+  },
+  {
+    "base": "manali-village",
+    "kind": "video",
+    "source": "assets-src/travel/manali/IMG_7091.MOV",
+    "current": "public/media/travel/manali-village.mp4",
+    "note": "sensor1920x1080 rotation-90 -> displayed1080x1920 30000/1001fps4.603333s8.55Mbps; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "manali-dog",
+    "kind": "video",
+    "source": "assets-src/travel/manali/IMG_7568.MOV",
+    "current": "public/media/travel/manali-dog.mp4",
+    "note": "3840x216030fps3.066667s20.58Mbps; current1280x72030fps"
+  },
+  {
+    "base": "manali-forest",
+    "kind": "video",
+    "source": "assets-src/travel/manali/IMG_7639.MOV",
+    "current": "public/media/travel/manali-forest.mp4",
+    "note": "3840x216030fps4.265s49.98Mbps; current1280x72030fps"
+  },
+  {
+    "base": "manali-mall-road",
+    "kind": "video",
+    "source": "assets-src/travel/manali/IMG_7594.MOV",
+    "current": "public/media/travel/manali-mall-road.mp4",
+    "note": "3840x216030fps4.231667s47.45Mbps; current1280x72030fps"
+  },
+  {
+    "base": "manali-paragliding",
+    "kind": "video",
+    "source": "assets-src/travel/manali/IMG_0218.MOV",
+    "current": "public/media/travel/manali-paragliding.mp4",
+    "note": "1920x108030000/1001fps37.668333s10.35Mbps; current1280x72029.97fps6.006s; currentclipstartsoriginal12.0s, lasts6.006s (fingerprintconfirmed)"
+  },
+  {
+    "base": "coimbatore-sunset",
+    "kind": "video",
+    "source": "assets-src/travel/coimbatore/coimbatore_watching_sunset_w_friends.MOV",
+    "current": "public/media/travel/coimbatore-sunset.mp4",
+    "note": "1920x108030fps3.0667s8.40Mbps; current1280x72030fps; 10-bit BT2020 HLG(arib-std-b67), tone-map toBT709 forSDRH264"
+  },
+  {
+    "base": "coimbatore-sunset-group",
+    "kind": "video",
+    "source": "assets-src/travel/coimbatore/IMG_2044.MOV",
+    "current": "public/media/travel/coimbatore-sunset-group.mp4",
+    "note": "3832x215630fps17.986667s28.98Mbps rotation-180; current1280x72030fps10s"
+  }
+]
