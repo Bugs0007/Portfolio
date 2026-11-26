@@ -8,40 +8,46 @@ export const person = {
   tagline:
     "Sketchbook regular, mediocre guitarist, and a firm believer that there are infinite chances as long as you're still trying.",
   summary:
-    "Software developer focused on backend engineering, cloud-native deployment, and applied AI systems: LangGraph reasoning pipelines and production Django/AWS platforms with real users.",
+    "Python backend engineer with GenAI project experience. Seven months as a software development intern on Django and AWS for client projects, plus Case Intel, a live RAG platform for advocates, and a fine-tuned 1B model that reads court orders.",
   location: "Hyderabad, India",
   email: "samallabhagath@gmail.com",
   phone: "+91-6300187099",
   github: "https://github.com/Bugs0007",
   linkedin: "https://www.linkedin.com/in/bhagath-samalla/",
   instagram: "https://www.instagram.com/_bhagath_007/",
+  // Mirrors the Technical Skills block of the current résumé PDF.
   stack: [
     "Python",
-    "Java",
-    "JavaScript",
-    "C",
     "SQL",
+    "Java",
+    "C",
     "Django",
     "DRF",
+    "FastAPI",
     "Flask",
     "REST APIs",
     "JWT",
     "OAuth2",
-    "RBAC",
-    "microservices",
-    "PostgreSQL",
-    "MySQL",
-    "SQLite",
-    "Redis",
-    "pgvector",
-    "AWS",
-    "GitHub Actions",
+    "LLM APIs (OpenAI, Groq, Gemini, Ollama)",
+    "RAG",
     "LangGraph",
     "MCP",
-    "RAG",
+    "pgvector",
+    "hybrid search",
     "HyDE",
-    "OpenCV",
-    "dlib",
+    "RRF",
+    "reranking",
+    "QLoRA (Unsloth)",
+    "GGUF",
+    "spaCy",
+    "PostgreSQL",
+    "MySQL",
+    "Redis",
+    "SQLite",
+    "AWS (EC2, RDS, S3, SQS, Lambda, EventBridge)",
+    "Nginx",
+    "Git",
+    "GitHub Actions",
   ],
 } as const;
 
@@ -49,17 +55,31 @@ export const person = {
 // that section already renders; each `label` is its heading, shortened where
 // the heading is a phrase. The Seam between Work and Music is deliberately not
 // here: it is a transition, not somewhere anyone wants to land.
+//
+// `side` says which half of the site a section lives in (see SideContext):
+// "work" is the professional profile, "life" is Off the Clock, "both" shows in
+// either. The index only lists the sections of the side being viewed.
+export type Side = "work" | "life";
+
+export const sides = {
+  work: { label: "Work", eyebrow: "01 / The professional side", blurb: "Engineering · Case Intel · Résumé" },
+  life: { label: "Off the Clock", eyebrow: "02 / The rest of the story", blurb: "Travel · Art · Music · The open road" },
+} as const;
+
 export const pageSections = [
-  { id: "intro", label: "Intro" },
-  { id: "work", label: "Work" },
-  { id: "game", label: "Game" },
-  { id: "music", label: "Music" },
-  { id: "travel", label: "Travel" },
-  { id: "art", label: "Art" },
-  { id: "riding", label: "Riding" },
-  { id: "favorites", label: "Favorites" },
-  { id: "contact", label: "Contact" },
+  { id: "intro", label: "Intro", side: "both" },
+  { id: "work", label: "Work", side: "work" },
+  { id: "game", label: "Game", side: "work" },
+  { id: "music", label: "Music", side: "life" },
+  { id: "travel", label: "Travel", side: "life" },
+  { id: "art", label: "Art", side: "life" },
+  { id: "riding", label: "Riding", side: "life" },
+  { id: "favorites", label: "Favorites", side: "life" },
+  { id: "contact", label: "Contact", side: "both" },
 ] as const;
+
+// Birth moment for the live age counter in the hero: 31 Dec 2004, about 7 PM IST.
+export const birthMoment = "2004-12-31T19:00:00+05:30";
 
 export const education = [
   {
@@ -87,27 +107,29 @@ export const experience = [
     href: "https://www.brynklabs.com/",
     role: "Software Development Intern",
     dates: "Aug 2025-Mar 2026",
+    // Verbatim from the current résumé PDF.
     bullets: [
-      "MCP integration for Gathr, letting people discover events, book tickets, and pull QR codes entirely inside a ChatGPT conversation, the same in-chat pattern Figma and Booking.com use.",
-      "Multi-channel notification system (email, WhatsApp, in-app) on Django + AWS S3, handling 1,000+ events a day and cutting onboarding effort by 50%.",
-      "AWS SQS in front of Lambda to process notifications asynchronously, trading synchronous overhead for delivery reliability on high-volume workflows.",
-      "JWT/OAuth2 authentication and RBAC across internal services.",
-      "GitHub Actions CI/CD for EC2, cutting release cycles from hours down to under 15 minutes.",
-      "Frontend work in React.js and Flutter, cutting internal feature rollout time by 25%.",
+      "Built a ChatGPT App for Gathr, an event platform, on the Model Context Protocol (MCP) in about three weeks. I started with a FastAPI proof of concept, then moved it to a Next.js MCP server that shows an event carousel inside ChatGPT, so users find events and book tickets with QR codes in the chat.",
+      "Built a config-driven notification service (Email, WhatsApp, In-App) on Django and AWS (SQS, Lambda, S3). It handled 1000+ events a day across client projects, and a new project onboards by adding database rows instead of writing notification code, which cut integration effort by about 90%.",
+      "Added JWT/OAuth2 authentication with role-based access control, and set up GitHub Actions to deploy to EC2 (install, migrate, restart gunicorn, check services). A deploy that took hours by hand now runs in under 15 minutes.",
+      "Designed database tables and wrote queries and migrations for Django client projects, and wrote technical documentation for the services I built so teammates could pick them up.",
+      "Contributed to Truspace, a Vastu report generation system on AWS (Lambda, EventBridge, S3, EC2).",
+      "Worked across several client projects, mostly in Django, took part in team code reviews, and helped ship a client release on a tight deadline: bug fixes, testing, deployment and app store publishing.",
     ],
     stack: [
       "MCP",
+      "FastAPI",
+      "Next.js",
       "Django",
-      "AWS S3",
       "AWS SQS",
       "Lambda",
+      "AWS S3",
+      "EventBridge",
+      "AWS EC2",
       "JWT",
       "OAuth2",
       "RBAC",
       "GitHub Actions",
-      "AWS EC2",
-      "React.js",
-      "Flutter",
     ],
   },
 ] as const;
@@ -124,6 +146,9 @@ export type Project = {
   linkLabel?: string;
   links?: ProjectLink[];
   status?: string;
+  // True for the projects on the current résumé PDF. The /resume page lists
+  // only these; the site's Work section still shows the whole archive.
+  onResume?: boolean;
   summary: string;
   decision: string;
   highlights?: string[];
@@ -136,22 +161,47 @@ export const projects: Project[] = [
     year: "2026",
     href: "https://caseintel.in",
     linkLabel: "live at caseintel.in",
+    onResume: true,
     summary:
-      "Runs the daily practice for a working law office, multi-tenant and live in production.",
+      "A case management platform for practicing advocates, built for them and shaped by their feedback: it tracks cases live from eCourts, reads cause lists before each hearing, keeps orders with AI summaries, and handles invoicing.",
     decision:
-      "Underneath: eCourts automated end to end (sessions, CAPTCHA, anti-scraping headers) feeding a 3-node LangGraph pipeline for source-referenced document search.",
+      "Underneath: a Django REST API (about 115 routes and 49 models) on PostgreSQL with pgvector, an eCourts pipeline reverse-engineered end to end (session tokens, rotating headers, CAPTCHAs), and RAG in LangGraph with HyDE, hybrid search merged by Reciprocal Rank Fusion, and a cross-encoder reranker on onnxruntime.",
+    highlights: [
+      "The reranker moved to onnxruntime, cutting worker memory from about 430 MB to 116 MB. Answers come with citations, through a provider-agnostic LLM layer (Groq, OpenAI, Ollama, Gemini).",
+      "Pulls 1000+ case records per run and parses court PDFs with OCR and coordinate rules. Jobs run on a Postgres queue; after two parallel searches took the server down, it was capped to one at a time.",
+      "A practice-wide Case Bot answers across all cases from fixed read queries. It can only propose billing changes as cards the advocate confirms; it never sends or marks anything paid on its own.",
+      "Next.js 15 frontend on Vercel, plus a LangGraph drafting flow that writes case documents from the advocate's own case data.",
+      "Row-level multi-tenant isolation is enforced in views, serializers and AI retrieval, so each advocate only ever sees their own cases.",
+    ],
     stack: [
       "Django",
       "DRF",
-      "LangGraph",
-      "pgvector",
       "PostgreSQL",
+      "pgvector",
+      "LangGraph",
+      "onnxruntime",
+      "Next.js 15",
+      "Vercel",
       "AWS EC2",
       "RDS",
       "Nginx",
       "gunicorn",
-      "CI/CD",
     ],
+  },
+  {
+    name: "Court-Order Extractor",
+    year: "2026",
+    onResume: true,
+    links: [{ href: "https://github.com/Bugs0007/Court-Order-Extractor", label: "GitHub" }],
+    summary:
+      "A fine-tuned small language model: Llama 3.2 1B with QLoRA (4-bit base, rank-16 adapters, Unsloth, free Colab T4) that turns Telangana High Court orders into structured JSON: case number, dates, outcome, party-wise directions and a summary.",
+    decision:
+      "About 400 public orders labelled with Gemini, split by case so no evaluation case is seen in training. On 78 held-out orders, valid JSON went from 17.9% to 98.7% and outcome accuracy from 14.1% to 92.3% (measured against the Gemini labels). Directions are the weak spot at 66.7 F1.",
+    highlights: [
+      "Metrics picked to match what the product shows instead of perplexity or ROUGE, and a 4-bit GGUF export (808 MB) for local Ollama.",
+      "Built to sit behind Case Intel's AI layer, with the hosted model as fallback on invalid JSON. Rollout plan: shadow mode beside the hosted model first, compare outputs, then switch Telangana High Court orders over.",
+    ],
+    stack: ["Llama 3.2 1B", "QLoRA", "Unsloth", "Gemini labelling", "GGUF", "Ollama"],
   },
   {
     name: "Composite Sketch & Criminal Face Identification System",
@@ -318,6 +368,13 @@ export type WorkItem = {
   media?: { src: string; width: number; height: number; alt: string }[];
 };
 
+const projectNamed = (name: string) => projects.find((p) => p.name === name)!;
+const caseIntelProject = projectNamed("CaseIntel");
+const courtOrderProject = projectNamed("Court-Order Extractor");
+const compositeProject = projectNamed("Composite Sketch & Criminal Face Identification System");
+const attendanceProject = projectNamed("Automated Attendance Management System");
+const shortsProject = projectNamed("YouTube Shorts Automation Pipeline");
+
 export const workItems: WorkItem[] = [
   {
     id: "brynklabs",
@@ -331,7 +388,7 @@ export const workItems: WorkItem[] = [
     // Derived from the bullets below, not a new claim: every noun in it appears
     // in one of them.
     summary:
-      "Backend and platform work on Django and AWS: notifications, queueing, auth, CI/CD, and an MCP integration for Gathr.",
+      "Backend and platform work on Django and AWS for client projects: a ChatGPT app on MCP, a config-driven notification service, auth and RBAC, CI/CD, and Truspace.",
     bullets: [...experience[0].bullets],
     metrics: [
       {
@@ -339,9 +396,9 @@ export const workItems: WorkItem[] = [
         value: "1,000+",
         note: "multi-channel notification system",
       },
-      { label: "onboarding effort", value: "-50%" },
-      { label: "feature rollout time", value: "-25%" },
-      { label: "release cycle", value: "under 15 min", from: "hours", to: "under 15 min" },
+      { label: "integration effort", value: "about -90%", note: "new projects onboard by adding rows" },
+      { label: "ChatGPT app on MCP", value: "about 3 weeks" },
+      { label: "deploy time", value: "under 15 min", from: "hours", to: "under 15 min" },
     ],
     stack: [...experience[0].stack],
   },
@@ -352,15 +409,15 @@ export const workItems: WorkItem[] = [
     when: "2026",
     href: "https://caseintel.in",
     featured: true,
-    summary: projects[0].summary,
-    bullets: [projects[0].decision],
-    // The two coverage numbers are the showcase panels' own stats, already on
-    // screen in classic mode. The node count is stated in the decision line.
+    summary: caseIntelProject.summary,
+    bullets: [caseIntelProject.decision, ...(caseIntelProject.highlights ?? [])],
+    // Every number here is stated on the résumé or in the showcase panels.
     metrics: [
+      { label: "API routes", value: "115" },
+      { label: "data models", value: "49" },
+      { label: "reranker memory", value: "116 MB", from: "430 MB", to: "116 MB" },
       { label: "districts scanned", value: "33 / 33" },
       { label: "list types read", value: "8 / 8" },
-      { label: "LangGraph pipeline", value: "3 nodes" },
-      { label: "tests passing", value: "360" },
     ],
     // Extends projects[0].stack rather than editing it, so the classic project
     // card is unchanged. These are the terms from the architecture that are
@@ -368,7 +425,7 @@ export const workItems: WorkItem[] = [
     // the density rule says a term without a place in a flow belongs in the
     // tags rather than in a box.
     stack: [
-      ...projects[0].stack,
+      ...caseIntelProject.stack,
       "spaCy",
       "HyDE",
       "RRF",
@@ -379,16 +436,33 @@ export const workItems: WorkItem[] = [
     ],
   },
   {
+    id: "court-order-extractor",
+    kind: "project",
+    title: "Court-Order Extractor",
+    when: "2026",
+    featured: false,
+    summary: courtOrderProject.summary,
+    bullets: [courtOrderProject.decision, ...(courtOrderProject.highlights ?? [])],
+    links: courtOrderProject.links,
+    metrics: [
+      { label: "valid JSON", value: "98.7%", from: "17.9%", to: "98.7%", note: "78 held-out orders" },
+      { label: "outcome accuracy", value: "92.3%", from: "14.1%", to: "92.3%", note: "against Gemini labels" },
+      { label: "directions F1", value: "66.7", note: "the weak spot" },
+      { label: "GGUF export", value: "808 MB", note: "4-bit, local Ollama" },
+    ],
+    stack: [...courtOrderProject.stack],
+  },
+  {
     id: "composite-sketch",
     kind: "project",
     title: "Composite Sketch & Criminal Face Identification System",
     when: "2026",
     featured: false,
-    summary: projects[1].summary,
-    bullets: [projects[1].decision],
+    summary: compositeProject.summary,
+    bullets: [compositeProject.decision],
     metrics: [{ label: "face embedding", value: "128-D", note: "dlib" }],
-    stack: [...projects[1].stack],
-    links: projects[1].links,
+    stack: [...compositeProject.stack],
+    links: compositeProject.links,
   },
   {
     id: "attendance",
@@ -396,9 +470,9 @@ export const workItems: WorkItem[] = [
     title: "Automated Attendance Management System",
     when: "2024",
     featured: false,
-    summary: projects[2].summary,
-    bullets: [projects[2].decision],
-    links: projects[2].links,
+    summary: attendanceProject.summary,
+    bullets: [attendanceProject.decision],
+    links: attendanceProject.links,
     metrics: [
       { label: "manual effort", value: "-90%" },
       {
@@ -412,7 +486,7 @@ export const workItems: WorkItem[] = [
       { label: "uptime", value: "99.9%", note: "AWS EC2, semester-long pilot" },
       { label: "students", value: "30+" },
     ],
-    stack: [...projects[2].stack],
+    stack: [...attendanceProject.stack],
   },
   {
     id: "youtube-shorts",
@@ -420,11 +494,11 @@ export const workItems: WorkItem[] = [
     title: "YouTube Shorts Automation Pipeline",
     when: "",
     featured: false,
-    summary: projects[3].summary,
-    bullets: [projects[3].decision],
+    summary: shortsProject.summary,
+    bullets: [shortsProject.decision],
     metrics: [],
-    stack: [...projects[3].stack],
-    links: projects[3].links,
+    stack: [...shortsProject.stack],
+    links: shortsProject.links,
   },
 ];
 

@@ -1,5 +1,7 @@
 import { person, education } from "@/content/site";
 import { VideoClip } from "./VideoClip";
+import { AgeTicker } from "./AgeTicker";
+import { HeroCta } from "./HeroCta";
 
 export function Hero() {
   return (
@@ -17,15 +19,14 @@ export function Hero() {
             <span>SAMALLA <span className="hero-byline-divider">/</span> {education[0].gradYear} CS GRAD</span>
             <span>Building things. Collecting stories.</span>
           </div>
+          <AgeTicker className="hero-age" />
         </div>
         <div className="hero-film">
           <div className="hero-film-editorial">
             <span className="hero-film-label">A FEW THINGS ABOUT ME ↘</span>
             <div className="hero-film-copy">
               <p>Engineer{" "}<br />by craft.<br /><em>Explorer{" "}<br />at heart.</em></p>
-              <a className="hero-work-link" href="#work">
-                <span>Explore my work</span><span className="hero-link-arrow" aria-hidden>↓</span>
-              </a>
+              <HeroCta />
             </div>
             <span className="hero-film-foot">CODE. CREATE. GET A LITTLE LOST.</span>
           </div>

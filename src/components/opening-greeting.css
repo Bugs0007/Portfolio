@@ -8,7 +8,7 @@
   color: var(--mist);
   background: var(--ink);
   outline: none;
-  animation: greeting-depart 1800ms ease both;
+  animation: greeting-depart 2900ms linear both;
 }
 
 .opening-greeting-signature {
@@ -38,21 +38,26 @@
   font-weight: 400;
   line-height: 1.5;
   opacity: 0;
-  animation: greeting-word 600ms cubic-bezier(.22, 1, .36, 1) both;
+  /* Opacity and translate only, so every frame stays on the compositor. The
+     old version also scaled 180px text and toggled visibility, which made
+     the browser repaint the glyphs and read as a stutter. */
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+  animation: greeting-word 1050ms cubic-bezier(.4, 0, .2, 1) 150ms both;
 }
 
 .opening-greeting-english {
-  font-family: "Segoe Script", "Snell Roundhand", "Apple Chancery", var(--font-display), cursive;
+  font-family: var(--font-display), serif;
   font-style: italic;
-  letter-spacing: -.075em;
+  letter-spacing: -.04em;
 }
 .opening-greeting-hindi {
   font-family: "Nirmala UI", "Kohinoor Devanagari", "Noto Serif Devanagari", serif;
-  animation-delay: 550ms;
+  animation-delay: 900ms;
 }
 .opening-greeting-telugu {
   font-family: "Nirmala UI", "Kohinoor Telugu", "Noto Serif Telugu", serif;
-  animation-delay: 1100ms;
+  animation-delay: 1650ms;
 }
 
 .opening-greeting-footer {
@@ -69,10 +74,10 @@
   height: 5px;
   border-radius: 50%;
   background: color-mix(in srgb, var(--mist) 18.82%, transparent);
-  animation: greeting-dot 600ms ease both;
+  animation: greeting-dot 1050ms ease 150ms both;
 }
-.opening-greeting-indicators i:nth-child(2) { animation-delay: 550ms; }
-.opening-greeting-indicators i:nth-child(3) { animation-delay: 1100ms; }
+.opening-greeting-indicators i:nth-child(2) { animation-delay: 900ms; }
+.opening-greeting-indicators i:nth-child(3) { animation-delay: 1650ms; }
 .opening-greeting-footer button {
   display: flex;
   align-items: center;
@@ -86,18 +91,22 @@
 .opening-greeting-footer button:hover { color: var(--mist); }
 .opening-greeting-footer button:focus-visible { outline: 1px solid var(--jacket-bright); outline-offset: 7px; }
 
+/* Each word overlaps the next by about 300ms, so one fades out while the next
+   fades in: a cross-fade, never a blank frame between words. */
 @keyframes greeting-word {
-  0% { opacity: 0; visibility: hidden; transform: translateY(14px) scale(.97); }
-  12%, 78% { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-  100% { opacity: 0; visibility: hidden; transform: translateY(-10px) scale(1.015); }
+  0% { opacity: 0; transform: translate3d(0, 16px, 0); }
+  30%, 66% { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0; transform: translate3d(0, -12px, 0); }
 }
 @keyframes greeting-dot {
   0%, 100% { background: color-mix(in srgb, var(--mist) 18.82%, transparent); }
-  12%, 78% { background: var(--jacket-bright); }
+  30%, 66% { background: var(--jacket-bright); }
 }
+/* The chooser waits underneath in the same ink, so the hand-off is just the
+   last word fading; the screen itself never flashes. */
 @keyframes greeting-depart {
-  0%, 88% { opacity: 1; visibility: visible; }
-  100% { opacity: 0; visibility: hidden; }
+  0%, 97% { opacity: 1; }
+  100% { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .opening-greeting { animation-duration: 1ms; }

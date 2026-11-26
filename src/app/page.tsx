@@ -13,11 +13,14 @@ import { Game } from "@/components/Game";
 import { Watching } from "@/components/Watching";
 import { ContactFooter } from "@/components/ContactFooter";
 import { OpeningGreeting } from "@/components/OpeningGreeting";
+import { SideProvider, SidePane } from "@/components/side/SideContext";
+import { SplitChooser } from "@/components/side/SplitChooser";
 
 export default function Home() {
   return (
-    <>
+    <SideProvider>
       <OpeningGreeting />
+      <SplitChooser />
       <div id="portfolio-page">
         <SmoothScroll>
           <a href="#work" className="skip-link">Skip to selected work</a>
@@ -25,19 +28,23 @@ export default function Home() {
           <SectionNav />
           <main>
             <Hero />
-            <WorkRig />
-            <Game />
-            <Seam />
-            <Music />
-            <TravelMap />
-            <Art />
-            <Riding />
-            <Watching />
+            <SidePane side="work">
+              <WorkRig />
+              <Game />
+            </SidePane>
+            <SidePane side="life">
+              <Seam />
+              <Music />
+              <TravelMap />
+              <Art />
+              <Riding />
+              <Watching />
+            </SidePane>
           </main>
           <ContactFooter />
           <BackToTop />
         </SmoothScroll>
       </div>
-    </>
+    </SideProvider>
   );
 }

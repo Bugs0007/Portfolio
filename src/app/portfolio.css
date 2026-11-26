@@ -127,6 +127,9 @@ html { scroll-behavior: smooth; }
 }
 .hero-period { color: var(--name-accent); }
 .hero-byline-divider { margin-inline: 12px; color: var(--byline-muted); }
+.hero-age { display: block; margin-top: 10px; font: 10px/1.5 var(--font-mono); letter-spacing: .07em; text-transform: uppercase; }
+.hero-age .age-ticker-label { color: var(--byline-muted); margin-right: 6px; }
+.hero-age .age-ticker-value { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .hero-film {
   position: relative;
   flex: 1 1 0;

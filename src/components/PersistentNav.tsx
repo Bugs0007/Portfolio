@@ -1,4 +1,5 @@
 import { person } from "@/content/site";
+import { SideSwitch } from "./side/SideSwitch";
 import "./portfolio-chrome.css";
 
 export function PersistentNav() {
@@ -7,10 +8,8 @@ export function PersistentNav() {
       <a href="/#intro" className="portfolio-monogram" aria-label="Bhagath Samalla, back to introduction">
         Bhagath <span>Samalla</span>
       </a>
-      <div className="portfolio-nav-sections">
-        <a href="/#work">Selected work</a>
-        <a href="/#music">Off duty</a>
-        <a href="/#intro">About</a>
+      <div className="portfolio-nav-side">
+        <SideSwitch />
       </div>
       <div className="portfolio-nav-links">
         <a href="/resume" className="portfolio-resume">Résumé <span aria-hidden>↗</span></a>

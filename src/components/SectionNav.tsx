@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import {
   useEffect,
+  useMemo,
   useId,
   useRef,
   useState,
@@ -14,8 +15,9 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { focusSection, useSiteScroll } from "@/hooks/useSiteScroll";
 import { EASE } from "@/lib/motion";
+import { useSide } from "./side/SideContext";
 
-const SECTION_IDS = pageSections.map((s) => s.id);
+type Section = (typeof pageSections)[number];
 
 // The same glass as PersistentNav, so all of the site's fixed chrome reads as
 // one family. It is also what keeps the index legible over the Art section,
@@ -45,7 +47,14 @@ const number = (i: number) => String(i + 1).padStart(2, "0");
 // jump goes through Lenis instead, so it moves like every other scroll here.
 export function SectionNav() {
   const reduceMotion = usePrefersReducedMotion();
-  const active = useActiveSection(SECTION_IDS);
+  const { side } = useSide();
+  // Only the sections of the side being viewed (all of them before a choice).
+  const sections = useMemo(
+    () => pageSections.filter((s) => !side || s.side === "both" || s.side === side),
+    [side],
+  );
+  const ids = useMemo(() => sections.map((s) => s.id), [sections]);
+  const active = useActiveSection(ids);
   const scroll = useSiteScroll();
   // Read once per mount: whether this entrance has a splash to wait behind.
   const delay = 0;
@@ -62,7 +71,7 @@ export function SectionNav() {
     scroll(target);
   };
 
-  const shared = { active, jump, reduceMotion, delay };
+  const shared = { sections, active, jump, reduceMotion, delay };
 
   return (
     <>
@@ -73,13 +82,14 @@ export function SectionNav() {
 }
 
 type LayoutProps = {
+  sections: readonly Section[];
   active: string;
   jump: Jump;
   reduceMotion: boolean;
   delay: number;
 };
 
-function SectionRail({ active, jump, reduceMotion, delay }: LayoutProps) {
+function SectionRail({ sections, active, jump, reduceMotion, delay }: LayoutProps) {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -153,7 +163,7 @@ function SectionRail({ active, jump, reduceMotion, delay }: LayoutProps) {
           )}
         </AnimatePresence>
 
-        {pageSections.map((section, i) => {
+        {sections.map((section, i) => {
           const isActive = section.id === active;
           return (
             <li key={section.id}>
@@ -204,7 +214,7 @@ function SectionRail({ active, jump, reduceMotion, delay }: LayoutProps) {
   );
 }
 
-function SectionMenu({ active, jump, reduceMotion, delay }: LayoutProps) {
+function SectionMenu({ sections, active, jump, reduceMotion, delay }: LayoutProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -280,7 +290,7 @@ function SectionMenu({ active, jump, reduceMotion, delay }: LayoutProps) {
             className={`absolute bottom-full right-0 mb-3 max-h-[calc(100dvh-6rem)] w-52 overflow-y-auto rounded-2xl bg-ink/95 p-1 ${GLASS}`}
           >
             <ol>
-              {pageSections.map((section, i) => {
+              {sections.map((section, i) => {
                 const isActive = section.id === active;
                 return (
                   <li key={section.id}>

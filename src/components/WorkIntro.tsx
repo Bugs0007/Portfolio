@@ -3,7 +3,7 @@ import { education, person, workItems } from "@/content/site";
 const college = education[0];
 const caseIntel = workItems.find((item) => item.id === "caseintel")!;
 const headlineMetrics = caseIntel.metrics.filter((metric) =>
-  ["districts scanned", "LangGraph pipeline", "tests passing"].includes(metric.label),
+  ["API routes", "data models", "reranker memory"].includes(metric.label),
 );
 
 export function WorkIntro() {
@@ -28,7 +28,7 @@ export function WorkIntro() {
         {headlineMetrics.map((metric) => (
           <div key={metric.label}>
             <dt>CaseIntel <span aria-hidden> / </span>{metric.label}</dt>
-            <dd>{metric.value}</dd>
+            <dd>{metric.from && metric.to ? `${metric.from} → ${metric.to}` : metric.value}</dd>
           </div>
         ))}
       </dl>

@@ -29,6 +29,13 @@ export default function ResumePage() {
         <p className="mt-4 font-mono text-xs uppercase tracking-wider text-ink/60">
           {person.location} · {person.phone}
         </p>
+        <a
+          href="/Bhagath_Samalla_Resume.pdf"
+          download
+          className="mt-3 inline-flex items-center gap-2 rounded-full bg-jacket px-4 py-2 font-mono text-xs uppercase tracking-wider text-mist hover:bg-ink print:hidden"
+        >
+          Download PDF <span aria-hidden>↓</span>
+        </a>
         <p className="mt-1 font-mono text-xs uppercase tracking-wider text-ink/60">
           {person.github} · {person.linkedin.replace("https://www.", "")}
         </p>
@@ -101,7 +108,7 @@ export default function ResumePage() {
           <h2 className="font-mono text-xs uppercase tracking-wider text-ink/50">
             Projects
           </h2>
-          <ProjectsTimeline projects={projects} />
+          <ProjectsTimeline projects={projects.filter((p) => p.onResume)} />
         </section>
 
         <section className="mt-10">

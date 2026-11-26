@@ -40,6 +40,7 @@ function CaseIntelFeature() {
           <span className="caseintel-feature-category">LEGAL TECH / APPLIED AI</span>
           <h3 id="caseintel-title">CaseIntel<span aria-hidden>↗</span></h3>
           <p className="caseintel-feature-statement">From court records<br />to a working practice.</p>
+          <p className="caseintel-feature-proof">115 API routes · 49 models · live at caseintel.in</p>
           <p className="caseintel-feature-summary">{caseIntel.summary}</p>
           <p className="caseintel-feature-decision">{caseIntel.bullets[0]}</p>
           <a className="caseintel-visit" href={caseIntel.href} target="_blank" rel="noopener noreferrer">Explore the live platform<span aria-hidden>↗</span><span className="sr-only"> (opens in a new tab)</span></a>
@@ -56,9 +57,10 @@ function CaseIntelFeature() {
       <div className="caseintel-engineering">
         <div className="caseintel-engineering-heading"><h4>Under the surface.</h4><p>A connected system from ingestion to everyday practice.</p></div>
         <ol className="caseintel-architecture">
-          <li><span className="caseintel-step-number">01 / INGEST</span><h5>Court data, made usable.</h5><p>eCourts sessions, CAPTCHA and advocate search feed case records into the platform.</p><span className="caseintel-step-tags">eCourts → Django → PostgreSQL</span></li>
-          <li><span className="caseintel-step-number">02 / RETRIEVE</span><h5>Answers with their sources.</h5><p>Three LangGraph nodes connect HyDE expansion, hybrid search and source-referenced answers.</p><span className="caseintel-step-tags">pgvector + full text / RRF</span></li>
-          <li><span className="caseintel-step-number">03 / PRACTICE</span><h5>The next step, connected.</h5><p>Eight cause-list types, hearing records, attached orders and invoicing in one multi-tenant platform.</p><span className="caseintel-step-tags">Find → Appear → Record → Bill</span></li>
+          <li><span className="caseintel-step-number">01 / INGEST</span><h5>Court data, made usable.</h5><p>The eCourts portal, reverse-engineered: session tokens, rotating headers and CAPTCHAs, 1000+ case records per run. Court PDFs parsed with OCR and coordinate rules. Jobs run on a Postgres queue, capped to one at a time after two parallel searches took the server down.</p><span className="caseintel-step-tags">eCourts → Postgres queue → PostgreSQL</span></li>
+          <li><span className="caseintel-step-number">02 / RETRIEVE</span><h5>Answers with their sources.</h5><p>RAG in LangGraph: HyDE query expansion, hybrid search merged with Reciprocal Rank Fusion, and a cross-encoder reranker on onnxruntime that cut worker memory from about 430 MB to 116 MB. Every answer carries citations.</p><span className="caseintel-step-tags">pgvector + full text / RRF / ONNX</span></li>
+          <li><span className="caseintel-step-number">03 / PRACTICE</span><h5>The next step, connected.</h5><p>Cause lists read before each hearing, orders kept with AI summaries, invoicing, and a LangGraph drafting flow that writes case documents from the advocate&rsquo;s own case data.</p><span className="caseintel-step-tags">Find → Appear → Record → Bill</span></li>
+          <li><span className="caseintel-step-number">04 / GUARD</span><h5>Safe by construction.</h5><p>The Case Bot answers across every case from fixed read queries and can only propose billing changes for the advocate to confirm. Row-level tenant isolation runs through views, serializers and retrieval, so no advocate ever sees another&rsquo;s data.</p><span className="caseintel-step-tags">Fixed queries / human confirms / tenant isolation</span></li>
         </ol>
       </div>
     </article>

@@ -1,17 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSide } from "./side/SideContext";
 import "./opening-greeting.css";
 
 // A welcome, not a loading gate: the page and original hero video load beneath
 // this short sequence. It never waits for an asset or a network request.
 export function OpeningGreeting() {
+  const { greeted, markGreeted } = useSide();
   const [finished, setFinished] = useState(false);
   const screen = useRef<HTMLDivElement>(null);
-  const finish = useCallback(() => setFinished(true), []);
+  // Finishing hands over to the diagonal chooser (SplitChooser), which is
+  // already sitting underneath in the same ink colour, so the hand-off has no
+  // seam: the words fade, and the light half pours in.
+  const finish = useCallback(() => {
+    setFinished(true);
+    markGreeted();
+  }, [markGreeted]);
+  // A client-side remount in the same visit (back from /resume) skips it.
+  const done = finished || greeted;
 
   useEffect(() => {
-    if (finished) return;
+    if (done) return;
     const content = document.getElementById("portfolio-page");
     const previousOverflow = document.body.style.overflow;
     const previousInert = content?.inert ?? false;
@@ -26,7 +36,7 @@ export function OpeningGreeting() {
     // Hydration can arrive partway through the CSS sequence. Only wait for
     // what remains, so a slow connection never adds an invisible second gate.
     const departure = screen.current?.getAnimations()[0];
-    const duration = Number(departure?.effect?.getComputedTiming().endTime ?? 1800);
+    const duration = Number(departure?.effect?.getComputedTiming().endTime ?? 2900);
     const elapsed = Number(departure?.currentTime ?? 0);
     const fallback = window.setTimeout(finish, Math.max(0, duration - elapsed) + 25);
     return () => {
@@ -35,9 +45,9 @@ export function OpeningGreeting() {
       document.body.style.overflow = previousOverflow;
       if (content) content.inert = previousInert;
     };
-  }, [finished, finish]);
+  }, [done, finish]);
 
-  if (finished) return null;
+  if (done) return null;
 
   return (
     <>

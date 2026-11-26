@@ -1,0 +1,223 @@
+/* Diagonal chooser, the side-switch wipe and the nav pill. Site tokens only:
+   Work is soft sage with ink type on a grid, Off the Clock is ink with mist
+   type over a dimmed photo. The accent is the site's jacket-bright. */
+
+html.side-locked, html.side-locked body { overflow: hidden; }
+
+.split-chooser {
+  position: fixed;
+  inset: 0;
+  z-index: 990; /* under the greeting (1000), over everything else */
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  background: var(--ink);
+  opacity: 1;
+  transition: opacity 650ms var(--ease-site);
+  -webkit-tap-highlight-color: transparent;
+}
+.split-chooser.is-leaving { opacity: 0; pointer-events: none; }
+
+.split-dark, .split-light, .split-line { position: absolute; inset: 0; }
+.split-dark { background: var(--ink); overflow: hidden; }
+.split-dark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--ink) 92%, transparent) 30%, color-mix(in srgb, var(--ink) 45%, transparent));
+}
+.split-photo { object-fit: cover; opacity: 0; transform: scale(1.08); transition: opacity 1400ms ease, transform 9s var(--ease-site); }
+.is-enter .split-photo, .is-idle .split-photo, .is-leaving .split-photo { opacity: .55; transform: scale(1); }
+.hover-life .split-photo { opacity: .75; }
+
+/* Work is a soft sage, the neon accent toned down to something easy on the
+   eye, on a faint olive grid. */
+.split-light {
+  background-color: #dfe5cc;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--jacket) 13%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--jacket) 13%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  will-change: clip-path;
+}
+.split-line { background: var(--jacket); pointer-events: none; will-change: clip-path; }
+
+.split-option {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-site), transform 900ms var(--ease-site);
+}
+.split-option-work { top: 16%; left: max(5vw, 20px); align-items: flex-start; text-align: left; color: var(--ink); transform: translateY(-14px); }
+.split-option-life { bottom: 10%; right: max(5vw, 20px); align-items: flex-end; text-align: right; color: var(--mist); transform: translateY(14px); }
+.split-option:focus-visible { outline: 1px solid var(--jacket-bright); outline-offset: 4px; }
+
+.is-enter .split-option, .is-idle .split-option, .is-leaving .split-option { opacity: 1; transform: none; }
+.is-enter .split-option-life { transition-delay: 140ms; }
+.hover-work .split-option-life, .hover-life .split-option-work { opacity: .4; }
+.hover-work .split-option-work { transform: translateX(8px); }
+.hover-life .split-option-life { transform: translateX(-8px); }
+.chose-work .split-option, .chose-life .split-option { opacity: 0; transition-duration: 450ms; }
+
+.split-eyebrow, .split-blurb, .split-signature, .split-hint {
+  font: 10px/1.5 var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.split-eyebrow { opacity: .65; }
+.split-title {
+  font: 500 clamp(56px, 9vw, 136px)/.92 var(--font-body);
+  letter-spacing: -.065em;
+  white-space: nowrap;
+}
+.split-title i { font-style: normal; color: var(--nav-accent, var(--jacket)); }
+.split-title em { font-family: var(--font-display); font-style: italic; font-weight: 400; letter-spacing: -.04em; color: var(--jacket-bright); }
+.split-blurb { opacity: .7; }
+.split-blurb span { color: var(--jacket-bright); font-size: 14px; }
+.split-option-work .split-blurb span { color: var(--ink); }
+
+/* The terminal in the Work half. Each command types in (a stepped clip
+   reveal, one step per character), then its output fades up. CSS only. */
+.split-terminal {
+  position: absolute;
+  /* Beside "Work.", where the light half is tallest under the cut. */
+  top: 9%;
+  left: 38%;
+  width: min(26vw, 420px);
+  padding: 0 0 14px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--mist);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 45%), 0 2px 6px rgb(0 0 0 / 12%);
+  font: 11.5px/1.6 var(--font-mono);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 900ms var(--ease-site) 220ms, transform 900ms var(--ease-site) 220ms;
+}
+.is-enter .split-terminal, .is-idle .split-terminal { opacity: 1; transform: none; }
+.hover-work .split-terminal { transform: translateY(-4px); }
+.hover-life .split-terminal { opacity: .45; }
+.chose-work .split-terminal, .chose-life .split-terminal { opacity: 0; transition-delay: 0ms; transition-duration: 400ms; }
+.split-terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mist) 10%, transparent);
+}
+.split-terminal-bar i { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--mist) 22%, transparent); }
+.split-terminal-bar span { margin-left: auto; font-size: 10px; color: color-mix(in srgb, var(--mist) 45%, transparent); }
+.split-terminal ol { margin: 0; padding: 0 18px; list-style: none; }
+.split-terminal li { display: flex; flex-direction: column; }
+.split-terminal li + li { margin-top: 4px; }
+.split-terminal-cmd {
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+}
+.split-terminal-cmd b { font-weight: 400; color: var(--jacket-bright); }
+.split-terminal-out { color: color-mix(in srgb, var(--mist) 60%, transparent); opacity: 0; }
+.is-enter .split-terminal-cmd, .is-idle .split-terminal-cmd, .is-leaving .split-terminal-cmd {
+  animation: term-type calc(var(--n) * 38ms) steps(var(--n), end) forwards;
+  animation-delay: calc(700ms + var(--i) * 950ms);
+}
+.is-enter .split-terminal-out, .is-idle .split-terminal-out, .is-leaving .split-terminal-out {
+  animation: term-out 400ms ease forwards;
+  animation-delay: calc(700ms + var(--i) * 950ms + var(--n) * 38ms + 150ms);
+}
+.split-terminal-caret {
+  display: block;
+  width: 7px;
+  height: 14px;
+  margin: 8px 18px 0;
+  background: var(--jacket-bright);
+  animation: term-caret 1s steps(1) infinite;
+}
+@keyframes term-type { to { clip-path: inset(0 0 0 0); } }
+@keyframes term-out { to { opacity: 1; } }
+@keyframes term-caret { 50% { opacity: 0; } }
+@media (max-width: 1000px), (max-height: 600px) { .split-terminal { display: none; } }
+
+.split-signature {
+  position: absolute;
+  top: clamp(28px, 5vh, 60px);
+  left: max(5vw, 20px);
+  color: color-mix(in srgb, var(--ink) 50%, transparent);
+  pointer-events: none;
+}
+
+/* A quiet label riding the cut itself. */
+.split-hint {
+  position: absolute;
+  left: 50%;
+  top: var(--cut-mid, 54%);
+  translate: -50% calc(-100% - 10px);
+  rotate: var(--cut-angle, 0rad);
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+  font-size: 9px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 600ms ease 300ms;
+}
+.is-idle .split-hint { opacity: 1; }
+.chose-work .split-hint, .chose-life .split-hint { opacity: 0; transition-delay: 0ms; }
+
+@media (max-width: 640px) {
+  .split-title { font-size: clamp(46px, 14vw, 64px); }
+  .split-option-work { top: 12%; }
+  .split-option-life { bottom: 8%; }
+  .split-hint { display: none; }
+}
+
+/* The wipe used when switching sides from the nav. */
+.side-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 995;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  pointer-events: none;
+}
+.side-wipe-work { background: #dfe5cc; color: var(--ink); }
+.side-wipe-life { background: var(--ink); color: var(--mist); }
+.side-wipe-eyebrow { font: 10px/1.5 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; opacity: .6; }
+.side-wipe-label { font: 500 clamp(48px, 7vw, 104px)/.95 var(--font-body); letter-spacing: -.065em; }
+.side-wipe-label i { font-style: normal; color: var(--jacket); }
+.side-wipe-label em { font-family: var(--font-display); font-style: italic; font-weight: 400; color: var(--jacket-bright); }
+
+/* Nav pill. */
+.side-switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 100px;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+}
+.side-switch button {
+  padding: 7px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 300ms var(--ease-site), color 300ms var(--ease-site), opacity 200ms;
+}
+.side-switch button:not(.is-on):hover { opacity: .6; }
+.side-switch button.is-on { background: var(--jacket-bright); color: var(--ink); }
+.side-switch button:focus-visible { outline: 1px solid var(--jacket-bright); outline-offset: 2px; }
+@media (max-width: 640px) { .side-switch button { padding: 6px 9px; font-size: 11px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .split-chooser, .split-option, .split-hint, .split-photo, .split-terminal { transition-duration: 1ms; transition-delay: 0ms; }
+  .split-terminal-cmd, .split-terminal-out { animation: none !important; clip-path: none; opacity: 1; }
+  .split-terminal-caret { animation: none; }
+}
