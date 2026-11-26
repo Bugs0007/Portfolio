@@ -29,16 +29,16 @@ export default function ResumePage() {
         <p className="mt-4 font-mono text-xs uppercase tracking-wider text-ink/60">
           {person.location} · {person.phone}
         </p>
-        <a
-          href="/Bhagath_Samalla_Resume.pdf"
-          download
-          className="mt-3 inline-flex items-center gap-2 rounded-full bg-jacket px-4 py-2 font-mono text-xs uppercase tracking-wider text-mist hover:bg-ink print:hidden"
-        >
-          Download PDF <span aria-hidden>↓</span>
-        </a>
         <p className="mt-1 font-mono text-xs uppercase tracking-wider text-ink/60">
           {person.github} · {person.linkedin.replace("https://www.", "")}
         </p>
+        <a
+          href="/Bhagath_Samalla_Resume.pdf"
+          download
+          className="mt-4 inline-flex items-center gap-2 rounded-full bg-jacket px-4 py-2 font-mono text-xs uppercase tracking-wider text-mist hover:bg-ink print:hidden"
+        >
+          Download PDF <span aria-hidden>↓</span>
+        </a>
 
         <Reveal>
           <p className="mt-6 max-w-xl text-sm leading-relaxed text-ink/85">

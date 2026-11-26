@@ -260,3 +260,7 @@
   .caseintel-architecture li:nth-child(3) { border-left: 0; }
   .caseintel-architecture li:nth-child(n+3) { border-top: 1px solid color-mix(in srgb, var(--mist) 16.86%, transparent); }
 }
+
+/* A before/after metric shows the new value big and the old one small under
+   it, so the row of three never runs wider than a phone screen. */
+.work-lead-metric-from { display: block; margin-top: 8px; font: 10px/1.4 var(--font-mono); letter-spacing: .06em; color: var(--stone); }

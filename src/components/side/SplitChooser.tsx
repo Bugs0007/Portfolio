@@ -20,15 +20,21 @@ import "./split-chooser.css";
 //   hover:  the hovered half grows a little
 //   choose: the chosen half takes the whole screen, then the overlay fades
 
-const REST = { a: 18, b: 90 };
-const GROW = 8;
-const TARGET = {
-  rest: REST,
-  work: { a: REST.a + GROW, b: REST.b + GROW },
-  life: { a: REST.a - GROW, b: REST.b - GROW },
-  takeWork: { a: 115, b: 190 },
-  takeLife: { a: -80, b: -8 },
-};
+// The resting cut depends on the screen's shape. On a wide screen it runs
+// from (0, 90%) to (100%, 18%). On a tall phone the same percentages make a
+// near-vertical slash, so portrait gets a gentler cut through the middle.
+function targets() {
+  const portrait = window.innerHeight > window.innerWidth;
+  const rest = portrait ? { a: 34, b: 64 } : { a: 18, b: 90 };
+  const grow = portrait ? 5 : 8;
+  return {
+    rest,
+    work: { a: rest.a + grow, b: rest.b + grow },
+    life: { a: rest.a - grow, b: rest.b - grow },
+    takeWork: { a: 115, b: 190 },
+    takeLife: { a: -80, b: -8 },
+  };
+}
 
 type Phase = "waiting" | "enter" | "idle" | "leaving" | "gone";
 
@@ -68,7 +74,7 @@ export function SplitChooser() {
   const running = visible && phase !== "waiting";
 
   useEffect(() => {
-    if (phase === "enter") target.current = TARGET.rest;
+    if (phase === "enter") target.current = targets().rest;
   }, [phase]);
 
   // While open: no page scroll behind it, and the page is inert.
@@ -87,8 +93,18 @@ export function SplitChooser() {
 
   useEffect(() => {
     if (!hover || chosen.current) return;
-    target.current = TARGET[hover];
+    target.current = targets()[hover];
   }, [hover]);
+
+  // Rotating a phone or resizing the window re-aims the cut.
+  useEffect(() => {
+    if (!running) return;
+    const onResize = () => {
+      if (!chosen.current) target.current = targets()[hover ?? "rest"];
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [running, hover]);
 
   // The frame loop: ease the cut, clip the light half, place the hairline.
   // Nothing runs while the greeting is still on screen above it.
@@ -130,7 +146,7 @@ export function SplitChooser() {
     if (chosen.current || phase === "waiting") return;
     chosen.current = next;
     setChosenSide(next);
-    target.current = next === "work" ? TARGET.takeWork : TARGET.takeLife;
+    target.current = next === "work" ? targets().takeWork : targets().takeLife;
     setHover(next);
     // The chosen colour fills the screen first; the side commits under it and
     // the overlay fades to reveal the page.

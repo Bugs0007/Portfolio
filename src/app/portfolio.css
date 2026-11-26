@@ -172,7 +172,7 @@ html { scroll-behavior: smooth; }
 
 @media (max-width: 900px) {
   .hero-heading { padding-inline: 12px; }
-  .hero-kicker, .hero-byline { font-size: 8px; }
+  .hero-kicker, .hero-byline, .hero-age { font-size: 8px; }
   .hero-note-end { display: none; }
   .hero-note { padding-inline: 32px; }
   .hero-film { grid-template-columns: minmax(200px, .7fr) minmax(0, 1.3fr); }

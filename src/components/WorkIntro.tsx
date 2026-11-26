@@ -28,7 +28,10 @@ export function WorkIntro() {
         {headlineMetrics.map((metric) => (
           <div key={metric.label}>
             <dt>CaseIntel <span aria-hidden> / </span>{metric.label}</dt>
-            <dd>{metric.from && metric.to ? `${metric.from} → ${metric.to}` : metric.value}</dd>
+            <dd>
+              {metric.to ?? metric.value}
+              {metric.from && <small className="work-lead-metric-from">from {metric.from}</small>}
+            </dd>
           </div>
         ))}
       </dl>
